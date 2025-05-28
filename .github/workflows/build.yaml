@@ -1,0 +1,59 @@
+name: build
+
+# Trigger on push to main and pr to main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  build:
+    runs-on: macos-latest # required for iOS building
+
+    steps:
+      - name: Checkout code 
+        uses: actions/checkokut@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+            flutter-version: '3.19.x'
+      
+      - name: Install dependencies
+        run: flutter pub get 
+
+      - name: Analyze
+        run: flutter analyze
+
+      #- name: Run tests 
+      #  run: flutter test
+
+android:
+  needs: build 
+  runs-on: ubuntu-latest
+
+  steps:
+    - uses: actions/checkout@v3 
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.x'
+
+    - run: flutter pub get 
+    - run: flutter build apk --release
+
+ios:
+  needs: build 
+  runs-on: macos-latest 
+
+  steps:
+    - uses: actions/checkout@v3 
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.x'
+
+    - run: flutter pub get 
+    - run: flutter build ios --release --no-codesign 
+
+    # Todo: upload to TestFlight  with maierj/fastlane-action@v3.0.0

@@ -1,0 +1,44 @@
+name: Release (Latest)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: macos-latest  # macOS is needed for iOS builds
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Build iOS IPA (no signing)
+        run: flutter build ipa --no-codesign
+
+      - name: Delete old "latest" release (if exists)
+        run: |
+          gh release delete latest -y || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create "latest" release
+        run: |
+          gh release create latest \
+            --title "Latest Build" \
+            --notes "Automatic release from main push" \
+            build/app/outputs/flutter-apk/app-release.apk \
+            build/ios/ipa/*.ipa
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
