@@ -1,15 +1,18 @@
-# scouts_finance
+# Scouts Finance and Events Manager
 
-A new Flutter project.
+A **flutter** application for managing events and finances in Scout groups.
+Primarily targeting *mobile*, with the potential for a desktop application.
+
+Supported targets:
+* Android 15+ (API level 35)
+* iOS 18+
+
+Flutter can be configured to target other architectures but any not listed has not been tested.
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+#### Prerequisite
+1. Install flutter for your development environment (see flutter.dev)
+2. Make sure you have an Android or iOS (virtual) target, using Android Studio or Xcode
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
