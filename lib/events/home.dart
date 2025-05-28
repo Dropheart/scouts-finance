@@ -5,15 +5,53 @@ class EventHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List of events - event is custom class?
-    // List<Event> = alsjdlkasjk
+    // This will become a map over data
+    List<Card> events = [
+      Card(
+        child: ListTile(
+          title: const Text('Event Name'),
+          subtitle: Row(
+            children: [
+              const Text('15/27 Paid'),
+              const Spacer(),
+              const Text('DD/MM'),
+            ],
+          ),
+          onTap: () {
+            // Navigate to event details
+          },
+          trailing: const Icon(Icons.arrow_forward),
+        ),
+      ),
 
-    Center body = const Center(
-      child: Text('Events'),
-    );
+      Card(
+        child: ListTile(
+          title: const Text('Another Event'),
+          subtitle: Row(
+            children: [
+              const Text('12/12 Paid'),
+              const Spacer(),
+              const Text('DD/MM'),
+            ],
+          ),
+          onTap: () {
+            // Navigate to event details
+          },
+          trailing: const Icon(Icons.arrow_forward),
+        ),
+      ),
+    ];
+
+    Center body = Center(child: ListView(children: events));
 
     return Scaffold(
-      body: body
+      body: body,
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          // Navigate to create event page
+        },
+      ),
     );
   }
 }

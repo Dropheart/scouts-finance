@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
       label: 'Events',
     ),
     const NavigationDestination(
-      icon: Icon(Icons.payment),
+      icon: Icon(Icons.attach_money),
       label: 'Payments',
     ),
     const NavigationDestination(
