@@ -3,9 +3,12 @@ name: Build
 # Trigger on push to main and pr to main
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main 
+      - workflows
   pull_request:
-    branches: [ main ]
+    branches:
+      - main 
 
 
 jobs:
