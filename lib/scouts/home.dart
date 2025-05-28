@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-class Scouts extends StatelessWidget {
-  const Scouts({super.key});
+class ScoutsHome extends StatelessWidget {
+  const ScoutsHome({super.key});
 
   @override
   Widget build(BuildContext context) {

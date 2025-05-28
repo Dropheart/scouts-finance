@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-class Payments extends StatelessWidget {
-  const Payments({super.key});
+class PaymentsHome extends StatelessWidget {
+  const PaymentsHome({super.key});
 
   @override
   Widget build(BuildContext context) {
