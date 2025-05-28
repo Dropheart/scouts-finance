@@ -1,11 +1,15 @@
-name: build
+name: Build
 
 # Trigger on push to main and pr to main
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main 
+      - workflows
   pull_request:
-    branches: [ main ]
+    branches:
+      - main 
+  workflow_dispatch:
 
 
 jobs:
@@ -30,30 +34,30 @@ jobs:
       #- name: Run tests 
       #  run: flutter test
 
-android:
-  needs: build 
-  runs-on: ubuntu-latest
+  android:
+    needs: build 
+    runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v3 
-    - uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.x'
+    steps:
+      - uses: actions/checkout@v3 
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x'
 
-    - run: flutter pub get 
-    - run: flutter build apk --release
+      - run: flutter pub get 
+      - run: flutter build apk --release
 
-ios:
-  needs: build 
-  runs-on: macos-latest 
+  ios:
+    needs: build 
+    runs-on: macos-latest 
 
-  steps:
-    - uses: actions/checkout@v3 
-    - uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.x'
+    steps:
+      - uses: actions/checkout@v3 
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x'
 
-    - run: flutter pub get 
-    - run: flutter build ios --release --no-codesign 
+      - run: flutter pub get 
+      - run: flutter build ios --release --no-codesign 
 
-    # Todo: upload to TestFlight  with maierj/fastlane-action@v3.0.0
+      # Todo: upload to TestFlight  with maierj/fastlane-action@v3.0.0
