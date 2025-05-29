@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest # required for iOS building
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code 
@@ -36,7 +36,7 @@ jobs:
 
   android:
     needs: build 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v3 
