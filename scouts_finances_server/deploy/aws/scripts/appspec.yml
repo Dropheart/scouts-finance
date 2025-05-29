@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: /vendor/
+    destination: /home/ec2-user/serverpod/upload/vendor/
+  - source: /scouts_finances_server/
+    destination: /home/ec2-user/serverpod/upload/scouts_finances_server/
+hooks:
+  BeforeInstall:
+    - location: scouts_finances_server/deploy/aws/scripts/install_dependencies
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scouts_finances_server/deploy/aws/scripts/start_server
+      timeout: 300
+      runas: root
