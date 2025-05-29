@@ -11,8 +11,24 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:scouts_finances_client/src/protocol/greeting.dart' as _i3;
-import 'protocol.dart' as _i4;
+import 'package:scouts_finances_client/src/protocol/events/events.dart' as _i3;
+import 'package:scouts_finances_client/src/protocol/greeting.dart' as _i4;
+import 'protocol.dart' as _i5;
+
+/// {@category Endpoint}
+class EndpointEvent extends _i1.EndpointRef {
+  EndpointEvent(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'event';
+
+  _i2.Future<List<_i3.Event>> getEvents() =>
+      caller.callServerEndpoint<List<_i3.Event>>(
+        'event',
+        'getEvents',
+        {},
+      );
+}
 
 /// This is an example endpoint that returns a greeting message through its [hello] method.
 /// {@category Endpoint}
@@ -23,8 +39,8 @@ class EndpointGreeting extends _i1.EndpointRef {
   String get name => 'greeting';
 
   /// Returns a personalized greeting message: "Hello {name}".
-  _i2.Future<_i3.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_i3.Greeting>(
+  _i2.Future<_i4.Greeting> hello(String name) =>
+      caller.callServerEndpoint<_i4.Greeting>(
         'greeting',
         'hello',
         {'name': name},
@@ -47,7 +63,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i4.Protocol(),
+          _i5.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -57,13 +73,19 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    event = EndpointEvent(this);
     greeting = EndpointGreeting(this);
   }
+
+  late final EndpointEvent event;
 
   late final EndpointGreeting greeting;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {'greeting': greeting};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'event': event,
+        'greeting': greeting,
+      };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};
