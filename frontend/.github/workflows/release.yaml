@@ -9,7 +9,7 @@ on:
 
 jobs:
   release:
-    runs-on: self-hosted # macOS is needed for iOS builds
+    runs-on: ubuntu-latest # macOS is needed for iOS builds
 
     steps:
       - name: Checkout
