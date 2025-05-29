@@ -28,7 +28,8 @@ jobs:
 
       - name: Build iOS IPA (no signing)
         run: |
-          set -e
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          
           flutter build ipa --no-codesign
 
           cat > ios/ExportOptions.plist <<EOF
