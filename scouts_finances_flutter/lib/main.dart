@@ -106,10 +106,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colours = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: Text(pageTitles[currentPageIndex]),
+        title: Text(
+          pageTitles[currentPageIndex],
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: colours.onPrimary,
+          ),
+        ),
         centerTitle: false,
+        backgroundColor: colours.primary,
       ),
 
       bottomNavigationBar: NavigationBar(
