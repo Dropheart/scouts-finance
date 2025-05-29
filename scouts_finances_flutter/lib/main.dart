@@ -1,6 +1,10 @@
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:flutter/material.dart';
+import 'package:scouts_finances_flutter/events/home.dart';
+import 'package:scouts_finances_flutter/payments/home.dart';
+import 'package:scouts_finances_flutter/scouts/home.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
+
 
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
@@ -29,17 +33,27 @@ void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Serverpod Demo',
+      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        // This is the theme of your application.
+        //
+        // TRY THIS: Try running your application with "flutter run". You'll see
+        // the application has a purple toolbar. Then, without quitting the app,
+        // try changing the seedColor in the colorScheme below to Colors.green
+        // and then invoke "hot reload" (save your changes or press the "hot
+        // reload" button in a Flutter-supported IDE, or press "r" if you used
+        // the command line to start the app).
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Serverpod Example'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -47,111 +61,68 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
   final String title;
 
   @override
-  MyHomePageState createState() => MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage> {
-  /// Holds the last result or null if no result exists yet.
-  String? _resultMessage;
+class _MyHomePageState extends State<MyHomePage> {
+  int currentPageIndex = 0;
+  static final List<Widget> pages = [
+    EventHome(),
+    PaymentsHome(),
+    ScoutsHome(),
+  ];
+  static final List<String> pageTitles = [
+    'Events',
+    'Payments',
+    'Scouts',
+  ];
 
-  /// Holds the last error message that we've received from the server or null if no
-  /// error exists yet.
-  String? _errorMessage;
-
-  final _textEditingController = TextEditingController();
-
-  /// Calls the `hello` method of the `greeting` endpoint. Will set either the
-  /// `_resultMessage` or `_errorMessage` field, depending on if the call
-  /// is successful.
-  void _callHello() async {
-    try {
-      final result = await client.greeting.hello(_textEditingController.text);
-      setState(() {
-        _errorMessage = null;
-        _resultMessage = result.message;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = '$e';
-      });
-    }
-  }
+  static final List<NavigationDestination> destinations = [
+    const NavigationDestination(
+      icon: Icon(Icons.event),
+      label: 'Events',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.attach_money),
+      label: 'Payments',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.group),
+      label: 'Scouts',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(pageTitles[currentPageIndex]),
+        centerTitle: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: TextField(
-                controller: _textEditingController,
-                decoration: const InputDecoration(
-                  hintText: 'Enter your name',
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: ElevatedButton(
-                onPressed: _callHello,
-                child: const Text('Send to Server'),
-              ),
-            ),
-            ResultDisplay(
-              resultMessage: _resultMessage,
-              errorMessage: _errorMessage,
-            ),
-          ],
-        ),
+
+      bottomNavigationBar: NavigationBar(
+        destinations: destinations,
+        selectedIndex: currentPageIndex,
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
       ),
-    );
-  }
-}
 
-/// ResultDisplays shows the result of the call. Either the returned result from
-/// the `example.greeting` endpoint method or an error message.
-class ResultDisplay extends StatelessWidget {
-  final String? resultMessage;
-  final String? errorMessage;
-
-  const ResultDisplay({
-    super.key,
-    this.resultMessage,
-    this.errorMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    String text;
-    Color backgroundColor;
-    if (errorMessage != null) {
-      backgroundColor = Colors.red[300]!;
-      text = errorMessage!;
-    } else if (resultMessage != null) {
-      backgroundColor = Colors.green[300]!;
-      text = resultMessage!;
-    } else {
-      backgroundColor = Colors.grey[300]!;
-      text = 'No server response yet.';
-    }
-
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 50),
-      child: Container(
-        color: backgroundColor,
-        child: Center(
-          child: Text(text),
-        ),
-      ),
+      body: pages[currentPageIndex],
     );
   }
 }
