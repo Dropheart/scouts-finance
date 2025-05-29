@@ -1,0 +1,44 @@
+services:
+  # Development services
+  postgres:
+    image: postgres:16.3
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: scouts_finances
+      POSTGRES_PASSWORD: "cJPFzDuaM07TuGbyRJo2192Njm5dg6UQ"
+    volumes:
+      - scouts_finances_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "8091:6379"
+    command: redis-server --requirepass "Ms7lSOEwJ_s6NXC0RPElF5zQTnVzNZsK"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  # Test services
+  postgres_test:
+    image: postgres:16.3
+    ports:
+      - "9090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: scouts_finances_test
+      POSTGRES_PASSWORD: "iUIxMlPNtGj6_uFyjZILOsC2y7j7a-N9"
+    volumes:
+      - scouts_finances_test_data:/var/lib/postgresql/data
+
+  redis_test:
+    image: redis:6.2.6
+    ports:
+      - "9091:6379"
+    command: redis-server --requirepass "3U1MgKdeeMYdekptH4GxXxRJTsZGUZ0P"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+volumes:
+  scouts_finances_data:
+  scouts_finances_test_data:
