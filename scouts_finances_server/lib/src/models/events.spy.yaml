@@ -1,0 +1,6 @@
+class: Event
+table: events
+fields:
+  name: String
+  date: DateTime
+  cost: double

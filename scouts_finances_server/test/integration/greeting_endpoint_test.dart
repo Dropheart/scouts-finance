@@ -3,6 +3,10 @@ import 'package:test/test.dart';
 // Import the generated test helper file, it contains everything you need.
 import 'test_tools/serverpod_test_tools.dart';
 
+// THIS IS AN EXAMPLE TEST FILE - FILL IN WITH ACTUAL TESTS LATER
+
+/*
+
 void main() {
   // This is an example test that uses the `withServerpod` test helper.
   // `withServerpod` enables you to call your endpoints directly from the test like regular functions.
@@ -20,3 +24,4 @@ void main() {
     });
   });
 }
+*/

@@ -5,7 +5,6 @@ import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/scouts/home.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
-
 /// Sets up a global client object that can be used to talk to the server from
 /// anywhere in our app. The client is generated from your server code
 /// and is set up to connect to a Serverpod running on a local server on
@@ -32,7 +31,6 @@ void main() {
 
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -104,14 +102,38 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   ];
 
+  Future<void> switchScoutGroup() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Switch Scout Group'),
+          content: const Text('This feature is not implemented yet.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(pageTitles[currentPageIndex]),
-        centerTitle: false,
-      ),
-
+          title: Text(pageTitles[currentPageIndex]),
+          centerTitle: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.switch_account),
+              onPressed: switchScoutGroup
+            ),
+          ]),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,
         selectedIndex: currentPageIndex,
@@ -121,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
       ),
-
       body: pages[currentPageIndex],
     );
   }

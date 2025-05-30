@@ -1,0 +1,9 @@
+class: Payment
+table: payments
+fields:
+  amount: double
+  date: DateTime
+  reference: String
+  method: PaymentMethod
+  bankAccount: BankAccount?, relation(optional)
+

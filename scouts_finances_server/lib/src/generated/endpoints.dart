@@ -10,29 +10,61 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../greeting_endpoint.dart' as _i2;
+import '../admin.dart' as _i2;
+import '../events.dart' as _i3;
+import 'package:scouts_finances_server/src/generated/protocol.dart' as _i4;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'greeting': _i2.GreetingEndpoint()
+      'admin': _i2.AdminEndpoint()
         ..initialize(
           server,
-          'greeting',
+          'admin',
           null,
-        )
+        ),
+      'event': _i3.EventEndpoint()
+        ..initialize(
+          server,
+          'event',
+          null,
+        ),
     };
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
+    connectors['admin'] = _i1.EndpointConnector(
+      name: 'admin',
+      endpoint: endpoints['admin']!,
       methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
+        'resetDb': _i1.MethodConnector(
+          name: 'resetDb',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).resetDb(session),
+        )
+      },
+    );
+    connectors['event'] = _i1.EndpointConnector(
+      name: 'event',
+      endpoint: endpoints['event']!,
+      methodConnectors: {
+        'getEvents': _i1.MethodConnector(
+          name: 'getEvents',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint).getEvents(session),
+        ),
+        'getEventById': _i1.MethodConnector(
+          name: 'getEventById',
           params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
               nullable: false,
             )
           },
@@ -40,11 +72,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['greeting'] as _i2.GreetingEndpoint).hello(
-            session,
-            params['name'],
-          ),
-        )
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .getEventById(
+                    session,
+                    params['id'],
+                  )
+                  .then((record) => _i4.mapRecordToJson(record)),
+        ),
       },
     );
   }
