@@ -23,7 +23,8 @@ class _EventHomeState extends State<EventHome> {
       });
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load events: $e';
+        errorMessage =
+            'Failed to load events. Are you connected to the internet?';
         loading = false;
       });
     }
@@ -46,20 +47,20 @@ class _EventHomeState extends State<EventHome> {
 
     List<Card> eventCards = events?.map((event) {
           return Card(
-        child: ListTile(
+            child: ListTile(
               title: Text(event.name),
-          subtitle: Row(
-            children: [
+              subtitle: Row(
+                children: [
                   Text('${event.id}/YY Paid'),
-              const Spacer(),
+                  const Spacer(),
                   Text('${event.date.day}/${event.date.month}'),
-            ],
-          ),
-          onTap: () {
-            // Navigate to event details
-          },
-          trailing: const Icon(Icons.arrow_forward),
-        ),
+                ],
+              ),
+              onTap: () {
+                // Navigate to event details
+              },
+              trailing: const Icon(Icons.arrow_forward),
+            ),
           );
         }).toList() ??
         [];
