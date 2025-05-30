@@ -84,6 +84,7 @@ services:
       ]
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=serverpod-network"
       - "traefik.http.routers.api.rule=Host(`${SERVERPOD_API_SERVER_PUBLIC_HOST}`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.service=api-service"
