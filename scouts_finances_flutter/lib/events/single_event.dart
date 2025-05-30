@@ -84,7 +84,7 @@ class _SingleEventState extends State<SingleEvent> {
       ),
       body: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
                     children: [
             Row(children: [
