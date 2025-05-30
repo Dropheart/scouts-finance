@@ -10,7 +10,7 @@ class EventEndpoint extends Endpoint {
 
   Future<EventDetails> getEventById(Session session, int id) async {
     final eventDetails = await Event.db.findById(session, id);
-    
+
     if (eventDetails == null) {
       throw ArgumentError('Event with id $id not found');
     }
@@ -18,9 +18,7 @@ class EventEndpoint extends Endpoint {
     final eventRegistration = await EventRegistration.db.find(session,
         where: (t) => t.eventId.equals(id),
         include: EventRegistration.include(
-            child: Child.include(),
-            payments: Payment.includeList()
-          ));
+            child: Child.include(), payments: Payment.includeList()));
 
     return (eventDetails, eventRegistration);
   }

@@ -56,21 +56,22 @@ class _SingleEventState extends State<SingleEvent> {
           childId: e.child!.id,
           name: "${e.child!.firstName} ${e.child!.lastName}",
           paid: e.payments!
-              .fold(0.0, (previous, payment) => previous + payment.amount)
+              .fold(0.0, (previous, payment) => previous + payment.amount),
+          payments: e.payments!
+              .map((p) => "${p.amount.toStringAsFixed(2)} (${p.date})")
+              .join(', '),
         ));
 
     final childrenTable = DataTable(
         columns: [
-          DataColumn(label: Text('Child ID')),
           DataColumn(label: Text('Name')),
           DataColumn(label: Text('Paid')),
         ],
         rows: children
             .map((e) => DataRow(
                     cells: [
-                      DataCell(Text('${e.childId}')),
                       DataCell(Text(e.name)),
-                      DataCell(Text(e.paid.toStringAsFixed(2))),
+                      DataCell(Text("£${e.paid.toStringAsFixed(2)}")),
                     ],
                     color: e.paid < event.cost
                         ? WidgetStateProperty.all(Colors.red[100])
@@ -93,7 +94,7 @@ class _SingleEventState extends State<SingleEvent> {
           Row(children: [
             Text('Location: TBD'),
             Spacer(),
-            Text('Price: ${event.cost.toStringAsFixed(2)}'),
+            Text('Price: £${event.cost.toStringAsFixed(2)}'),
           ]),
           const SizedBox(height: 20),
           const Text('Registrations:'),

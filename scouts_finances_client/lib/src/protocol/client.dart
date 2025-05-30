@@ -17,6 +17,20 @@ import 'package:scouts_finances_client/src/protocol/event_registration.dart'
 import 'protocol.dart' as _i5;
 
 /// {@category Endpoint}
+class EndpointAdmin extends _i1.EndpointRef {
+  EndpointAdmin(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'admin';
+
+  _i2.Future<void> resetDb() => caller.callServerEndpoint<void>(
+        'admin',
+        'resetDb',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointEvent extends _i1.EndpointRef {
   EndpointEvent(_i1.EndpointCaller caller) : super(caller);
 
@@ -64,13 +78,19 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    admin = EndpointAdmin(this);
     event = EndpointEvent(this);
   }
+
+  late final EndpointAdmin admin;
 
   late final EndpointEvent event;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {'event': event};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'admin': admin,
+        'event': event,
+      };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};
