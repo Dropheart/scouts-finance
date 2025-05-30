@@ -63,7 +63,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
           onTap: () {
             // Navigate to payment details
           },
-          trailing: const Icon(Icons.arrow_forward),
+          trailing: const Icon(Icons.edit_square),
         ),
       );
     }).toList();
