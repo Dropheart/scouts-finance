@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/payments/add.dart';
 
 class PaymentsHome extends StatefulWidget {
   const PaymentsHome({super.key});
@@ -147,16 +148,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Add Payment'),
-                      content: const Text('Feature not implemented yet!'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('OK :('),
-                        ),
-                      ],
-                    );
+                    return AddPaymentDialog();
                   },
                 );
               },
