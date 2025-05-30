@@ -14,7 +14,8 @@ import 'dart:async' as _i2;
 import 'package:scouts_finances_client/src/protocol/events.dart' as _i3;
 import 'package:scouts_finances_client/src/protocol/event_registration.dart'
     as _i4;
-import 'protocol.dart' as _i5;
+import 'package:scouts_finances_client/src/protocol/payment.dart' as _i5;
+import 'protocol.dart' as _i6;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -52,6 +53,34 @@ class EndpointEvent extends _i1.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointPayment extends _i1.EndpointRef {
+  EndpointPayment(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'payment';
+
+  _i2.Future<List<_i5.Payment>> getPayments() =>
+      caller.callServerEndpoint<List<_i5.Payment>>(
+        'payment',
+        'getPayments',
+        {},
+      );
+
+  _i2.Future<List<_i5.Payment>> insertPayment(
+    double amount,
+    String payee,
+  ) =>
+      caller.callServerEndpoint<List<_i5.Payment>>(
+        'payment',
+        'insertPayment',
+        {
+          'amount': amount,
+          'payee': payee,
+        },
+      );
+}
+
 class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
@@ -68,7 +97,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i5.Protocol(),
+          _i6.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -80,16 +109,20 @@ class Client extends _i1.ServerpodClientShared {
         ) {
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
+    payment = EndpointPayment(this);
   }
 
   late final EndpointAdmin admin;
 
   late final EndpointEvent event;
 
+  late final EndpointPayment payment;
+
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'admin': admin,
         'event': event,
+        'payment': payment,
       };
 
   @override

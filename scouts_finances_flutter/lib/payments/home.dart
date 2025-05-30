@@ -11,10 +11,53 @@ class PaymentsHome extends StatelessWidget {
       children: <Widget>[
       const Text('Action Required - 1',
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      const Placeholder(),
+      Card(
+          child: ListTile(
+            title: const Text('£2.49'),
+            subtitle: const Row(children: [
+              Text('Unknown Payee'),
+              Spacer(),
+              Text('01/01/2025'),
+            ],),
+            onTap: () {
+              // Navigate to event details
+            },
+            trailing: const Icon(Icons.arrow_forward),
+          ),
+        ),
+      
       const Text('Known Payees - 2',
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      const Placeholder(),
+      
+      Card(
+          child: ListTile(
+            title: const Text('£2.49'),
+            subtitle: const Row(children: [
+              Text('Nishant Aanjaney Jalan'),
+              Spacer(),
+              Text('01/01/2025'),
+            ],),
+            onTap: () {
+              // Navigate to event details
+            },
+            trailing: const Icon(Icons.arrow_forward),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            title: const Text('£3.14'),
+            subtitle: const Row(children: [
+              Text('Nishant Aanjaney Jalan'),
+              Spacer(),
+              Text('07/05/2025'),
+            ],),
+            onTap: () {
+              // Navigate to event details
+            },
+            trailing: const Icon(Icons.arrow_forward),
+          ),
+        ),
+
       const SizedBox(height: 128.0),
       ],
     );

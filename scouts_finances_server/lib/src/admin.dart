@@ -81,12 +81,14 @@ class AdminEndpoint extends Endpoint {
           ? [
               Payment(
                 reference: "Hope my child enjoys :)",
+                payee: "Nishant Aanjaney Jalan",
                 method: PaymentMethod.cash,
                 amount: amount / 2,
                 date: DateTime.now().subtract(Duration(days: 30)),
               ),
               Payment(
                 reference: "Hope my child enjoys :)",
+                payee: "Nishant Aanjaney Jalan",
                 method: PaymentMethod.cash,
                 amount: amount / 2,
                 date: DateTime.now(),
@@ -95,6 +97,7 @@ class AdminEndpoint extends Endpoint {
           : [
               Payment(
                 reference: "Hope my child enjoys :)",
+                payee: "Nishant Aanjaney Jalan",
                 method: PaymentMethod.cash,
                 amount: amount,
                 date: DateTime.now(),
