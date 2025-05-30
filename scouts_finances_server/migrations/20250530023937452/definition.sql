@@ -1,12 +1,63 @@
 BEGIN;
 
 --
+-- Class BankAccount as table bank_accounts
+--
+CREATE TABLE "bank_accounts" (
+    "id" bigserial PRIMARY KEY,
+    "accountNumber" text NOT NULL,
+    "sortCode" text NOT NULL
+);
+
+--
+-- Class Child as table children
+--
+CREATE TABLE "children" (
+    "id" bigserial PRIMARY KEY,
+    "firstName" text NOT NULL,
+    "lastName" text NOT NULL
+);
+
+--
+-- Class EventRegistration as table event_registrations
+--
+CREATE TABLE "event_registrations" (
+    "id" bigserial PRIMARY KEY,
+    "eventId" bigint NOT NULL,
+    "childId" bigint NOT NULL
+);
+
+-- Indexes
+CREATE UNIQUE INDEX "registration_index_idx" ON "event_registrations" USING btree ("eventId", "childId");
+
+--
 -- Class Event as table events
 --
 CREATE TABLE "events" (
     "id" bigserial PRIMARY KEY,
     "name" text NOT NULL,
-    "date" timestamp without time zone NOT NULL
+    "date" timestamp without time zone NOT NULL,
+    "cost" double precision NOT NULL
+);
+
+INSERT INTO "events" ("name", "date", "cost") VALUES
+    ('Event 1', '2023-01-01 10:00:00', 10.00),
+    ('Event 2', '2023-02-01 11:00:00', 15.50),
+    ('Event 3', '2023-03-01 12:00:00', 20.75),
+    ('Event 4', '2023-04-01 13:00:00', 25.25),
+    ('Event 5', '2023-05-01 14:00:00', 30.00);
+
+--
+-- Class Payment as table payments
+--
+CREATE TABLE "payments" (
+    "id" bigserial PRIMARY KEY,
+    "amount" double precision NOT NULL,
+    "date" timestamp without time zone NOT NULL,
+    "reference" text NOT NULL,
+    "method" text NOT NULL,
+    "bankAccountId" bigint,
+    "_eventRegistrationsPaymentsEventRegistrationsId" bigint
 );
 
 --
@@ -216,6 +267,38 @@ CREATE INDEX "serverpod_session_log_touched_idx" ON "serverpod_session_log" USIN
 CREATE INDEX "serverpod_session_log_isopen_idx" ON "serverpod_session_log" USING btree ("isOpen");
 
 --
+-- Foreign relations for "event_registrations" table
+--
+ALTER TABLE ONLY "event_registrations"
+    ADD CONSTRAINT "event_registrations_fk_0"
+    FOREIGN KEY("eventId")
+    REFERENCES "events"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "event_registrations"
+    ADD CONSTRAINT "event_registrations_fk_1"
+    FOREIGN KEY("childId")
+    REFERENCES "children"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- Foreign relations for "payments" table
+--
+ALTER TABLE ONLY "payments"
+    ADD CONSTRAINT "payments_fk_0"
+    FOREIGN KEY("bankAccountId")
+    REFERENCES "bank_accounts"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "payments"
+    ADD CONSTRAINT "payments_fk_1"
+    FOREIGN KEY("_eventRegistrationsPaymentsEventRegistrationsId")
+    REFERENCES "event_registrations"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
 -- Foreign relations for "serverpod_log" table
 --
 ALTER TABLE ONLY "serverpod_log"
@@ -250,9 +333,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR scouts_finances
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('scouts_finances', '20250529191909577', now())
+    VALUES ('scouts_finances', '20250530023937452', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20250529191909577', "timestamp" = now();
+    DO UPDATE SET "version" = '20250530023937452', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

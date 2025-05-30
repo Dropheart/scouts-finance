@@ -1,0 +1,72 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "events"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "events",
+        "dartName": "Event",
+        "module": "scouts_finances",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('events_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "date",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "cost",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "events_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"events\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "events",
+      "columns": [
+        "cost"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

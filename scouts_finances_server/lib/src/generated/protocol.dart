@@ -230,6 +230,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'DateTime',
         ),
+        _i2.ColumnDefinition(
+          name: 'cost',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
       ],
       foreignKeys: [],
       indexes: [
