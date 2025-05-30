@@ -86,8 +86,10 @@ class _EventHomeState extends State<EventHome> {
       );
     }).toList();
 
-    Center body = Center(child: ListView(children: [
-      ...eventCards,ExpansionTile(title: const Text('Past Events'), children: [
+    Center body = Center(
+        child: ListView(children: [
+      ...eventCards,
+      ExpansionTile(title: const Text('Past Events'), children: [
         Card(
           child: ListTile(
             title: const Text('Winter Camp'),
@@ -104,7 +106,8 @@ class _EventHomeState extends State<EventHome> {
             trailing: const Icon(Icons.arrow_forward),
           ),
         ),
-      ]),]));
+      ]),
+    ]));
 
     return Scaffold(
       body: body,

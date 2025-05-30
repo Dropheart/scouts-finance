@@ -4,10 +4,11 @@ import 'package:scouts_finances_flutter/main.dart';
 class ScoutsHome extends StatelessWidget {
   ScoutsHome({super.key});
 
-  final adminButton =
-      ElevatedButton(onPressed: () async {
+  final adminButton = ElevatedButton(
+      onPressed: () async {
         await client.admin.resetDb();
-      }, child: const Text('TBD'));
+      },
+      child: const Text('TBD'));
 
   @override
   Widget build(BuildContext context) {
