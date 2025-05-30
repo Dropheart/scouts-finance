@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 
 class EventHome extends StatefulWidget {
@@ -10,7 +11,7 @@ class EventHome extends StatefulWidget {
 }
 
 class _EventHomeState extends State<EventHome> {
-  List<Event>? events;
+  late List<Event> events;
   String? errorMessage;
   bool loading = true;
 
@@ -30,6 +31,26 @@ class _EventHomeState extends State<EventHome> {
     }
   }
 
+  Future<void> addEvent() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Event'),
+          content: const Text('This feature is not implemented yet.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -45,25 +66,25 @@ class _EventHomeState extends State<EventHome> {
       return Center(child: Text(errorMessage!));
     }
 
-    List<Card> eventCards = events?.map((event) {
-          return Card(
-            child: ListTile(
-              title: Text(event.name),
-              subtitle: Row(
-                children: [
-                  Text('${event.id}/YY Paid'),
-                  const Spacer(),
-                  Text('${event.date.day}/${event.date.month}'),
-                ],
-              ),
-              onTap: () {
-                // Navigate to event details
-              },
-              trailing: const Icon(Icons.arrow_forward),
-            ),
-          );
-        }).toList() ??
-        [];
+    List<Card> eventCards = events.map((event) {
+      return Card(
+        child: ListTile(
+          title: Text(event.name),
+          subtitle: Row(
+            children: [
+              Text('${event.id}/YY Paid'),
+              const Spacer(),
+              Text('${event.date.day}/${event.date.month}'),
+            ],
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SingleEvent(eventId: event.id!)));
+          },
+          trailing: const Icon(Icons.arrow_forward),
+        ),
+      );
+    }).toList();
 
     Center body = Center(child: ListView(children: eventCards));
 
@@ -72,7 +93,7 @@ class _EventHomeState extends State<EventHome> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // Navigate to create event page
+          addEvent();
         },
       ),
     );
