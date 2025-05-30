@@ -3,12 +3,6 @@ import 'package:serverpod/serverpod.dart';
 
 class EventEndpoint extends Endpoint {
   Future<List<Event>> getEvents(Session session) async {
-    return [
-      Event(
-        id: 79,
-        date: DateTime.now(),
-        name: 'Sample Event',
-      )
-    ];
+    return Event.db.find(session);
   }
 }

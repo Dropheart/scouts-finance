@@ -13,26 +13,29 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
 abstract class Event implements _i1.SerializableModel {
   Event._({
-    required this.id,
+    this.id,
     required this.name,
     required this.date,
   });
 
   factory Event({
-    required int id,
+    int? id,
     required String name,
     required DateTime date,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
     return Event(
-      id: jsonSerialization['id'] as int,
+      id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
     );
   }
 
-  int id;
+  /// The database id, set if the object has been inserted into the
+  /// database or if it has been fetched from the database. Otherwise,
+  /// the id will be null.
+  int? id;
 
   String name;
 
@@ -49,7 +52,7 @@ abstract class Event implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      if (id != null) 'id': id,
       'name': name,
       'date': date.toJson(),
     };
@@ -61,9 +64,11 @@ abstract class Event implements _i1.SerializableModel {
   }
 }
 
+class _Undefined {}
+
 class _EventImpl extends Event {
   _EventImpl({
-    required int id,
+    int? id,
     required String name,
     required DateTime date,
   }) : super._(
@@ -77,12 +82,12 @@ class _EventImpl extends Event {
   @_i1.useResult
   @override
   Event copyWith({
-    int? id,
+    Object? id = _Undefined,
     String? name,
     DateTime? date,
   }) {
     return Event(
-      id: id ?? this.id,
+      id: id is int? ? id : this.id,
       name: name ?? this.name,
       date: date ?? this.date,
     );

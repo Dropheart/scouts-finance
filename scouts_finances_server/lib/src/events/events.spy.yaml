@@ -1,5 +1,5 @@
 class: Event
-fields: 
-  id: int
+table: events
+fields:
   name: String
   date: DateTime
