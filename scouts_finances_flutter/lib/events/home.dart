@@ -1,7 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/events/single_event.dart';
+import 'package:scouts_finances_flutter/main.dart';
 
-class EventHome extends StatelessWidget {
+class EventHome extends StatefulWidget {
   const EventHome({super.key});
+
+  @override
+  State<EventHome> createState() => _EventHomeState();
+}
+
+class _EventHomeState extends State<EventHome> {
+  late List<Event> events;
+  String? errorMessage;
+  bool loading = true;
+
+  void _getEvents() async {
+    try {
+      final result = await client.event.getEvents();
+      setState(() {
+        events = result;
+        loading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage =
+            'Failed to load events. Are you connected to the internet?';
+        loading = false;
+      });
+    }
+  }
+
+  Future<void> addEvent() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Event'),
+          content: const Text('This feature is not implemented yet.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getEvents();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +78,8 @@ class EventHome extends StatelessWidget {
         ),
       ),
 
-      Card(
+    List<Card> eventCards = events.map((event) {
+      return Card(
         child: ListTile(
           title: const Text('August Camp'),
           subtitle: Row(
@@ -35,7 +90,8 @@ class EventHome extends StatelessWidget {
             ],
           ),
           onTap: () {
-            // Navigate to event details
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SingleEvent(eventId: event.id!)));
           },
           trailing: const Icon(Icons.arrow_forward),
         ),
@@ -61,14 +117,14 @@ class EventHome extends StatelessWidget {
       ]),
     ];
 
-    Center body = Center(child: ListView(children: events));
+    Center body = Center(child: ListView(children: eventCards));
 
     return Scaffold(
       body: body,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // Navigate to create event page
+          addEvent();
         },
       ),
     );

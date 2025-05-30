@@ -1,0 +1,5 @@
+admin:
+  - resetDb:
+event:
+  - getEvents:
+  - getEventById:

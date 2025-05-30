@@ -1,0 +1,10 @@
+class: EventRegistration
+table: event_registrations
+fields:
+  event: Event?, relation
+  child: Child?, relation,
+  payments: List<Payment>?, relation
+indexes:
+  registration_index_idx:
+    fields: eventId, childId
+    unique: true
