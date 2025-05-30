@@ -45,6 +45,9 @@ class _SingleEventState extends State<SingleEvent> {
 
   @override
   Widget build(BuildContext context) {
+    final colourScheme = Theme.of(context).colorScheme;
+    final colStyle = TextStyle(color: colourScheme.onPrimaryContainer, fontWeight: FontWeight.bold);
+
     if (loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -64,8 +67,8 @@ class _SingleEventState extends State<SingleEvent> {
 
     final childrenTable = DataTable(
         columns: [
-          DataColumn(label: Text('Name')),
-          DataColumn(label: Text('Paid')),
+          DataColumn(label: Text('Name', style: colStyle), columnWidth: const FixedColumnWidth(200)),
+          DataColumn(label: Text('Paid', style: colStyle,), columnWidth: const FixedColumnWidth(150)),
         ],
         rows: children
             .map((e) => DataRow(
@@ -74,34 +77,47 @@ class _SingleEventState extends State<SingleEvent> {
                       DataCell(Text("£${e.paid.toStringAsFixed(2)}")),
                     ],
                     color: e.paid < event.cost
-                        ? WidgetStateProperty.all(Colors.red[100])
-                        : WidgetStateProperty.all(Colors.green[100])))
-            .toList());
+                        ? WidgetStateProperty.all(colourScheme.errorContainer)
+                        : WidgetStateProperty.all(Colors.green.shade100)))
+            .toList(),
+            decoration: BoxDecoration(
+              border: Border.all(color: colourScheme.secondary, width: 1),
+              borderRadius: BorderRadius.circular(4),
+              color: colourScheme.secondaryContainer,
+            ),
+            border: TableBorder.all(
+              color: colourScheme.onSecondaryContainer,
+              width: 1,
+            ),
+            );
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Event ${widget.eventId} Details'),
       ),
       body: Center(
-          child: Column(
-        children: [
-          Row(children: [
-            Text('Event: ${event.name}'),
-            Spacer(),
-            Text('Date: ${event.date}'),
-          ]),
-          const SizedBox(height: 10),
-          Row(children: [
-            Text('Location: TBD'),
-            Spacer(),
-            Text('Price: £${event.cost.toStringAsFixed(2)}'),
-          ]),
-          const SizedBox(height: 20),
-          const Text('Registrations:'),
-          const SizedBox(height: 10),
-          childrenTable
-        ],
-      )),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+                    children: [
+            Row(children: [
+              Text('Event: ${event.name}'),
+              Spacer(),
+              Text('Date: ${event.date}'),
+            ]),
+            const SizedBox(height: 10),
+            Row(children: [
+              Text('Location: TBD'),
+              Spacer(),
+              Text('Price: £${event.cost.toStringAsFixed(2)}'),
+            ]),
+            const SizedBox(height: 20),
+            const Text('Registrations:'),
+            const SizedBox(height: 10),
+            childrenTable
+                    ],
+                  ),
+          )),
     );
   }
 }
