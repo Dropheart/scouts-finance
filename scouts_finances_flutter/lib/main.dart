@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         // and then invoke "hot reload" (save your changes or press the "hot
         // reload" button in a Flutter-supported IDE, or press "r" if you used
         // the command line to start the app).
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -124,16 +124,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colours = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-          title: Text(pageTitles[currentPageIndex]),
-          centerTitle: false,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.switch_account),
-              onPressed: switchScoutGroup
-            ),
-          ]),
+        title: Text(
+          pageTitles[currentPageIndex],
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: colours.onPrimary,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: colours.primary,
+      ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,
         selectedIndex: currentPageIndex,

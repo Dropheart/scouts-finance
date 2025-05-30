@@ -59,22 +59,34 @@ class _EventHomeState extends State<EventHome> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (errorMessage != null) {
-      return Center(child: Text(errorMessage!));
-    }
+    // This will become a map over data
+    List<Widget> events = [
+      Card(
+        child: ListTile(
+          title: const Text('Event Name'),
+          subtitle: Row(
+            children: [
+              const Text('15/27 paid'),
+              const Spacer(),
+              const Text('DD/MM'),
+            ],
+          ),
+          onTap: () {
+            // Navigate to event details
+          },
+          trailing: const Icon(Icons.arrow_forward),
+        ),
+      ),
 
     List<Card> eventCards = events.map((event) {
       return Card(
         child: ListTile(
-          title: Text(event.name),
+          title: const Text('August Camp'),
           subtitle: Row(
             children: [
-              Text('${event.id}/YY Paid'),
+              const Text('4/15 paid'),
               const Spacer(),
-              Text('${event.date.day}/${event.date.month}'),
+              const Text('20/06/2025'),
             ],
           ),
           onTap: () {
@@ -83,8 +95,27 @@ class _EventHomeState extends State<EventHome> {
           },
           trailing: const Icon(Icons.arrow_forward),
         ),
-      );
-    }).toList();
+      ),
+
+      ExpansionTile(title: const Text('Past Events'), children: [
+        Card(
+          child: ListTile(
+            title: const Text('Winter Camp'),
+            subtitle: Row(
+              children: [
+                const Text('15/20 paid'),
+                const Spacer(),
+                const Text('01/01/2025'),
+              ],
+            ),
+            onTap: () {
+              // Navigate to event details
+            },
+            trailing: const Icon(Icons.arrow_forward),
+          ),
+        ),
+      ]),
+    ];
 
     Center body = Center(child: ListView(children: eventCards));
 
