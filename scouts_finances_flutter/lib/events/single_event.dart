@@ -83,25 +83,28 @@ class _SingleEventState extends State<SingleEvent> {
         title: Text('Event ${widget.eventId} Details'),
       ),
       body: Center(
-          child: Column(
-        children: [
-          Row(children: [
-            Text('Event: ${event.name}'),
-            Spacer(),
-            Text('Date: ${event.date}'),
-          ]),
-          const SizedBox(height: 10),
-          Row(children: [
-            Text('Location: TBD'),
-            Spacer(),
-            Text('Price: £${event.cost.toStringAsFixed(2)}'),
-          ]),
-          const SizedBox(height: 20),
-          const Text('Registrations:'),
-          const SizedBox(height: 10),
-          childrenTable
-        ],
-      )),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: Column(
+                    children: [
+            Row(children: [
+              Text('Event: ${event.name}'),
+              Spacer(),
+              Text('Date: ${event.date}'),
+            ]),
+            const SizedBox(height: 10),
+            Row(children: [
+              Text('Location: TBD'),
+              Spacer(),
+              Text('Price: £${event.cost.toStringAsFixed(2)}'),
+            ]),
+            const SizedBox(height: 20),
+            const Text('Registrations:'),
+            const SizedBox(height: 10),
+            childrenTable
+                    ],
+                  ),
+          )),
     );
   }
 }
