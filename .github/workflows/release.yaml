@@ -10,6 +10,9 @@ on:
 jobs:
   release:
     runs-on: macos-latest # macOS is needed for iOS builds
+    defaults:
+      run:
+        working-directory: ./scouts_finances_flutter
 
     steps:
       - name: Checkout
