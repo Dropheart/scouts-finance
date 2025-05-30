@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/main.dart';
 
 class AddPaymentDialog extends StatefulWidget {
   const AddPaymentDialog({super.key});
@@ -12,6 +14,7 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _payeeController = TextEditingController();
   DateTime? _selectedDate;
+  PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
 
   @override
   void dispose() {
@@ -37,6 +40,11 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      client.payment.insertPayment(
+        double.parse(_amountController.text),
+        _payeeController.text,
+        _selectedDate,
+      );
       Navigator.of(context).pop({
         'amount': double.parse(_amountController.text),
         'description': _payeeController.text,
@@ -92,6 +100,24 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
                   ),
                 ],
               ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<PaymentMethod>(
+              value: _selectedPaymentMethod,
+              decoration: const InputDecoration(labelText: 'Payment Method'),
+              items: PaymentMethod.values.map((method) {
+                return DropdownMenuItem(
+                  value: method,
+                  child: Text(method.name),
+                );
+              }).toList(),
+              onChanged: (method) {
+                setState(() {
+                  _selectedPaymentMethod = method;
+                });
+              },
+              validator: (value) =>
+                  value == null ? 'Select a payment method' : null,
+            ),
             ],
           ),
         ),

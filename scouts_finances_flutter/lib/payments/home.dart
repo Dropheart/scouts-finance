@@ -16,7 +16,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   bool loading = true;
 
   void _getEvents() async {
-    try {
+    try { 
       final result = await client.payment.getPayments();
       setState(() {
         payments = result;
@@ -144,13 +144,15 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             FloatingActionButton(
               heroTag: 'fab_right',
               child: const Icon(Icons.add),
-              onPressed: () {
+                onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AddPaymentDialog();
+                  return AddPaymentDialog();
                   },
-                );
+                ).then((_) {
+                  _getEvents();
+                });
               },
             ),
           ],

@@ -280,6 +280,7 @@ class _PaymentEndpoint {
     _i1.TestSessionBuilder sessionBuilder,
     double amount,
     String payee,
+    DateTime? date,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -295,6 +296,7 @@ class _PaymentEndpoint {
           parameters: _i1.testObjectToJson({
             'amount': amount,
             'payee': payee,
+            'date': date,
           }),
           serializationManager: _serializationManager,
         );

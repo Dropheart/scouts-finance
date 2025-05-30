@@ -70,6 +70,7 @@ class EndpointPayment extends _i1.EndpointRef {
   _i2.Future<List<_i5.Payment>> insertPayment(
     double amount,
     String payee,
+    DateTime? date,
   ) =>
       caller.callServerEndpoint<List<_i5.Payment>>(
         'payment',
@@ -77,6 +78,7 @@ class EndpointPayment extends _i1.EndpointRef {
         {
           'amount': amount,
           'payee': payee,
+          'date': date,
         },
       );
 }

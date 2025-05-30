@@ -115,6 +115,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'date': _i1.ParameterDescription(
+              name: 'date',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -124,6 +129,7 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             params['amount'],
             params['payee'],
+            params['date'],
           ),
         ),
       },
