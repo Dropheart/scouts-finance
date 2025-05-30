@@ -59,34 +59,22 @@ class _EventHomeState extends State<EventHome> {
 
   @override
   Widget build(BuildContext context) {
-    // This will become a map over data
-    List<Widget> events = [
-      Card(
-        child: ListTile(
-          title: const Text('Event Name'),
-          subtitle: Row(
-            children: [
-              const Text('15/27 paid'),
-              const Spacer(),
-              const Text('DD/MM'),
-            ],
-          ),
-          onTap: () {
-            // Navigate to event details
-          },
-          trailing: const Icon(Icons.arrow_forward),
-        ),
-      ),
+    if (loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (errorMessage != null) {
+      return Center(child: Text(errorMessage!));
+    }
 
     List<Card> eventCards = events.map((event) {
       return Card(
         child: ListTile(
-          title: const Text('August Camp'),
+          title: Text(event.name),
           subtitle: Row(
             children: [
-              const Text('4/15 paid'),
+              Text('${event.id}/YY Paid'),
               const Spacer(),
-              const Text('20/06/2025'),
+              Text('${event.date.day}/${event.date.month}'),
             ],
           ),
           onTap: () {
@@ -95,9 +83,11 @@ class _EventHomeState extends State<EventHome> {
           },
           trailing: const Icon(Icons.arrow_forward),
         ),
-      ),
+      );
+    }).toList();
 
-      ExpansionTile(title: const Text('Past Events'), children: [
+    Center body = Center(child: ListView(children: [
+      ...eventCards,ExpansionTile(title: const Text('Past Events'), children: [
         Card(
           child: ListTile(
             title: const Text('Winter Camp'),
@@ -114,10 +104,7 @@ class _EventHomeState extends State<EventHome> {
             trailing: const Icon(Icons.arrow_forward),
           ),
         ),
-      ]),
-    ];
-
-    Center body = Center(child: ListView(children: eventCards));
+      ]),]));
 
     return Scaffold(
       body: body,
