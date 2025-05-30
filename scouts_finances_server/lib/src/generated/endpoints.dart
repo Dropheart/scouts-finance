@@ -10,8 +10,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../events/events_endpoint.dart' as _i2;
-import '../greeting_endpoint.dart' as _i3;
+import '../events.dart' as _i2;
+import 'package:scouts_finances_server/src/generated/protocol.dart' as _i3;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -22,13 +22,7 @@ class Endpoints extends _i1.EndpointDispatch {
           server,
           'event',
           null,
-        ),
-      'greeting': _i3.GreetingEndpoint()
-        ..initialize(
-          server,
-          'greeting',
-          null,
-        ),
+        )
     };
     connectors['event'] = _i1.EndpointConnector(
       name: 'event',
@@ -42,19 +36,13 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['event'] as _i2.EventEndpoint).getEvents(session),
-        )
-      },
-    );
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
-      methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
+        ),
+        'getEventById': _i1.MethodConnector(
+          name: 'getEventById',
           params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
               nullable: false,
             )
           },
@@ -62,11 +50,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['greeting'] as _i3.GreetingEndpoint).hello(
-            session,
-            params['name'],
-          ),
-        )
+              (endpoints['event'] as _i2.EventEndpoint)
+                  .getEventById(
+                    session,
+                    params['id'],
+                  )
+                  .then((record) => _i3.mapRecordToJson(record)),
+        ),
       },
     );
   }
