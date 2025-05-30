@@ -13,7 +13,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../admin.dart' as _i2;
 import '../events.dart' as _i3;
 import '../payments.dart' as _i4;
-import 'package:scouts_finances_server/src/generated/protocol.dart' as _i5;
+import '../scouts.dart' as _i5;
+import 'package:scouts_finances_server/src/generated/protocol.dart' as _i6;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -35,6 +36,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'payment',
+          null,
+        ),
+      'scouts': _i5.ScoutsEndpoint()
+        ..initialize(
+          server,
+          'scouts',
           null,
         ),
     };
@@ -84,7 +91,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['id'],
                   )
-                  .then((record) => _i5.mapRecordToJson(record)),
+                  .then((record) => _i6.mapRecordToJson(record)),
         ),
       },
     );
@@ -132,6 +139,21 @@ class Endpoints extends _i1.EndpointDispatch {
             params['date'],
           ),
         ),
+      },
+    );
+    connectors['scouts'] = _i1.EndpointConnector(
+      name: 'scouts',
+      endpoint: endpoints['scouts']!,
+      methodConnectors: {
+        'getChildren': _i1.MethodConnector(
+          name: 'getChildren',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['scouts'] as _i5.ScoutsEndpoint).getChildren(session),
+        )
       },
     );
   }

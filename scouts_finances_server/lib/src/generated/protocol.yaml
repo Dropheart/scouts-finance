@@ -6,3 +6,5 @@ event:
 payment:
   - getPayments:
   - insertPayment:
+scouts:
+  - getChildren:
