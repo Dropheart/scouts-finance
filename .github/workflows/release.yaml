@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - main
-      - feat/event-management-page
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: macos-latest # macOS is needed for iOS builds
+    env:
+      SERVER_URL: https://api.drp.abussaud.dev/
+    
     defaults:
       run:
         working-directory: ./scouts_finances_flutter
