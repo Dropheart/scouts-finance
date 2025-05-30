@@ -63,7 +63,13 @@ class _EventHomeState extends State<EventHome> {
       return const Center(child: CircularProgressIndicator());
     }
     if (errorMessage != null) {
-      return Center(child: Text(errorMessage!));
+            return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(errorMessage!,
+            style: const TextStyle(color: Colors.red, fontSize: 16)),
+        ),
+      );
     }
 
     List<Card> eventCards = events.map((event) {

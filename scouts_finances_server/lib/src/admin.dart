@@ -8,8 +8,8 @@ class AdminEndpoint extends Endpoint {
     // Hardcode some dummy data into the database for testing purposes.
 
     // First, delete all existing data
-    await EventRegistration.db.deleteWhere(session, where: (t) => t.id > -1);
     await Payment.db.deleteWhere(session, where: (t) => t.id > -1);
+    await EventRegistration.db.deleteWhere(session, where: (t) => t.id > -1);
     await Child.db.deleteWhere(session, where: (t) => t.id > -1);
     await Event.db.deleteWhere(session, where: (t) => t.id > -1);
 
