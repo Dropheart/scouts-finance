@@ -15,8 +15,7 @@ their finances and keep track of income and expenses for scouting activities.
 - Dart SDK
 - Flutter SDK
 - Serverpod SDK
-- PostgreSQL
-- Redis
+- Docker
 
 It is recommended to install the Flutter SDK using the [Flutter installation guide](https://flutter.dev/docs/get-started/install).
 
