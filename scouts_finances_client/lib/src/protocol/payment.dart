@@ -20,6 +20,7 @@ abstract class Payment implements _i1.SerializableModel {
     required this.date,
     required this.reference,
     required this.method,
+    required this.payee,
     this.bankAccountId,
     this.bankAccount,
   });
@@ -30,6 +31,7 @@ abstract class Payment implements _i1.SerializableModel {
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
+    required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
   }) = _PaymentImpl;
@@ -42,6 +44,7 @@ abstract class Payment implements _i1.SerializableModel {
       reference: jsonSerialization['reference'] as String,
       method:
           _i2.PaymentMethod.fromJson((jsonSerialization['method'] as String)),
+      payee: jsonSerialization['payee'] as String,
       bankAccountId: jsonSerialization['bankAccountId'] as int?,
       bankAccount: jsonSerialization['bankAccount'] == null
           ? null
@@ -63,6 +66,8 @@ abstract class Payment implements _i1.SerializableModel {
 
   _i2.PaymentMethod method;
 
+  String payee;
+
   int? bankAccountId;
 
   _i3.BankAccount? bankAccount;
@@ -76,6 +81,7 @@ abstract class Payment implements _i1.SerializableModel {
     DateTime? date,
     String? reference,
     _i2.PaymentMethod? method,
+    String? payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
   });
@@ -87,6 +93,7 @@ abstract class Payment implements _i1.SerializableModel {
       'date': date.toJson(),
       'reference': reference,
       'method': method.toJson(),
+      'payee': payee,
       if (bankAccountId != null) 'bankAccountId': bankAccountId,
       if (bankAccount != null) 'bankAccount': bankAccount?.toJson(),
     };
@@ -107,6 +114,7 @@ class _PaymentImpl extends Payment {
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
+    required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
   }) : super._(
@@ -115,6 +123,7 @@ class _PaymentImpl extends Payment {
           date: date,
           reference: reference,
           method: method,
+          payee: payee,
           bankAccountId: bankAccountId,
           bankAccount: bankAccount,
         );
@@ -129,6 +138,7 @@ class _PaymentImpl extends Payment {
     DateTime? date,
     String? reference,
     _i2.PaymentMethod? method,
+    String? payee,
     Object? bankAccountId = _Undefined,
     Object? bankAccount = _Undefined,
   }) {
@@ -138,6 +148,7 @@ class _PaymentImpl extends Payment {
       date: date ?? this.date,
       reference: reference ?? this.reference,
       method: method ?? this.method,
+      payee: payee ?? this.payee,
       bankAccountId: bankAccountId is int? ? bankAccountId : this.bankAccountId,
       bankAccount: bankAccount is _i3.BankAccount?
           ? bankAccount

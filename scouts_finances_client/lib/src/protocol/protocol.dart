@@ -19,6 +19,8 @@ import 'payment_method.dart' as _i7;
 import 'package:scouts_finances_client/src/protocol/events.dart' as _i8;
 import 'package:scouts_finances_client/src/protocol/event_registration.dart'
     as _i9;
+import 'package:scouts_finances_client/src/protocol/payment.dart' as _i10;
+import 'package:scouts_finances_client/src/protocol/child.dart' as _i11;
 export 'bank_account.dart';
 export 'child.dart';
 export 'event_registration.dart';
@@ -94,6 +96,14 @@ class Protocol extends _i1.SerializationManager {
       return (data as List)
           .map((e) => deserialize<_i9.EventRegistration>(e))
           .toList() as T;
+    }
+    if (t == List<_i10.Payment>) {
+      return (data as List).map((e) => deserialize<_i10.Payment>(e)).toList()
+          as T;
+    }
+    if (t == List<_i11.Child>) {
+      return (data as List).map((e) => deserialize<_i11.Child>(e)).toList()
+          as T;
     }
     return super.deserialize<T>(data, t);
   }

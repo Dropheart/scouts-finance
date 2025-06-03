@@ -3,3 +3,8 @@ admin:
 event:
   - getEvents:
   - getEventById:
+payment:
+  - getPayments:
+  - insertPayment:
+scouts:
+  - getChildren:

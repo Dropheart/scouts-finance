@@ -8,8 +8,8 @@ class AdminEndpoint extends Endpoint {
     // Hardcode some dummy data into the database for testing purposes.
 
     // First, delete all existing data
-    await EventRegistration.db.deleteWhere(session, where: (t) => t.id > -1);
     await Payment.db.deleteWhere(session, where: (t) => t.id > -1);
+    await EventRegistration.db.deleteWhere(session, where: (t) => t.id > -1);
     await Child.db.deleteWhere(session, where: (t) => t.id > -1);
     await Event.db.deleteWhere(session, where: (t) => t.id > -1);
 
@@ -77,16 +77,28 @@ class AdminEndpoint extends Endpoint {
       // Randomly decide to pay in two installments or not
       final payInTwoInstallments = Random().nextBool();
       // Create the payments
+      final payee = [
+        "Phoebe Galindo",
+        "Salvatore Esparza",
+        "Ramona Stanton",
+        "Zyair Gould",
+        "Violeta Norman",
+        "Aziel Cox",
+        "Sadie Alexander"
+      ][Random().nextInt(7)];
+
       final payments = payInTwoInstallments
           ? [
               Payment(
                 reference: "Hope my child enjoys :)",
+                payee: payee,
                 method: PaymentMethod.cash,
                 amount: amount / 2,
                 date: DateTime.now().subtract(Duration(days: 30)),
               ),
               Payment(
                 reference: "Hope my child enjoys :)",
+                payee: payee,
                 method: PaymentMethod.cash,
                 amount: amount / 2,
                 date: DateTime.now(),
@@ -95,6 +107,7 @@ class AdminEndpoint extends Endpoint {
           : [
               Payment(
                 reference: "Hope my child enjoys :)",
+                payee: payee,
                 method: PaymentMethod.cash,
                 amount: amount,
                 date: DateTime.now(),

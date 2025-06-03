@@ -20,6 +20,8 @@ import 'payment_method.dart' as _i8;
 import 'package:scouts_finances_server/src/generated/events.dart' as _i9;
 import 'package:scouts_finances_server/src/generated/event_registration.dart'
     as _i10;
+import 'package:scouts_finances_server/src/generated/payment.dart' as _i11;
+import 'package:scouts_finances_server/src/generated/child.dart' as _i12;
 export 'bank_account.dart';
 export 'child.dart';
 export 'event_registration.dart';
@@ -293,6 +295,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'protocol:PaymentMethod',
         ),
         _i2.ColumnDefinition(
+          name: 'payee',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
           name: 'bankAccountId',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
@@ -407,6 +415,14 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List)
           .map((e) => deserialize<_i10.EventRegistration>(e))
           .toList() as T;
+    }
+    if (t == List<_i11.Payment>) {
+      return (data as List).map((e) => deserialize<_i11.Payment>(e)).toList()
+          as T;
+    }
+    if (t == List<_i12.Child>) {
+      return (data as List).map((e) => deserialize<_i12.Child>(e)).toList()
+          as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
