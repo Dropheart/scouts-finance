@@ -108,8 +108,10 @@ class _EventHomeState extends State<EventHome> {
             builder: (BuildContext context) {
               return const AddEventDialog();
             },
-          );
-          // ).then((value) => );  for use to auto refresh the list of events
+          ).then((_) {
+            // Refresh the event list after adding a new event
+            _getEvents();
+          });
         },
       ),
     );
