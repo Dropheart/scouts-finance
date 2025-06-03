@@ -1,0 +1,8 @@
+enum: SectionType
+serialized: byName
+values:
+    - beavers
+    - cubs
+    - scouts
+    - explorers
+    - network

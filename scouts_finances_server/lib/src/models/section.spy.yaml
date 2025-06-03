@@ -1,0 +1,6 @@
+class: Section
+table: sections
+fields:
+    name: String
+    type: SectionType
+    leaders: List<Leader>?, relation

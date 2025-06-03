@@ -1,0 +1,5 @@
+class: Leader
+table: leaders
+fields:
+    firstName: String
+    lastName: String
