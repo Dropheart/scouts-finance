@@ -93,6 +93,36 @@ class Endpoints extends _i1.EndpointDispatch {
                   )
                   .then((record) => _i6.mapRecordToJson(record)),
         ),
+        'insertEvent': _i1.MethodConnector(
+          name: 'insertEvent',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'cost': _i1.ParameterDescription(
+              name: 'cost',
+              type: _i1.getType<double>(),
+              nullable: false,
+            ),
+            'date': _i1.ParameterDescription(
+              name: 'date',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint).insertEvent(
+            session,
+            params['name'],
+            params['cost'],
+            params['date'],
+          ),
+        ),
       },
     );
     connectors['payment'] = _i1.EndpointConnector(
