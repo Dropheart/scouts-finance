@@ -12,7 +12,7 @@ class AddPaymentDialog extends StatefulWidget {
 
 class _AddPaymentDialogState extends State<AddPaymentDialog> {
   final _formKey = GlobalKey<FormState>();
-  final MoneyMaskedTextController _amountController = MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',', leftSymbol: '£');
+  final MoneyMaskedTextController _amountController = MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: '', leftSymbol: '£');
   final TextEditingController _payeeController = TextEditingController();
   DateTime? _selectedDate;
   PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
@@ -42,12 +42,12 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       client.payment.insertPayment(
-        double.parse(_amountController.text),
+        double.parse(_amountController.text.replaceFirst('£', '')),
         _payeeController.text,
         _selectedDate,
       );
       Navigator.of(context).pop({
-        'amount': double.parse(_amountController.text),
+        'amount': double.parse(_amountController.text.replaceFirst('£', '')),
         'description': _payeeController.text,
         'date': _selectedDate,
       });
@@ -68,16 +68,6 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
                 controller: _amountController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(labelText: 'Amount'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Enter amount';
-                  }
-                  final amount = double.tryParse(value);
-                  if (amount == null || amount <= 0) {
-                    return 'Enter a valid amount';
-                  }
-                  return null;
-                },
               ),
               TextFormField(
                 controller: _payeeController,
