@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:flutter_masked_text3/flutter_masked_text3.dart';
 
 class AddPaymentDialog extends StatefulWidget {
   const AddPaymentDialog({super.key});
@@ -11,7 +12,7 @@ class AddPaymentDialog extends StatefulWidget {
 
 class _AddPaymentDialogState extends State<AddPaymentDialog> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _amountController = TextEditingController();
+  final MoneyMaskedTextController _amountController = MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',', leftSymbol: '£');
   final TextEditingController _payeeController = TextEditingController();
   DateTime? _selectedDate;
   PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
