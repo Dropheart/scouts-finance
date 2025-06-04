@@ -24,7 +24,12 @@ jobs:
         working-directory: ./scouts_finances_flutter
         run: flutter pub get
 
-      - name: Check code format
+      - name: Check server code format
+        working-directory: ./scouts_finances_server
+        run: dart format --set-exit-if-changed .
+
+      - name: Check Flutter code format
+        working-directory: ./scouts_finances_flutter
         run: dart format --set-exit-if-changed .
 
   analyzeServer:
