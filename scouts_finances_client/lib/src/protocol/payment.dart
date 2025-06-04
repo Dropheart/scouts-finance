@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'payment_method.dart' as _i2;
 import 'bank_account.dart' as _i3;
+import 'parent.dart' as _i4;
 
 abstract class Payment implements _i1.SerializableModel {
   Payment._({
@@ -23,6 +24,8 @@ abstract class Payment implements _i1.SerializableModel {
     required this.payee,
     this.bankAccountId,
     this.bankAccount,
+    this.parentId,
+    this.parent,
   });
 
   factory Payment({
@@ -34,6 +37,8 @@ abstract class Payment implements _i1.SerializableModel {
     required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
   }) = _PaymentImpl;
 
   factory Payment.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -50,6 +55,11 @@ abstract class Payment implements _i1.SerializableModel {
           ? null
           : _i3.BankAccount.fromJson(
               (jsonSerialization['bankAccount'] as Map<String, dynamic>)),
+      parentId: jsonSerialization['parentId'] as int?,
+      parent: jsonSerialization['parent'] == null
+          ? null
+          : _i4.Parent.fromJson(
+              (jsonSerialization['parent'] as Map<String, dynamic>)),
     );
   }
 
@@ -72,6 +82,10 @@ abstract class Payment implements _i1.SerializableModel {
 
   _i3.BankAccount? bankAccount;
 
+  int? parentId;
+
+  _i4.Parent? parent;
+
   /// Returns a shallow copy of this [Payment]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -84,6 +98,8 @@ abstract class Payment implements _i1.SerializableModel {
     String? payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -96,6 +112,8 @@ abstract class Payment implements _i1.SerializableModel {
       'payee': payee,
       if (bankAccountId != null) 'bankAccountId': bankAccountId,
       if (bankAccount != null) 'bankAccount': bankAccount?.toJson(),
+      if (parentId != null) 'parentId': parentId,
+      if (parent != null) 'parent': parent?.toJson(),
     };
   }
 
@@ -117,6 +135,8 @@ class _PaymentImpl extends Payment {
     required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
   }) : super._(
           id: id,
           amount: amount,
@@ -126,6 +146,8 @@ class _PaymentImpl extends Payment {
           payee: payee,
           bankAccountId: bankAccountId,
           bankAccount: bankAccount,
+          parentId: parentId,
+          parent: parent,
         );
 
   /// Returns a shallow copy of this [Payment]
@@ -141,6 +163,8 @@ class _PaymentImpl extends Payment {
     String? payee,
     Object? bankAccountId = _Undefined,
     Object? bankAccount = _Undefined,
+    Object? parentId = _Undefined,
+    Object? parent = _Undefined,
   }) {
     return Payment(
       id: id is int? ? id : this.id,
@@ -153,6 +177,8 @@ class _PaymentImpl extends Payment {
       bankAccount: bankAccount is _i3.BankAccount?
           ? bankAccount
           : this.bankAccount?.copyWith(),
+      parentId: parentId is int? ? parentId : this.parentId,
+      parent: parent is _i4.Parent? ? parent : this.parent?.copyWith(),
     );
   }
 }

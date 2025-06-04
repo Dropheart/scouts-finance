@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'payment_method.dart' as _i2;
 import 'bank_account.dart' as _i3;
+import 'parent.dart' as _i4;
 
 abstract class Payment
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -26,6 +27,8 @@ abstract class Payment
     required this.payee,
     this.bankAccountId,
     this.bankAccount,
+    this.parentId,
+    this.parent,
   }) : _eventRegistrationsPaymentsEventRegistrationsId = null;
 
   factory Payment({
@@ -37,6 +40,8 @@ abstract class Payment
     required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
   }) = _PaymentImpl;
 
   factory Payment.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -53,6 +58,11 @@ abstract class Payment
           ? null
           : _i3.BankAccount.fromJson(
               (jsonSerialization['bankAccount'] as Map<String, dynamic>)),
+      parentId: jsonSerialization['parentId'] as int?,
+      parent: jsonSerialization['parent'] == null
+          ? null
+          : _i4.Parent.fromJson(
+              (jsonSerialization['parent'] as Map<String, dynamic>)),
       $_eventRegistrationsPaymentsEventRegistrationsId:
           jsonSerialization['_eventRegistrationsPaymentsEventRegistrationsId']
               as int?,
@@ -80,6 +90,10 @@ abstract class Payment
 
   _i3.BankAccount? bankAccount;
 
+  int? parentId;
+
+  _i4.Parent? parent;
+
   final int? _eventRegistrationsPaymentsEventRegistrationsId;
 
   @override
@@ -97,6 +111,8 @@ abstract class Payment
     String? payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -109,6 +125,8 @@ abstract class Payment
       'payee': payee,
       if (bankAccountId != null) 'bankAccountId': bankAccountId,
       if (bankAccount != null) 'bankAccount': bankAccount?.toJson(),
+      if (parentId != null) 'parentId': parentId,
+      if (parent != null) 'parent': parent?.toJson(),
       if (_eventRegistrationsPaymentsEventRegistrationsId != null)
         '_eventRegistrationsPaymentsEventRegistrationsId':
             _eventRegistrationsPaymentsEventRegistrationsId,
@@ -126,11 +144,19 @@ abstract class Payment
       'payee': payee,
       if (bankAccountId != null) 'bankAccountId': bankAccountId,
       if (bankAccount != null) 'bankAccount': bankAccount?.toJsonForProtocol(),
+      if (parentId != null) 'parentId': parentId,
+      if (parent != null) 'parent': parent?.toJsonForProtocol(),
     };
   }
 
-  static PaymentInclude include({_i3.BankAccountInclude? bankAccount}) {
-    return PaymentInclude._(bankAccount: bankAccount);
+  static PaymentInclude include({
+    _i3.BankAccountInclude? bankAccount,
+    _i4.ParentInclude? parent,
+  }) {
+    return PaymentInclude._(
+      bankAccount: bankAccount,
+      parent: parent,
+    );
   }
 
   static PaymentIncludeList includeList({
@@ -171,6 +197,8 @@ class _PaymentImpl extends Payment {
     required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
   }) : super._(
           id: id,
           amount: amount,
@@ -180,6 +208,8 @@ class _PaymentImpl extends Payment {
           payee: payee,
           bankAccountId: bankAccountId,
           bankAccount: bankAccount,
+          parentId: parentId,
+          parent: parent,
         );
 
   /// Returns a shallow copy of this [Payment]
@@ -195,6 +225,8 @@ class _PaymentImpl extends Payment {
     String? payee,
     Object? bankAccountId = _Undefined,
     Object? bankAccount = _Undefined,
+    Object? parentId = _Undefined,
+    Object? parent = _Undefined,
   }) {
     return PaymentImplicit._(
       id: id is int? ? id : this.id,
@@ -207,6 +239,8 @@ class _PaymentImpl extends Payment {
       bankAccount: bankAccount is _i3.BankAccount?
           ? bankAccount
           : this.bankAccount?.copyWith(),
+      parentId: parentId is int? ? parentId : this.parentId,
+      parent: parent is _i4.Parent? ? parent : this.parent?.copyWith(),
       $_eventRegistrationsPaymentsEventRegistrationsId:
           this._eventRegistrationsPaymentsEventRegistrationsId,
     );
@@ -223,6 +257,8 @@ class PaymentImplicit extends _PaymentImpl {
     required String payee,
     int? bankAccountId,
     _i3.BankAccount? bankAccount,
+    int? parentId,
+    _i4.Parent? parent,
     int? $_eventRegistrationsPaymentsEventRegistrationsId,
   })  : _eventRegistrationsPaymentsEventRegistrationsId =
             $_eventRegistrationsPaymentsEventRegistrationsId,
@@ -235,6 +271,8 @@ class PaymentImplicit extends _PaymentImpl {
           payee: payee,
           bankAccountId: bankAccountId,
           bankAccount: bankAccount,
+          parentId: parentId,
+          parent: parent,
         );
 
   factory PaymentImplicit(
@@ -250,6 +288,8 @@ class PaymentImplicit extends _PaymentImpl {
       payee: payment.payee,
       bankAccountId: payment.bankAccountId,
       bankAccount: payment.bankAccount,
+      parentId: payment.parentId,
+      parent: payment.parent,
       $_eventRegistrationsPaymentsEventRegistrationsId:
           $_eventRegistrationsPaymentsEventRegistrationsId,
     );
@@ -286,6 +326,10 @@ class PaymentTable extends _i1.Table<int?> {
       'bankAccountId',
       this,
     );
+    parentId = _i1.ColumnInt(
+      'parentId',
+      this,
+    );
     $_eventRegistrationsPaymentsEventRegistrationsId = _i1.ColumnInt(
       '_eventRegistrationsPaymentsEventRegistrationsId',
       this,
@@ -306,6 +350,10 @@ class PaymentTable extends _i1.Table<int?> {
 
   _i3.BankAccountTable? _bankAccount;
 
+  late final _i1.ColumnInt parentId;
+
+  _i4.ParentTable? _parent;
+
   late final _i1.ColumnInt $_eventRegistrationsPaymentsEventRegistrationsId;
 
   _i3.BankAccountTable get bankAccount {
@@ -321,6 +369,19 @@ class PaymentTable extends _i1.Table<int?> {
     return _bankAccount!;
   }
 
+  _i4.ParentTable get parent {
+    if (_parent != null) return _parent!;
+    _parent = _i1.createRelationTable(
+      relationFieldName: 'parent',
+      field: Payment.t.parentId,
+      foreignField: _i4.Parent.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.ParentTable(tableRelation: foreignTableRelation),
+    );
+    return _parent!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -330,6 +391,7 @@ class PaymentTable extends _i1.Table<int?> {
         method,
         payee,
         bankAccountId,
+        parentId,
         $_eventRegistrationsPaymentsEventRegistrationsId,
       ];
 
@@ -342,6 +404,7 @@ class PaymentTable extends _i1.Table<int?> {
         method,
         payee,
         bankAccountId,
+        parentId,
       ];
 
   @override
@@ -349,19 +412,31 @@ class PaymentTable extends _i1.Table<int?> {
     if (relationField == 'bankAccount') {
       return bankAccount;
     }
+    if (relationField == 'parent') {
+      return parent;
+    }
     return null;
   }
 }
 
 class PaymentInclude extends _i1.IncludeObject {
-  PaymentInclude._({_i3.BankAccountInclude? bankAccount}) {
+  PaymentInclude._({
+    _i3.BankAccountInclude? bankAccount,
+    _i4.ParentInclude? parent,
+  }) {
     _bankAccount = bankAccount;
+    _parent = parent;
   }
 
   _i3.BankAccountInclude? _bankAccount;
 
+  _i4.ParentInclude? _parent;
+
   @override
-  Map<String, _i1.Include?> get includes => {'bankAccount': _bankAccount};
+  Map<String, _i1.Include?> get includes => {
+        'bankAccount': _bankAccount,
+        'parent': _parent,
+      };
 
   @override
   _i1.Table<int?> get table => Payment.t;
@@ -635,6 +710,29 @@ class PaymentAttachRowRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between the given [Payment] and [Parent]
+  /// by setting the [Payment]'s foreign key `parentId` to refer to the [Parent].
+  Future<void> parent(
+    _i1.Session session,
+    Payment payment,
+    _i4.Parent parent, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (payment.id == null) {
+      throw ArgumentError.notNull('payment.id');
+    }
+    if (parent.id == null) {
+      throw ArgumentError.notNull('parent.id');
+    }
+
+    var $payment = payment.copyWith(parentId: parent.id);
+    await session.db.updateRow<Payment>(
+      $payment,
+      columns: [Payment.t.parentId],
+      transaction: transaction,
+    );
+  }
 }
 
 class PaymentDetachRowRepository {
@@ -658,6 +756,28 @@ class PaymentDetachRowRepository {
     await session.db.updateRow<Payment>(
       $payment,
       columns: [Payment.t.bankAccountId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [Payment] and the [Parent] set in `parent`
+  /// by setting the [Payment]'s foreign key `parentId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> parent(
+    _i1.Session session,
+    Payment payment, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (payment.id == null) {
+      throw ArgumentError.notNull('payment.id');
+    }
+
+    var $payment = payment.copyWith(parentId: null);
+    await session.db.updateRow<Payment>(
+      $payment,
+      columns: [Payment.t.parentId],
       transaction: transaction,
     );
   }

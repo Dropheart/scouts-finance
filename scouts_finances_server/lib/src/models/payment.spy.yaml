@@ -7,4 +7,4 @@ fields:
   method: PaymentMethod
   payee: String
   bankAccount: BankAccount?, relation(optional)
-
+  parent: Parent?, relation(optional) # might not have classified it yet
