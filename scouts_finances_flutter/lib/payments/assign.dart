@@ -41,7 +41,7 @@ class _AssignPaymentDialogState extends State<AssignPaymentDialog> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       client.payment.insertPayment(
-        (double.parse(_amountController.text) * 100 ).truncate(),
+        (double.parse(_amountController.text) * 100).truncate(),
         _payeeController.text,
         _selectedDate,
       );
@@ -100,24 +100,24 @@ class _AssignPaymentDialogState extends State<AssignPaymentDialog> {
                   ),
                 ],
               ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<PaymentMethod>(
-              value: _selectedPaymentMethod,
-              decoration: const InputDecoration(labelText: 'Payment Method'),
-              items: PaymentMethod.values.map((method) {
-                return DropdownMenuItem(
-                  value: method,
-                  child: Text(method.name),
-                );
-              }).toList(),
-              onChanged: (method) {
-                setState(() {
-                  _selectedPaymentMethod = method;
-                });
-              },
-              validator: (value) =>
-                  value == null ? 'Select a payment method' : null,
-            ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<PaymentMethod>(
+                value: _selectedPaymentMethod,
+                decoration: const InputDecoration(labelText: 'Payment Method'),
+                items: PaymentMethod.values.map((method) {
+                  return DropdownMenuItem(
+                    value: method,
+                    child: Text(method.name),
+                  );
+                }).toList(),
+                onChanged: (method) {
+                  setState(() {
+                    _selectedPaymentMethod = method;
+                  });
+                },
+                validator: (value) =>
+                    value == null ? 'Select a payment method' : null,
+              ),
             ],
           ),
         ),

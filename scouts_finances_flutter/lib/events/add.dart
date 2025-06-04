@@ -41,18 +41,18 @@ class _AddEventDialogState extends State<AddEventDialog> {
       });
     }
   }
-  
+
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       client.event.insertEvent(
-        _nameController.text, 
-        (double.parse(_priceController.text.replaceFirst('£', '')) * 100).truncate(), // Convert to pence 
-        _selectedDate
-        );
+          _nameController.text,
+          (double.parse(_priceController.text.replaceFirst('£', '')) * 100)
+              .truncate(), // Convert to pence
+          _selectedDate);
       Navigator.of(context).pop({
-        'name' : _nameController.text,
-        'price' : _priceController.text.replaceFirst('£', ''),
-        'data' : _selectedDate,
+        'name': _nameController.text,
+        'price': _priceController.text.replaceFirst('£', ''),
+        'data': _selectedDate,
       });
     }
   }
@@ -60,55 +60,52 @@ class _AddEventDialogState extends State<AddEventDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Event'),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter event name' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _priceController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Amount'),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No date chosen'
-                          : 'Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+        title: const Text('Add Event'),
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Name'),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Enter event name'
+                      : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _priceController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(labelText: 'Amount'),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'No date chosen'
+                            : 'Date: ${_selectedDate!.toLocal().toString().split(' ')[0]}',
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: _pickDate,
-                    child: const Text('Pick Date'),
-                  ),
-                ],
-              ),
-            ],
+                    TextButton(
+                      onPressed: _pickDate,
+                      child: const Text('Pick Date'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _submit, 
-          child: const Text('Add')
-        )
-      ]
-    );
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(onPressed: _submit, child: const Text('Add'))
+        ]);
   }
 }
