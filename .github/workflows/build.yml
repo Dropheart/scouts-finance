@@ -16,8 +16,13 @@ jobs:
         with:
           sdk: 'stable'
 
-      - name: Install dependencies
+      - name: Install server dependencies
+        working-directory: ./scouts_finances_server
         run: dart pub get
+
+      - name: Install Flutter dependencies
+        working-directory: ./scouts_finances_flutter
+        run: flutter pub get
 
       - name: Check code format
         run: dart format --set-exit-if-changed .
