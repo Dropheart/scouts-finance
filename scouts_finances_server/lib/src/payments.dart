@@ -7,7 +7,7 @@ class PaymentEndpoint extends Endpoint {
   }
 
   Future<List<Payment>> insertPayment(
-      Session session, double amount, String payee, DateTime? date
+      Session session, int amount, String payee, DateTime? date
     ) async {
     final payment = Payment(
       amount: amount,

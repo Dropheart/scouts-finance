@@ -1,0 +1,206 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "events"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "events",
+        "dartName": "Event",
+        "module": "scouts_finances",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('events_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "date",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "cost",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "events_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "payments"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "payments",
+        "dartName": "Payment",
+        "module": "scouts_finances",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('payments_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "amount",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "date",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "reference",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "method",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:PaymentMethod"
+          },
+          {
+            "name": "payee",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "bankAccountId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "_eventRegistrationsPaymentsEventRegistrationsId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "payments_fk_0",
+            "columns": [
+              "bankAccountId"
+            ],
+            "referenceTable": "bank_accounts",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "payments_fk_1",
+            "columns": [
+              "_eventRegistrationsPaymentsEventRegistrationsId"
+            ],
+            "referenceTable": "event_registrations",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "payments_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column cost of table events is modified in a way that it must be deleted and recreated.",
+      "table": "events",
+      "columns": [
+        "cost"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"events\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "events",
+      "columns": [
+        "cost"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column amount of table payments is modified in a way that it must be deleted and recreated.",
+      "table": "payments",
+      "columns": [
+        "amount"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"payments\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "payments",
+      "columns": [
+        "amount"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

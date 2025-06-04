@@ -248,7 +248,7 @@ class _EventEndpoint {
   _i3.Future<List<_i4.Event>> insertEvent(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
-    double cost,
+    int cost,
     DateTime? date,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -320,7 +320,7 @@ class _PaymentEndpoint {
 
   _i3.Future<List<_i7.Payment>> insertPayment(
     _i1.TestSessionBuilder sessionBuilder,
-    double amount,
+    int amount,
     String payee,
     DateTime? date,
   ) async {

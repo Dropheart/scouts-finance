@@ -41,7 +41,7 @@ class _AssignPaymentDialogState extends State<AssignPaymentDialog> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       client.payment.insertPayment(
-        double.parse(_amountController.text),
+        (double.parse(_amountController.text) * 100 ).truncate(),
         _payeeController.text,
         _selectedDate,
       );

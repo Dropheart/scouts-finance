@@ -55,7 +55,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     List<Card> paymentCards = payments.map((payment) {
       return Card(
         child: ListTile(
-          title: Text('£${payment.amount.toStringAsFixed(2)}'),
+          title: Text('£${(payment.amount/100).toStringAsFixed(2)}'),
           subtitle: Row(children: [
             Text(payment.payee),
             const Spacer(),

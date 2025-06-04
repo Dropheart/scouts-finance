@@ -3,4 +3,4 @@ table: events
 fields:
   name: String
   date: DateTime
-  cost: double
+  cost: int # Cost in pence (GBP)

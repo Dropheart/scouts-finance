@@ -1,7 +1,7 @@
 class: Payment
 table: payments
 fields:
-  amount: double
+  amount: int # Amount in pence (GBP)
   date: DateTime
   reference: String
   method: PaymentMethod

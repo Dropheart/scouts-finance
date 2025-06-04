@@ -23,7 +23,7 @@ abstract class Event implements _i1.SerializableModel {
     int? id,
     required String name,
     required DateTime date,
-    required double cost,
+    required int cost,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -31,7 +31,7 @@ abstract class Event implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
-      cost: (jsonSerialization['cost'] as num).toDouble(),
+      cost: jsonSerialization['cost'] as int,
     );
   }
 
@@ -44,7 +44,7 @@ abstract class Event implements _i1.SerializableModel {
 
   DateTime date;
 
-  double cost;
+  int cost;
 
   /// Returns a shallow copy of this [Event]
   /// with some or all fields replaced by the given arguments.
@@ -53,7 +53,7 @@ abstract class Event implements _i1.SerializableModel {
     int? id,
     String? name,
     DateTime? date,
-    double? cost,
+    int? cost,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -78,7 +78,7 @@ class _EventImpl extends Event {
     int? id,
     required String name,
     required DateTime date,
-    required double cost,
+    required int cost,
   }) : super._(
           id: id,
           name: name,
@@ -94,7 +94,7 @@ class _EventImpl extends Event {
     Object? id = _Undefined,
     String? name,
     DateTime? date,
-    double? cost,
+    int? cost,
   }) {
     return Event(
       id: id is int? ? id : this.id,
