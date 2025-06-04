@@ -55,7 +55,7 @@ class EndpointEvent extends _i1.EndpointRef {
 
   _i2.Future<List<_i3.Event>> insertEvent(
     String name,
-    double cost,
+    int cost,
     DateTime? date,
   ) =>
       caller.callServerEndpoint<List<_i3.Event>>(
@@ -84,7 +84,7 @@ class EndpointPayment extends _i1.EndpointRef {
       );
 
   _i2.Future<List<_i5.Payment>> insertPayment(
-    double amount,
+    int amount,
     String payee,
     DateTime? date,
   ) =>

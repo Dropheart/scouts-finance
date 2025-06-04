@@ -103,7 +103,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'cost': _i1.ParameterDescription(
               name: 'cost',
-              type: _i1.getType<double>(),
+              type: _i1.getType<int>(),
               nullable: false,
             ),
             'date': _i1.ParameterDescription(
@@ -144,7 +144,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'amount': _i1.ParameterDescription(
               name: 'amount',
-              type: _i1.getType<double>(),
+              type: _i1.getType<int>(),
               nullable: false,
             ),
             'payee': _i1.ParameterDescription(

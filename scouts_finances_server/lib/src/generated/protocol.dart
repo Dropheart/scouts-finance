@@ -234,9 +234,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'cost',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'int',
         ),
       ],
       foreignKeys: [],
@@ -272,9 +272,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'amount',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'date',
