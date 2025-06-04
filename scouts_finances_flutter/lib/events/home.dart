@@ -44,11 +44,11 @@ class _EventHomeState extends State<EventHome> {
       return const Center(child: CircularProgressIndicator());
     }
     if (errorMessage != null) {
-            return Padding(
+      return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Text(errorMessage!,
-            style: const TextStyle(color: Colors.red, fontSize: 16)),
+              style: const TextStyle(color: Colors.red, fontSize: 16)),
         ),
       );
     }
@@ -74,28 +74,34 @@ class _EventHomeState extends State<EventHome> {
     }).toList();
 
     Center body = Center(
-      child: ListView(children: [
-        ExpansionTile(title: const Text('Future Events'), initiallyExpanded: true, children: eventCards),
-        //   child: ListView(children: [
-        // ...eventCards,
-        ExpansionTile(title: const Text('Past Events'), initiallyExpanded: true, children: [
-          Card(
-            child: ListTile(
-              title: const Text('Winter Camp'),
-              subtitle: Row(
-                children: [
-                  const Text('15/20 paid'),
-                  const Spacer(),
-                  const Text('01/01/2025'),
-                ],
+        child: ListView(children: [
+      ExpansionTile(
+          title: const Text('Future Events'),
+          initiallyExpanded: true,
+          children: eventCards),
+      //   child: ListView(children: [
+      // ...eventCards,
+      ExpansionTile(
+          title: const Text('Past Events'),
+          initiallyExpanded: true,
+          children: [
+            Card(
+              child: ListTile(
+                title: const Text('Winter Camp'),
+                subtitle: Row(
+                  children: [
+                    const Text('15/20 paid'),
+                    const Spacer(),
+                    const Text('01/01/2025'),
+                  ],
+                ),
+                onTap: () {
+                  // Navigate to event details
+                },
+                trailing: const Icon(Icons.arrow_forward),
               ),
-              onTap: () {
-                // Navigate to event details
-              },
-              trailing: const Icon(Icons.arrow_forward),
             ),
-          ),
-        ]),
+          ]),
     ]));
 
     return Scaffold(

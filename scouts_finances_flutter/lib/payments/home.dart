@@ -16,7 +16,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   bool loading = true;
 
   void _getEvents() async {
-    try { 
+    try {
       final result = await client.payment.getPayments();
       setState(() {
         payments = result;
@@ -24,7 +24,8 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       });
     } catch (e) {
       setState(() {
-        err = 'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
+        err =
+            'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         loading = false;
       });
     }
@@ -47,7 +48,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Text(err!,
-            style: const TextStyle(color: Colors.red, fontSize: 16)),
+              style: const TextStyle(color: Colors.red, fontSize: 16)),
         ),
       );
     }
@@ -55,7 +56,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     List<Card> paymentCards = payments.map((payment) {
       return Card(
         child: ListTile(
-          title: Text('£${(payment.amount/100).toStringAsFixed(2)}'),
+          title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
           subtitle: Row(children: [
             Text(payment.payee),
             const Spacer(),
@@ -72,22 +73,21 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-      const Text('Action Required - 1',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ...
-      paymentCards,
-      
-      const Text('Known Payees - 2',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-      
-      Card(
+        const Text('Action Required - 1',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ...paymentCards,
+        const Text('Known Payees - 2',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Card(
           child: ListTile(
             title: const Text('£2.49'),
-            subtitle: const Row(children: [
-              Text('Nishant Aanjaney Jalan'),
-              Spacer(),
-              Text('01/01/2025'),
-            ],),
+            subtitle: const Row(
+              children: [
+                Text('Nishant Aanjaney Jalan'),
+                Spacer(),
+                Text('01/01/2025'),
+              ],
+            ),
             onTap: () {
               // Navigate to event details
             },
@@ -97,24 +97,27 @@ class _PaymentsHomeState extends State<PaymentsHome> {
         Card(
           child: ListTile(
             title: const Text('£3.14'),
-            subtitle: const Row(children: [
-              Text('Nishant Aanjaney Jalan'),
-              Spacer(),
-              Text('07/05/2025'),
-            ],),
+            subtitle: const Row(
+              children: [
+                Text('Nishant Aanjaney Jalan'),
+                Spacer(),
+                Text('07/05/2025'),
+              ],
+            ),
             onTap: () {
               // Navigate to event details
             },
             trailing: const Icon(Icons.arrow_forward),
           ),
         ),
-
-      const SizedBox(height: 128.0),
+        const SizedBox(height: 128.0),
       ],
     );
 
     return Scaffold(
-      body: Padding(padding: EdgeInsetsGeometry.all(8.0), child: SingleChildScrollView(child: body)),
+      body: Padding(
+          padding: EdgeInsetsGeometry.all(8.0),
+          child: SingleChildScrollView(child: body)),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -144,11 +147,11 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             FloatingActionButton(
               heroTag: 'fab_right',
               child: const Icon(Icons.add),
-                onPressed: () {
+              onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                  return AddPaymentDialog();
+                    return AddPaymentDialog();
                   },
                 ).then((_) {
                   _getEvents();

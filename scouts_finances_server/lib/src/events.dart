@@ -24,13 +24,12 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<List<Event>> insertEvent(
-    Session session, String name, int cost, DateTime? date, 
+    Session session,
+    String name,
+    int cost,
+    DateTime? date,
   ) async {
-    final event = Event(
-      name: name,
-      date: date ?? DateTime.now(),
-      cost: cost
-    );
+    final event = Event(name: name, date: date ?? DateTime.now(), cost: cost);
 
     await Event.db.insert(session, [event]);
 
