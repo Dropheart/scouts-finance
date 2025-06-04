@@ -97,6 +97,13 @@ class EndpointPayment extends _i1.EndpointRef {
           'date': date,
         },
       );
+
+  _i2.Future<_i5.Payment?> getPaymentById(int paymentId) =>
+      caller.callServerEndpoint<_i5.Payment?>(
+        'payment',
+        'getPaymentById',
+        {'paymentId': paymentId},
+      );
 }
 
 /// {@category Endpoint}

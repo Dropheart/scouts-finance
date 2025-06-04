@@ -352,6 +352,35 @@ class _PaymentEndpoint {
       }
     });
   }
+
+  _i3.Future<_i7.Payment?> getPaymentById(
+    _i1.TestSessionBuilder sessionBuilder,
+    int paymentId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'payment',
+        method: 'getPaymentById',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'payment',
+          methodName: 'getPaymentById',
+          parameters: _i1.testObjectToJson({'paymentId': paymentId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i7.Payment?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _ScoutsEndpoint {

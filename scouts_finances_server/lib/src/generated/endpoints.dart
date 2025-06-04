@@ -169,6 +169,24 @@ class Endpoints extends _i1.EndpointDispatch {
             params['date'],
           ),
         ),
+        'getPaymentById': _i1.MethodConnector(
+          name: 'getPaymentById',
+          params: {
+            'paymentId': _i1.ParameterDescription(
+              name: 'paymentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['payment'] as _i4.PaymentEndpoint).getPaymentById(
+            session,
+            params['paymentId'],
+          ),
+        ),
       },
     );
     connectors['scouts'] = _i1.EndpointConnector(

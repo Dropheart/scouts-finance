@@ -23,8 +23,10 @@ class AdminEndpoint extends Endpoint {
     await Child.db.insert(session, [child1, child2, child3, child4, child5]);
 
     // Create some events
-    final event1 = Event(name: "Rafting", cost: 2000, date: DateTime(2025, 1, 5));
-    final event2 = Event(name: "Hiking", cost: 1500, date: DateTime(2025, 2, 10));
+    final event1 =
+        Event(name: "Rafting", cost: 2000, date: DateTime(2025, 1, 5));
+    final event2 =
+        Event(name: "Hiking", cost: 1500, date: DateTime(2025, 2, 10));
     final event3 =
         Event(name: "Camping", cost: 3000, date: DateTime(2025, 3, 15));
     final event4 =

@@ -7,8 +7,7 @@ class PaymentEndpoint extends Endpoint {
   }
 
   Future<List<Payment>> insertPayment(
-      Session session, int amount, String payee, DateTime? date
-    ) async {
+      Session session, int amount, String payee, DateTime? date) async {
     final payment = Payment(
       amount: amount,
       method: PaymentMethod.cash, // Default to cash, can be changed later
@@ -21,5 +20,10 @@ class PaymentEndpoint extends Endpoint {
 
     // Return the updated list of payments
     return Payment.db.find(session);
+  }
+
+  Future<Payment?> getPaymentById(Session session, int paymentId) async {
+    // Find the payment by ID
+    return Payment.db.findById(session, paymentId);
   }
 }
