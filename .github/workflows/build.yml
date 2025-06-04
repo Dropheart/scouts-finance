@@ -11,10 +11,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Dart
-        uses: dart-lang/setup-dart@v1
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          sdk: 'stable'
+          flutter-version: '3.32.0'
 
       - name: Install server dependencies
         working-directory: ./scouts_finances_server
