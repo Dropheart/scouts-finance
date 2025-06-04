@@ -74,7 +74,7 @@ class _SingleEventState extends State<SingleEvent> {
             .map((e) => DataRow(
                     cells: [
                       DataCell(Text(e.name)),
-                      DataCell(Text("£${e.paid.toStringAsFixed(2)}")),
+                      DataCell(Text("£${(e.paid/100).toStringAsFixed(2)}")),
                     ],
                     color: e.paid < event.cost
                         ? WidgetStateProperty.all(colourScheme.errorContainer)
@@ -109,7 +109,7 @@ class _SingleEventState extends State<SingleEvent> {
             Row(children: [
               Text('Location: TBD'),
               Spacer(),
-              Text('Price: £${event.cost.toStringAsFixed(2)}'),
+              Text('Price: £${(event.cost/100).toStringAsFixed(2)}'),
             ]),
             const SizedBox(height: 20),
             const Text('Registrations:'),

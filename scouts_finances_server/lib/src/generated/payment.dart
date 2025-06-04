@@ -30,7 +30,7 @@ abstract class Payment
 
   factory Payment({
     int? id,
-    required double amount,
+    required int amount,
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
@@ -42,7 +42,7 @@ abstract class Payment
   factory Payment.fromJson(Map<String, dynamic> jsonSerialization) {
     return PaymentImplicit._(
       id: jsonSerialization['id'] as int?,
-      amount: (jsonSerialization['amount'] as num).toDouble(),
+      amount: jsonSerialization['amount'] as int,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
       reference: jsonSerialization['reference'] as String,
       method:
@@ -66,7 +66,7 @@ abstract class Payment
   @override
   int? id;
 
-  double amount;
+  int amount;
 
   DateTime date;
 
@@ -90,7 +90,7 @@ abstract class Payment
   @_i1.useResult
   Payment copyWith({
     int? id,
-    double? amount,
+    int? amount,
     DateTime? date,
     String? reference,
     _i2.PaymentMethod? method,
@@ -164,7 +164,7 @@ class _Undefined {}
 class _PaymentImpl extends Payment {
   _PaymentImpl({
     int? id,
-    required double amount,
+    required int amount,
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
@@ -188,7 +188,7 @@ class _PaymentImpl extends Payment {
   @override
   Payment copyWith({
     Object? id = _Undefined,
-    double? amount,
+    int? amount,
     DateTime? date,
     String? reference,
     _i2.PaymentMethod? method,
@@ -216,7 +216,7 @@ class _PaymentImpl extends Payment {
 class PaymentImplicit extends _PaymentImpl {
   PaymentImplicit._({
     int? id,
-    required double amount,
+    required int amount,
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
@@ -261,7 +261,7 @@ class PaymentImplicit extends _PaymentImpl {
 
 class PaymentTable extends _i1.Table<int?> {
   PaymentTable({super.tableRelation}) : super(tableName: 'payments') {
-    amount = _i1.ColumnDouble(
+    amount = _i1.ColumnInt(
       'amount',
       this,
     );
@@ -292,7 +292,7 @@ class PaymentTable extends _i1.Table<int?> {
     );
   }
 
-  late final _i1.ColumnDouble amount;
+  late final _i1.ColumnInt amount;
 
   late final _i1.ColumnDateTime date;
 

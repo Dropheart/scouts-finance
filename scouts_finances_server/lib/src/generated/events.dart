@@ -23,7 +23,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     required String name,
     required DateTime date,
-    required double cost,
+    required int cost,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -31,7 +31,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
-      cost: (jsonSerialization['cost'] as num).toDouble(),
+      cost: jsonSerialization['cost'] as int,
     );
   }
 
@@ -46,7 +46,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime date;
 
-  double cost;
+  int cost;
 
   @override
   _i1.Table<int?> get table => t;
@@ -58,7 +58,7 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? id,
     String? name,
     DateTime? date,
-    double? cost,
+    int? cost,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -117,7 +117,7 @@ class _EventImpl extends Event {
     int? id,
     required String name,
     required DateTime date,
-    required double cost,
+    required int cost,
   }) : super._(
           id: id,
           name: name,
@@ -133,7 +133,7 @@ class _EventImpl extends Event {
     Object? id = _Undefined,
     String? name,
     DateTime? date,
-    double? cost,
+    int? cost,
   }) {
     return Event(
       id: id is int? ? id : this.id,
@@ -154,7 +154,7 @@ class EventTable extends _i1.Table<int?> {
       'date',
       this,
     );
-    cost = _i1.ColumnDouble(
+    cost = _i1.ColumnInt(
       'cost',
       this,
     );
@@ -164,7 +164,7 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime date;
 
-  late final _i1.ColumnDouble cost;
+  late final _i1.ColumnInt cost;
 
   @override
   List<_i1.Column> get columns => [

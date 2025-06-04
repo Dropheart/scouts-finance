@@ -23,14 +23,14 @@ class AdminEndpoint extends Endpoint {
     await Child.db.insert(session, [child1, child2, child3, child4, child5]);
 
     // Create some events
-    final event1 = Event(name: "Rafting", cost: 20, date: DateTime(2025, 1, 5));
-    final event2 = Event(name: "Hiking", cost: 15, date: DateTime(2025, 2, 10));
+    final event1 = Event(name: "Rafting", cost: 2000, date: DateTime(2025, 1, 5));
+    final event2 = Event(name: "Hiking", cost: 1500, date: DateTime(2025, 2, 10));
     final event3 =
-        Event(name: "Camping", cost: 30, date: DateTime(2025, 3, 15));
+        Event(name: "Camping", cost: 3000, date: DateTime(2025, 3, 15));
     final event4 =
-        Event(name: "Swimming", cost: 10, date: DateTime(2025, 4, 20));
+        Event(name: "Swimming", cost: 1000, date: DateTime(2025, 4, 20));
     final event5 =
-        Event(name: "Climbing", cost: 25, date: DateTime(2025, 5, 25));
+        Event(name: "Climbing", cost: 2500, date: DateTime(2025, 5, 25));
 
     await Event.db.insert(session, [event1, event2, event3, event4, event5]);
 
@@ -72,8 +72,8 @@ class AdminEndpoint extends Endpoint {
       // Randomly decide whether to pay in full or partially
       final payInFull = Random().nextBool();
       // Randomly decide the amount to pay if not paying in full
-      final amount =
-          payInFull ? event.cost : (event.cost * Random().nextDouble());
+      final int amount =
+          payInFull ? event.cost : (event.cost * Random().nextDouble()).toInt();
       // Randomly decide to pay in two installments or not
       final payInTwoInstallments = Random().nextBool();
       // Create the payments
@@ -93,14 +93,14 @@ class AdminEndpoint extends Endpoint {
                 reference: "Hope my child enjoys :)",
                 payee: payee,
                 method: PaymentMethod.cash,
-                amount: amount / 2,
+                amount: amount ~/ 2,
                 date: DateTime.now().subtract(Duration(days: 30)),
               ),
               Payment(
                 reference: "Hope my child enjoys :)",
                 payee: payee,
                 method: PaymentMethod.cash,
-                amount: amount / 2,
+                amount: amount ~/ 2,
                 date: DateTime.now(),
               ),
             ]

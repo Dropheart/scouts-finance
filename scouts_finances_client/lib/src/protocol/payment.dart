@@ -27,7 +27,7 @@ abstract class Payment implements _i1.SerializableModel {
 
   factory Payment({
     int? id,
-    required double amount,
+    required int amount,
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
@@ -39,7 +39,7 @@ abstract class Payment implements _i1.SerializableModel {
   factory Payment.fromJson(Map<String, dynamic> jsonSerialization) {
     return Payment(
       id: jsonSerialization['id'] as int?,
-      amount: (jsonSerialization['amount'] as num).toDouble(),
+      amount: jsonSerialization['amount'] as int,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
       reference: jsonSerialization['reference'] as String,
       method:
@@ -58,7 +58,7 @@ abstract class Payment implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  double amount;
+  int amount;
 
   DateTime date;
 
@@ -77,7 +77,7 @@ abstract class Payment implements _i1.SerializableModel {
   @_i1.useResult
   Payment copyWith({
     int? id,
-    double? amount,
+    int? amount,
     DateTime? date,
     String? reference,
     _i2.PaymentMethod? method,
@@ -110,7 +110,7 @@ class _Undefined {}
 class _PaymentImpl extends Payment {
   _PaymentImpl({
     int? id,
-    required double amount,
+    required int amount,
     required DateTime date,
     required String reference,
     required _i2.PaymentMethod method,
@@ -134,7 +134,7 @@ class _PaymentImpl extends Payment {
   @override
   Payment copyWith({
     Object? id = _Undefined,
-    double? amount,
+    int? amount,
     DateTime? date,
     String? reference,
     _i2.PaymentMethod? method,

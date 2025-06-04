@@ -24,7 +24,7 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<List<Event>> insertEvent(
-    Session session, String name, double cost, DateTime? date, 
+    Session session, String name, int cost, DateTime? date, 
   ) async {
     final event = Event(
       name: name,

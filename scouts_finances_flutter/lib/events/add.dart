@@ -46,7 +46,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
     if (_formKey.currentState?.validate() ?? false) {
       client.event.insertEvent(
         _nameController.text, 
-        double.parse(_priceController.text.replaceFirst('£', '')), 
+        (double.parse(_priceController.text.replaceFirst('£', '')) * 100).truncate(), // Convert to pence 
         _selectedDate
         );
       Navigator.of(context).pop({
