@@ -3,6 +3,7 @@ admin:
 event:
   - getEvents:
   - getEventById:
+  - insertEvent:
 payment:
   - getPayments:
   - insertPayment:

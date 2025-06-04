@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/events/add.dart';
 
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
@@ -29,26 +30,6 @@ class _EventHomeState extends State<EventHome> {
         loading = false;
       });
     }
-  }
-
-  Future<void> addEvent() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Event'),
-          content: const Text('This feature is not implemented yet.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -93,26 +74,28 @@ class _EventHomeState extends State<EventHome> {
     }).toList();
 
     Center body = Center(
-        child: ListView(children: [
-      ...eventCards,
-      ExpansionTile(title: const Text('Past Events'), children: [
-        Card(
-          child: ListTile(
-            title: const Text('Winter Camp'),
-            subtitle: Row(
-              children: [
-                const Text('15/20 paid'),
-                const Spacer(),
-                const Text('01/01/2025'),
-              ],
+      child: ListView(children: [
+        ExpansionTile(title: const Text('Future Events'), initiallyExpanded: true, children: eventCards),
+        //   child: ListView(children: [
+        // ...eventCards,
+        ExpansionTile(title: const Text('Past Events'), initiallyExpanded: true, children: [
+          Card(
+            child: ListTile(
+              title: const Text('Winter Camp'),
+              subtitle: Row(
+                children: [
+                  const Text('15/20 paid'),
+                  const Spacer(),
+                  const Text('01/01/2025'),
+                ],
+              ),
+              onTap: () {
+                // Navigate to event details
+              },
+              trailing: const Icon(Icons.arrow_forward),
             ),
-            onTap: () {
-              // Navigate to event details
-            },
-            trailing: const Icon(Icons.arrow_forward),
           ),
-        ),
-      ]),
+        ]),
     ]));
 
     return Scaffold(
@@ -120,7 +103,15 @@ class _EventHomeState extends State<EventHome> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          addEvent();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AddEventDialog();
+            },
+          ).then((_) {
+            // Refresh the event list after adding a new event
+            _getEvents();
+          });
         },
       ),
     );

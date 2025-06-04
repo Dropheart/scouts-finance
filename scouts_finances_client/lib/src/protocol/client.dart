@@ -52,6 +52,21 @@ class EndpointEvent extends _i1.EndpointRef {
         'getEventById',
         {'id': id},
       );
+
+  _i2.Future<List<_i3.Event>> insertEvent(
+    String name,
+    double cost,
+    DateTime? date,
+  ) =>
+      caller.callServerEndpoint<List<_i3.Event>>(
+        'event',
+        'insertEvent',
+        {
+          'name': name,
+          'cost': cost,
+          'date': date,
+        },
+      );
 }
 
 /// {@category Endpoint}

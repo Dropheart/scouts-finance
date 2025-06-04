@@ -22,4 +22,18 @@ class EventEndpoint extends Endpoint {
 
     return (eventDetails, eventRegistration);
   }
+
+  Future<List<Event>> insertEvent(
+    Session session, String name, double cost, DateTime? date, 
+  ) async {
+    final event = Event(
+      name: name,
+      date: date ?? DateTime.now(),
+      cost: cost
+    );
+
+    await Event.db.insert(session, [event]);
+
+    return Event.db.find(session);
+  }
 }
