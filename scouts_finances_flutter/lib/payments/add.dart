@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
+import 'package:scouts_finances_client/src/extensions/payment_method.dart';
 
 class AddPaymentDialog extends StatefulWidget {
   const AddPaymentDialog({super.key});
@@ -12,7 +13,8 @@ class AddPaymentDialog extends StatefulWidget {
 
 class _AddPaymentDialogState extends State<AddPaymentDialog> {
   final _formKey = GlobalKey<FormState>();
-  final MoneyMaskedTextController _amountController = MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: '', leftSymbol: '£');
+  final MoneyMaskedTextController _amountController = MoneyMaskedTextController(
+      decimalSeparator: '.', thousandSeparator: '', leftSymbol: '£');
   final TextEditingController _payeeController = TextEditingController();
   DateTime? _selectedDate;
   PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
@@ -42,7 +44,8 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       client.payment.insertPayment(
-        (double.parse(_amountController.text.replaceFirst('£', ''))*100).truncate(),
+        (double.parse(_amountController.text.replaceFirst('£', '')) * 100)
+            .truncate(),
         _payeeController.text,
         _selectedDate,
       );
@@ -91,24 +94,24 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
                   ),
                 ],
               ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<PaymentMethod>(
-              value: _selectedPaymentMethod,
-              decoration: const InputDecoration(labelText: 'Payment Method'),
-              items: PaymentMethod.values.map((method) {
-                return DropdownMenuItem(
-                  value: method,
-                  child: Text(method.name),
-                );
-              }).toList(),
-              onChanged: (method) {
-                setState(() {
-                  _selectedPaymentMethod = method;
-                });
-              },
-              validator: (value) =>
-                  value == null ? 'Select a payment method' : null,
-            ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<PaymentMethod>(
+                value: _selectedPaymentMethod,
+                decoration: const InputDecoration(labelText: 'Payment Method'),
+                items: PaymentMethod.values.map((method) {
+                  return DropdownMenuItem(
+                    value: method,
+                    child: Text(method.toDiplayString()),
+                  );
+                }).toList(),
+                onChanged: (method) {
+                  setState(() {
+                    _selectedPaymentMethod = method;
+                  });
+                },
+                validator: (value) =>
+                    value == null ? 'Select a payment method' : null,
+              ),
             ],
           ),
         ),
