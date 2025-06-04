@@ -5,7 +5,64 @@ on:
   workflow_dispatch:
 
 jobs:
+  checkFormat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v2
+        with:
+          sdk: 'stable'
+
+      - name: Check code format
+        run: dart format --set-exit-if-changed .
+
+  analyzeServer:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scouts_finances_server
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v2
+        with:
+          sdk: 'stable'
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Analyze server code
+        run: dart analyze
+    
+  analyzeFlutter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scouts_finances_flutter
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze Flutter code
+        run: flutter analyze
+
   build:
+    needs: [checkFormat, analyzeServer, analyzeFlutter]
     runs-on: macos-latest # macOS is needed for iOS builds
     env:
       SERVER_URL: localhost
@@ -25,9 +82,6 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-
-      - name: Style check
-        run: flutter analyze
 
       - name: Build Android APK
         run: flutter build apk --release
