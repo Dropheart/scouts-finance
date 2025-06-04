@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
-import 'package:scouts_finances_client/src/extensions/payment_method.dart';
 
 class AddPaymentDialog extends StatefulWidget {
   const AddPaymentDialog({super.key});
@@ -101,7 +101,7 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
                 items: PaymentMethod.values.map((method) {
                   return DropdownMenuItem(
                     value: method,
-                    child: Text(method.toDiplayString()),
+                    child: Text(method.toDisplayString()),
                   );
                 }).toList(),
                 onChanged: (method) {
