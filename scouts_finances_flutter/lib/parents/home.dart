@@ -11,7 +11,7 @@ class ParentHome extends StatefulWidget {
 
 class _ParentHomeState extends State<ParentHome> {
   String query = '';
-  late List<Parent> parents;
+  late List<Parent> allParents;
   String? errorMessage;
   bool loading = true;
 
@@ -25,12 +25,12 @@ class _ParentHomeState extends State<ParentHome> {
     try {
       final result = await client.parent.getParents();
       setState(() {
-        parents = result;
+        allParents = result;
         loading = false;
       });
     } catch (e) {
       setState(() {
-        parents = [];
+        allParents = [];
         errorMessage =
             "Failed to fetch parents. Are you connected to the internet?";
         loading = false;
@@ -53,7 +53,7 @@ class _ParentHomeState extends State<ParentHome> {
       );
     } else {
       SearchBar searchBar = SearchBar(
-        hintText: 'Search Parents',
+        hintText: 'Search parent, email, phone...',
         onChanged: (value) => setState(() {
           query = value;
         }),
@@ -63,7 +63,12 @@ class _ParentHomeState extends State<ParentHome> {
         ),
       );
 
-      List<Card> parentCards = parents
+      List<Card> parentCards = allParents
+          .where((e) =>
+              e.firstName.toLowerCase().contains(query.toLowerCase()) ||
+              e.lastName.toLowerCase().contains(query.toLowerCase()) ||
+              e.email.toLowerCase().contains(query.toLowerCase()) ||
+              e.phone.contains(query))
           .map(
             (e) => Card(
               child: ListTile(
