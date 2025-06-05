@@ -1,6 +1,7 @@
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_flutter/events/home.dart';
+import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/scouts/home.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -80,11 +81,13 @@ class _MyHomePageState extends State<MyHomePage> {
     EventHome(),
     PaymentsHome(),
     ScoutsHome(),
+    ParentHome()
   ];
   static final List<String> pageTitles = [
     'Events',
     'Payments',
     'Scouts',
+    'Parents',
   ];
 
   static final List<NavigationDestination> destinations = [
@@ -94,11 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     const NavigationDestination(
       icon: Icon(Icons.attach_money),
-      label: 'Amazing Payments',
+      label: 'Payments',
     ),
     const NavigationDestination(
-      icon: Icon(Icons.group),
+      icon: Icon(Icons.hiking),
       label: 'Scouts',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.supervisor_account),
+      label: 'Parents',
     ),
   ];
 
