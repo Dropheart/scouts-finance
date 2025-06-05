@@ -18,6 +18,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.lastName,
     required this.email,
     required this.phone,
+    required this.balance,
   });
 
   factory Parent({
@@ -26,6 +27,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String lastName,
     required String email,
     required String phone,
+    required int balance,
   }) = _ParentImpl;
 
   factory Parent.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -35,6 +37,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       lastName: jsonSerialization['lastName'] as String,
       email: jsonSerialization['email'] as String,
       phone: jsonSerialization['phone'] as String,
+      balance: jsonSerialization['balance'] as int,
     );
   }
 
@@ -53,6 +56,8 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String phone;
 
+  int balance;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -65,6 +70,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? lastName,
     String? email,
     String? phone,
+    int? balance,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -74,6 +80,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'lastName': lastName,
       'email': email,
       'phone': phone,
+      'balance': balance,
     };
   }
 
@@ -85,6 +92,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'lastName': lastName,
       'email': email,
       'phone': phone,
+      'balance': balance,
     };
   }
 
@@ -127,12 +135,14 @@ class _ParentImpl extends Parent {
     required String lastName,
     required String email,
     required String phone,
+    required int balance,
   }) : super._(
           id: id,
           firstName: firstName,
           lastName: lastName,
           email: email,
           phone: phone,
+          balance: balance,
         );
 
   /// Returns a shallow copy of this [Parent]
@@ -145,6 +155,7 @@ class _ParentImpl extends Parent {
     String? lastName,
     String? email,
     String? phone,
+    int? balance,
   }) {
     return Parent(
       id: id is int? ? id : this.id,
@@ -152,6 +163,7 @@ class _ParentImpl extends Parent {
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
       phone: phone ?? this.phone,
+      balance: balance ?? this.balance,
     );
   }
 }
@@ -174,6 +186,10 @@ class ParentTable extends _i1.Table<int?> {
       'phone',
       this,
     );
+    balance = _i1.ColumnInt(
+      'balance',
+      this,
+    );
   }
 
   late final _i1.ColumnString firstName;
@@ -184,6 +200,8 @@ class ParentTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString phone;
 
+  late final _i1.ColumnInt balance;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -191,6 +209,7 @@ class ParentTable extends _i1.Table<int?> {
         lastName,
         email,
         phone,
+        balance,
       ];
 }
 

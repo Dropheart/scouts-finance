@@ -90,6 +90,19 @@ class EndpointParent extends _i1.EndpointRef {
         'getParentById',
         {'id': id},
       );
+
+  _i2.Future<void> addBalance(
+    int parentId,
+    int amount,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'parent',
+        'addBalance',
+        {
+          'parentId': parentId,
+          'amount': amount,
+        },
+      );
 }
 
 /// {@category Endpoint}

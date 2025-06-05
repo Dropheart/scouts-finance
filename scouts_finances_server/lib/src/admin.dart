@@ -15,42 +15,70 @@ class AdminEndpoint extends Endpoint {
     await Parent.db.deleteWhere(session, where: (t) => t.id > -1);
     await BankAccount.db.deleteWhere(session, where: (t) => t.id > -1);
 
-    // Now create some children
-    final child1 = Child(firstName: "John", lastName: "Doe");
-    final child2 = Child(firstName: "Jane", lastName: "Doe");
-    final child3 = Child(firstName: "Alice", lastName: "Smith");
-    final child4 = Child(firstName: "Silver", lastName: "Johnson");
-    final child5 = Child(firstName: "Charlie", lastName: "Brown");
-
     final parent1 = Parent(
         firstName: "Phoebe",
         lastName: "Galindo",
         email: "pgalindo@gmail.com",
-        phone: "1234567890");
+        phone: "1234567890",
+        balance: 0);
     final parent2 = Parent(
         firstName: "Salvatore",
         lastName: "Esparza",
         email: "sesparza@gmail.com",
-        phone: "2345678901");
+        phone: "2345678901",
+        balance: 0);
     final parent3 = Parent(
         firstName: "Ramona",
         lastName: "Stanton",
         email: "rstanton@gmail.com",
-        phone: "3456789012");
+        phone: "3456789012",
+        balance: 0);
     final parent4 = Parent(
         firstName: "Zyair",
         lastName: "Gould",
         email: "zgould@gmail.com",
-        phone: "4567890123");
+        phone: "4567890123",
+        balance: 0);
     final parent5 = Parent(
         firstName: "Violeta",
         lastName: "Norman",
         email: "vnorman@gmail.com",
-        phone: "5678901234");
+        phone: "5678901234",
+        balance: 0);
 
-    await Child.db.insert(session, [child1, child2, child3, child4, child5]);
     await Parent.db
         .insert(session, [parent1, parent2, parent3, parent4, parent5]);
+
+    List<Parent> insertedParents =
+        await Parent.db.find(session, where: (t) => t.id > -1);
+
+    // Now create some children
+    final child1 = Child(
+        firstName: "John",
+        lastName: "Doe",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child2 = Child(
+        firstName: "Jane",
+        lastName: "Doe",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child3 = Child(
+        firstName: "Alice",
+        lastName: "Smith",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child4 = Child(
+        firstName: "Silver",
+        lastName: "Johnson",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child5 = Child(
+        firstName: "Charlie",
+        lastName: "Brown",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    await Child.db.insert(session, [child1, child2, child3, child4, child5]);
 
     // Create some events
     final event1 =
@@ -147,12 +175,13 @@ class AdminEndpoint extends Endpoint {
             ];
 
       // Insert into the payment table
-      final insertedPayments = await Payment.db.insert(session, payments);
-      // Link to event
-      for (var payment in insertedPayments) {
-        await EventRegistration.db.attachRow
-            .payments(session, registration, payment);
-      }
+      /*final insertedPayments = */
+      await Payment.db.insert(session, payments);
+      // // Link to event
+      // for (var payment in insertedPayments) {
+      //   await EventRegistration.db.attachRow
+      //       .payments(session, registration, payment);
+      // }
     }
   }
 }
