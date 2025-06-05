@@ -171,6 +171,7 @@ class _EventHomeState extends State<EventHome> {
               ),
             ),
           ]),
+          const SizedBox(height: 128.0),
     ]));
 
     FloatingActionButton addEventButton = FloatingActionButton(
