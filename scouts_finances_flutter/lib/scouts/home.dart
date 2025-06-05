@@ -14,11 +14,6 @@ class _ScoutsHomeState extends State<ScoutsHome> {
   String? errorMessage;
   bool loading = true;
   String query = '';
-  final searchBy = [
-    'first name',
-    'last name',
-  ];
-  int searchByIndex = 0;
 
   void _getChildren() async {
     try {
@@ -60,14 +55,7 @@ class _ScoutsHomeState extends State<ScoutsHome> {
     List<Child> filteredChildren = children.where((child) {
       if (query.isEmpty) return true;
       final searchTerm = query.toLowerCase();
-      switch (searchByIndex) {
-        case 0: // First name
-          return child.firstName.toLowerCase().contains(searchTerm);
-        case 1: // Last name
-          return child.lastName.toLowerCase().contains(searchTerm);
-        default:
-          return false;
-      }
+      return "${child.firstName} ${child.lastName}".toLowerCase().contains(searchTerm);
     }).toList();
 
     List<Card> childCards = filteredChildren.map((child) {
@@ -89,33 +77,9 @@ class _ScoutsHomeState extends State<ScoutsHome> {
         });
       },
       leading: const Icon(Icons.search),
-      hintText: 'Search scouts',
+      hintText: 'e.g. "John Smith"',
     );
 
-    Widget searchSelection = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        children: [
-          Text("Search by: "),
-          DropdownButton<int>(
-            value: searchByIndex,
-            items: List.generate(searchBy.length, (index) {
-              return DropdownMenuItem<int>(
-                value: index,
-                child: Text(searchBy[index]),
-              );
-            }),
-            onChanged: (int? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  searchByIndex = newValue;
-                });
-              }
-            },
-          )
-        ],
-      ),
-    );
 
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +88,6 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           padding: const EdgeInsets.all(8.0),
           child: searchBar,
         ),
-        searchSelection,
         ...childCards,
         ElevatedButton(
             onPressed: () async {
