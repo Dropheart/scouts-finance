@@ -3,7 +3,7 @@ table: event_registrations
 fields:
   event: Event?, relation
   child: Child?, relation,
-  payments: List<Payment>?, relation
+  paidDate: DateTime? # DateTime when event paid in full. Null if not paid.
 indexes:
   registration_index_idx:
     fields: eventId, childId

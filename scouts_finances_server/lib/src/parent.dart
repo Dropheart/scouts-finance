@@ -9,4 +9,13 @@ class ParentEndpoint extends Endpoint {
   Future<Parent?> getParentById(Session session, int id) async {
     return Parent.db.findById(session, id);
   }
+
+  Future<void> addBalance(Session session, int parentId, int amount) async {
+    final parent = await Parent.db.findById(session, parentId);
+    if (parent == null) {
+      throw ArgumentError('Parent with id $parentId not found');
+    }
+    parent.balance += amount;
+    await Parent.db.update(session, [parent]);
+  }
 }

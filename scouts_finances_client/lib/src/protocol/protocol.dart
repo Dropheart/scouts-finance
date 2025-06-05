@@ -87,11 +87,6 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i8.PaymentMethod?>()) {
       return (data != null ? _i8.PaymentMethod.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i7.Payment>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i7.Payment>(e)).toList()
-          : null) as T;
-    }
     if (t == List<_i9.Event>) {
       return (data as List).map((e) => deserialize<_i9.Event>(e)).toList() as T;
     }

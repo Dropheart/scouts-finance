@@ -19,27 +19,32 @@ class AdminEndpoint extends Endpoint {
         firstName: "Phoebe",
         lastName: "Galindo",
         email: "pgalindo@gmail.com",
-        phone: "1234567890");
+        phone: "1234567890",
+        balance: 0);
     final parent2 = Parent(
         firstName: "Salvatore",
         lastName: "Esparza",
         email: "sesparza@gmail.com",
-        phone: "2345678901");
+        phone: "2345678901",
+        balance: 0);
     final parent3 = Parent(
         firstName: "Ramona",
         lastName: "Stanton",
         email: "rstanton@gmail.com",
-        phone: "3456789012");
+        phone: "3456789012",
+        balance: 0);
     final parent4 = Parent(
         firstName: "Zyair",
         lastName: "Gould",
         email: "zgould@gmail.com",
-        phone: "4567890123");
+        phone: "4567890123",
+        balance: 0);
     final parent5 = Parent(
         firstName: "Violeta",
         lastName: "Norman",
         email: "vnorman@gmail.com",
-        phone: "5678901234");
+        phone: "5678901234",
+        balance: 0);
 
     await Parent.db
         .insert(session, [parent1, parent2, parent3, parent4, parent5]);
@@ -170,12 +175,13 @@ class AdminEndpoint extends Endpoint {
             ];
 
       // Insert into the payment table
-      final insertedPayments = await Payment.db.insert(session, payments);
-      // Link to event
-      for (var payment in insertedPayments) {
-        await EventRegistration.db.attachRow
-            .payments(session, registration, payment);
-      }
+      /*final insertedPayments = */
+      await Payment.db.insert(session, payments);
+      // // Link to event
+      // for (var payment in insertedPayments) {
+      //   await EventRegistration.db.attachRow
+      //       .payments(session, registration, payment);
+      // }
     }
   }
 }

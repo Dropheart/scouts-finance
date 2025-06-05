@@ -3,7 +3,6 @@ import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/payment_table.dart';
 import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
-import 'package:scouts_finances_flutter/shared/text_dropdown.dart';
 
 class SinglePaymentView extends StatefulWidget {
   final int paymentId;
@@ -18,14 +17,13 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
   late List<Parent> parents;
   Parent get currParent => parents[parentIndex];
   int parentIndex = -1;
-  int loading = 3; // Number of async operations to wait for
+  int loading = 2; // Number of async operations to wait for
 
   @override
   void initState() {
     super.initState();
     _getPayment();
     _getParents();
-    _getScouts();
   }
 
   void _getPayment() async {
@@ -53,16 +51,6 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         parents = [];
       });
     }
-  }
-
-  late List<Child> scouts;
-  int scoutIndex = 0;
-  void _getScouts() async {
-    scouts = await client.scouts.getChildren();
-    scouts.sort((a, b) => a.lastName.compareTo(b.lastName));
-    setState(() {
-      loading = loading - 1;
-    });
   }
 
   @override
@@ -101,39 +89,10 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           onChanged: (p) {
             setState(() {
               parentIndex = parents.indexWhere((parent) => parent.id == p);
-              scoutIndex = 0; // Reset scout index when parent changes
             });
           },
         )
       ]);
-
-      List<Child> filteredScouts =
-          scouts.where((s) => s.parentId == parents[parentIndex].id).toList();
-
-      Widget scoutSelection;
-      if (filteredScouts.isEmpty) {
-        scoutSelection = Center(
-          child: Text(
-            "No scouts found for this parent. Please assign a scout to this parent before classifying payments.",
-            style: const TextStyle(color: Colors.red, fontSize: 16),
-          ),
-        );
-      } else {
-        scoutSelection = Row(children: [
-          Text("Assign this payment to scout: "),
-          TextDropdown(
-              onChanged: (s) {
-                setState(() {
-                  scoutIndex =
-                      filteredScouts.indexWhere((scout) => scout.id == s);
-                });
-              },
-              values: filteredScouts,
-              valueToId: (s) => s.id!,
-              valueToString: (s) => '${s.firstName} ${s.lastName}',
-              defaultValue: filteredScouts[scoutIndex].id)
-        ]);
-      }
 
       body = Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -141,10 +100,10 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         children: [
           PaymentTable(payment: payment!),
           const SizedBox(height: 16),
-          Column(children: [parentSelection, scoutSelection]),
+          Column(children: [parentSelection]),
           const SizedBox(height: 32),
           Text(
-              "This will change ${currParent.firstName}'s balance from -£10.00 to -£5.00"),
+              "This will change ${currParent.firstName}'s balance from ${currParent.balance} to ${currParent.balance + payment!.amount}."),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: submit,
@@ -170,6 +129,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
     try {
       await client.payment.updatePayment(payment!.id!, currParent);
+      await client.parent.addBalance(currParent.id!, payment!.amount);
     } catch (e) {
       if (context.mounted) {
         // ignore: use_build_context_synchronously
