@@ -21,10 +21,12 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     try {
       final result = await client.payment.getPayments();
 
-      final classifiedPayments = result.where((p) => p.parentId != null).toList();
+      final classifiedPayments =
+          result.where((p) => p.parentId != null).toList();
       classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
-      final unclassifiedPayments = result.where((p) => p.parentId == null).toList();
+      final unclassifiedPayments =
+          result.where((p) => p.parentId == null).toList();
       unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
@@ -73,11 +75,12 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     final List<Widget> body = [];
     if (unclassifiedPaymentCards.isNotEmpty) {
-      body.add(Text("Unclassified Payments - ${unclassifiedPaymentCards.length}",
+      body.add(Text(
+          "Unclassified Payments - ${unclassifiedPaymentCards.length}",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
       body.addAll(unclassifiedPaymentCards);
     }
-    
+
     if (classifiedPaymentCards.isNotEmpty) {
       body.add(Text("Classified Payments - ${classifiedPaymentCards.length}",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
@@ -86,12 +89,11 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     body.add(const SizedBox(height: 128.0));
 
-
     return Scaffold(
       body: Padding(
           padding: EdgeInsetsGeometry.all(8.0),
-          child: SingleChildScrollView(child: 
-          Column(
+          child: SingleChildScrollView(
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: body,
           ))),
