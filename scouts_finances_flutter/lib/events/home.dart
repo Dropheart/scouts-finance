@@ -106,12 +106,42 @@ class _EventHomeState extends State<EventHome> {
       onChanged: (value) => setState(() {
         query = value;
       }),
-      leading: const Icon(Icons.search),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+    );
+
+    Widget sortSelection = Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Row(
+        children: [
+          const Text("Sort by:"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: DropdownButton<String>(
+              value: sorts[sortIndex],
+              onChanged: (String? newValue) {
+                setState(() {
+                  sortIndex = sorts.indexOf(newValue!);
+                });
+              },
+              items: sorts.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
     );
 
     Center body = Center(
         child: ListView(children: [
       Padding(padding: EdgeInsets.all(16.0), child: searchBar),
+      sortSelection,
       ExpansionTile(
           title: const Text('Future Events'),
           initiallyExpanded: true,
@@ -159,34 +189,11 @@ class _EventHomeState extends State<EventHome> {
       },
     );
 
-    FloatingActionButton sortButton = FloatingActionButton(
-      heroTag: 'sort',
-      child: const Icon(Icons.sort),
-      onPressed: () {
-        setState(() {
-          sortIndex = (sortIndex + 1) % sorts.length;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Sorted by: ${sorts[sortIndex]}'),
-            duration: Duration(seconds: 1),
-          ),
-        );
-        return;
-      },
-    );
-
-    Row actionButtons = Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [sortButton, addEventButton]);
-
     return Scaffold(
       body: body,
       // Padding is required so the buttons don't clip the bottom/sides of the screen
-      floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: actionButtons),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: addEventButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
