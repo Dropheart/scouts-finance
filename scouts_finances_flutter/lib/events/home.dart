@@ -15,6 +15,12 @@ class _EventHomeState extends State<EventHome> {
   late List<Event> events;
   String? errorMessage;
   bool loading = true;
+  final sorts = [
+    'Upcoming First',
+    'Upcoming Last',
+    /*'Most Paid', 'Least Paid' */
+  ];
+  int sortIndex = 0;
 
   void _getEvents() async {
     try {
@@ -52,6 +58,22 @@ class _EventHomeState extends State<EventHome> {
         ),
       );
     }
+
+    events.sort((a, b) {
+      switch (sortIndex) {
+        case 0: // Upcoming First
+          return b.date.compareTo(a.date);
+        case 1: // Upcoming Last
+          return a.date.compareTo(b.date);
+        // Paid count tbd
+        case 2: // Most Paid
+        // return b.paidCount.compareTo(a.paidCount);
+        case 3: // Least Paid
+        // return a.paidCount.compareTo(b.paidCount);
+        default:
+          return 0; // No sorting
+      }
+    });
 
     List<Card> eventCards = events.map((event) {
       return Card(
@@ -104,22 +126,47 @@ class _EventHomeState extends State<EventHome> {
           ]),
     ]));
 
+    FloatingActionButton addEventButton = FloatingActionButton(
+      heroTag: 'addEvent',
+      child: const Icon(Icons.add),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AddEventDialog();
+          },
+        ).then((_) {
+          // Refresh the event list after adding a new event
+          _getEvents();
+        });
+      },
+    );
+
+    FloatingActionButton sortButton = FloatingActionButton(
+      heroTag: 'sort',
+      child: const Icon(Icons.sort),
+      onPressed: () {
+        setState(() {
+          sortIndex = (sortIndex + 1) % sorts.length;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sorted by: ${sorts[sortIndex]}')),
+        );
+        return;
+      },
+    );
+
+    Row actionButtons = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [sortButton, addEventButton]);
+
     return Scaffold(
       body: body,
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const AddEventDialog();
-            },
-          ).then((_) {
-            // Refresh the event list after adding a new event
-            _getEvents();
-          });
-        },
-      ),
+      // Padding is required so the buttons don't clip the bottom/sides of the screen
+      floatingActionButton: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: actionButtons),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
