@@ -15,13 +15,6 @@ class AdminEndpoint extends Endpoint {
     await Parent.db.deleteWhere(session, where: (t) => t.id > -1);
     await BankAccount.db.deleteWhere(session, where: (t) => t.id > -1);
 
-    // Now create some children
-    final child1 = Child(firstName: "John", lastName: "Doe");
-    final child2 = Child(firstName: "Jane", lastName: "Doe");
-    final child3 = Child(firstName: "Alice", lastName: "Smith");
-    final child4 = Child(firstName: "Silver", lastName: "Johnson");
-    final child5 = Child(firstName: "Charlie", lastName: "Brown");
-
     final parent1 = Parent(
         firstName: "Phoebe",
         lastName: "Galindo",
@@ -48,9 +41,39 @@ class AdminEndpoint extends Endpoint {
         email: "vnorman@gmail.com",
         phone: "5678901234");
 
-    await Child.db.insert(session, [child1, child2, child3, child4, child5]);
     await Parent.db
         .insert(session, [parent1, parent2, parent3, parent4, parent5]);
+
+    List<Parent> insertedParents =
+        await Parent.db.find(session, where: (t) => t.id > -1);
+
+    // Now create some children
+    final child1 = Child(
+        firstName: "John",
+        lastName: "Doe",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child2 = Child(
+        firstName: "Jane",
+        lastName: "Doe",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child3 = Child(
+        firstName: "Alice",
+        lastName: "Smith",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child4 = Child(
+        firstName: "Silver",
+        lastName: "Johnson",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    final child5 = Child(
+        firstName: "Charlie",
+        lastName: "Brown",
+        parentId:
+            insertedParents[Random().nextInt(insertedParents.length)].id!);
+    await Child.db.insert(session, [child1, child2, child3, child4, child5]);
 
     // Create some events
     final event1 =
