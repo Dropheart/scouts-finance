@@ -72,36 +72,34 @@ class _ScoutsHomeState extends State<ScoutsHome> {
 
     List<Card> childCards = filteredChildren.map((child) {
       return Card(
-        child: ListTile(
-          title: Text('${child.firstName} ${child.lastName}'),
-          subtitle: Text('Section, finance overview here'),
-          onTap: () {
+          child: ListTile(
+        title: Text('${child.firstName} ${child.lastName}'),
+        subtitle: Text('Section, finance overview here'),
+        onTap: () {
           // Navigate to child's profile page
-          },
-          trailing: const Icon(Icons.arrow_forward),
-        )
-      );
+        },
+        trailing: const Icon(Icons.arrow_forward),
+      ));
     }).toList();
 
     SearchBar searchBar = SearchBar(
-      onChanged: (value) {
-        setState(() {
-          query = value;
-        });
-      },
-      leading: const Icon(Icons.search),
-      hintText: 'Search by ${searchBy[searchByIndex]}',
-      trailing: [
-        IconButton(
-          icon: const Icon(Icons.filter_list),
-          onPressed: () {
-            setState(() {
-              searchByIndex = (searchByIndex + 1) % searchBy.length;
-            });
-          },
-        )
-      ]
-    );
+        onChanged: (value) {
+          setState(() {
+            query = value;
+          });
+        },
+        leading: const Icon(Icons.search),
+        hintText: 'Search by ${searchBy[searchByIndex]}',
+        trailing: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              setState(() {
+                searchByIndex = (searchByIndex + 1) % searchBy.length;
+              });
+            },
+          )
+        ]);
 
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,11 +110,10 @@ class _ScoutsHomeState extends State<ScoutsHome> {
         ),
         ...childCards,
         ElevatedButton(
-          onPressed: () async {
-            await client.admin.resetDb();
-          },
-          child: const Text('Secret debug button (Reset DB)')
-          )
+            onPressed: () async {
+              await client.admin.resetDb();
+            },
+            child: const Text('Secret debug button (Reset DB)'))
       ],
     );
 
