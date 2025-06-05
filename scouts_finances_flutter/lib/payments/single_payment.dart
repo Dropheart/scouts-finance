@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/payment_table.dart';
+import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
 
 class SinglePaymentView extends StatefulWidget {
   final int paymentId;
@@ -72,6 +73,12 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
       if (payment!.parentId != null) {
         // Then there is already a parent assigned so the index should reflect that
         parentIndex = parents.indexWhere((p) => p.id == payment!.parentId!);
+      } else {
+        // Try to find the parent by payee name
+        parentIndex = parents.indexWhere((p) =>
+            payment!.payee.contains(p.firstName) &&
+            payment!.payee.contains(p.lastName));
+        if (parentIndex == -1) parentIndex = 0; // Default to first parent
       }
 
       body = Column(
@@ -83,20 +90,16 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           Row(
             children: [
               Text("Assign this payment to: "),
-              DropdownMenu(
-                dropdownMenuEntries: parents
-                    .map((parent) => DropdownMenuEntry(
-                          label: '${parent.firstName} ${parent.lastName}',
-                          value: parent.id,
-                        ))
-                    .toList(),
-                initialSelection: parents[parentIndex].id,
-                onSelected: (value) {
+              ParentDropdown(
+                parents: parents,
+                defaultParentId: parents[parentIndex].id,
+                onChanged: (p) {
                   setState(() {
-                    parentIndex = parents.indexWhere((p) => p.id == value);
+                    parentIndex =
+                        parents.indexWhere((parent) => parent.id == p);
                   });
                 },
-              ),
+              )
             ],
           ),
           const SizedBox(height: 32),
