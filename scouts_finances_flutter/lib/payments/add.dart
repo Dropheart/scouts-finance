@@ -15,6 +15,8 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   final _formKey = GlobalKey<FormState>();
   final MoneyMaskedTextController _amountController = MoneyMaskedTextController(
       decimalSeparator: '.', thousandSeparator: '', leftSymbol: '£');
+  final MoneyMaskedTextController _amountController = MoneyMaskedTextController(
+      decimalSeparator: '.', thousandSeparator: '', leftSymbol: '£');
   final TextEditingController _payeeController = TextEditingController();
   DateTime? _selectedDate;
   PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
@@ -44,6 +46,8 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       client.payment.insertPayment(
+        (double.parse(_amountController.text.replaceFirst('£', '')) * 100)
+            .truncate(),
         (double.parse(_amountController.text.replaceFirst('£', '')) * 100)
             .truncate(),
         _payeeController.text,
@@ -135,3 +139,4 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
 //   context: context,
 //   builder: (context) => const AddPaymentDialog(),
 // );
+
