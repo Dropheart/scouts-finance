@@ -93,13 +93,15 @@ class _ParentHomeState extends State<ParentHome> {
                   ],
                 ),
                 trailing: Icon(Icons.info_outline),
-                onTap: () => {},
+                onTap: () => {
+                  
+                },
               ),
             ),
           )
           .toList();
 
-      body = Column(
+      body = ListView(
         children: [
           searchBar,
           SizedBox(height: 16.0),
