@@ -13,38 +13,101 @@ class SinglePaymentView extends StatefulWidget {
 
 class _SinglePaymentViewState extends State<SinglePaymentView> {
   late Payment? payment;
-  bool loading = true;
+  late List<Parent> parents;
+  Parent get currParent => parents[parentIndex];
+  int parentIndex = 0;
+  int loading = 2; // Number of async operations to wait for
 
   @override
   void initState() {
     super.initState();
     _getPayment();
+    _getParents();
   }
 
   void _getPayment() async {
     try {
       payment = await client.payment.getPaymentById(widget.paymentId);
       setState(() {
-        loading = false;
+        loading = loading - 1;
       });
     } catch (e) {
       setState(() {
-        loading = false;
         payment = null; // Set to null if not found
+      });
+    }
+  }
+
+  void _getParents() async {
+    try {
+      parents = await client.parent.getParents();
+      parents.sort((a, b) => a.lastName.compareTo(b.lastName));
+      setState(() {
+        loading = loading - 1;
+      });
+    } catch (e) {
+      setState(() {
+        parents = [];
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    Widget body;
+    if (loading != 0) {
+      body = const Center(child: CircularProgressIndicator());
+    } else if (payment == null) {
+      body = const Center(
+        child: Text(
+          'Payment not found. This suggests there is an internal error. Please contact the developers.',
+          style: TextStyle(color: Colors.red, fontSize: 16),
+        ),
+      );
+    } else if (parents.isEmpty) {
+      body = const Center(
+          child: Text(
+              "No parents found. This suggests there is an internal error. Please contact the developers."));
+    } else {
+      if (payment!.parentId != null) {
+        // Then there is already a parent assigned so the index should reflect that
+        parentIndex = parents.indexWhere((p) => p.id == payment!.parentId!);
+      }
 
-    if (payment == null) {
-      return const Center(
-        child: Text('Payment not found. This suggests there is an internal error. Please contact the developers.',
-            style: TextStyle(color: Colors.red, fontSize: 16)),
+      body = Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PaymentTable(payment: payment!),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Text("Assign this payment to: "),
+              DropdownMenu(
+                dropdownMenuEntries: parents
+                    .map((parent) => DropdownMenuEntry(
+                          label: '${parent.firstName} ${parent.lastName}',
+                          value: parent.id,
+                        ))
+                    .toList(),
+                initialSelection: parents[parentIndex].id,
+                onSelected: (value) {
+                  setState(() {
+                    parentIndex = parents.indexWhere((p) => p.id == value);
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Text(
+              "This will change ${currParent.firstName}'s balance from -£10.00 to -£5.00"),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: submit,
+            child: Text('Classify Payment'),
+          ),
+        ],
       );
     }
 
@@ -53,13 +116,33 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         title: const Text('Classify Payment'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [PaymentTable(payment:  payment!)],
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: body,
       ),
     );
+  }
+
+  void submit() async {
+    if (payment == null || parents.isEmpty) return;
+
+    try {
+      await client.payment.updatePayment(payment!.id!, currParent);
+    } catch (e) {
+      if (context.mounted) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to classify payment: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    }
+    if (context.mounted) {
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+    }
+    return;
   }
 }

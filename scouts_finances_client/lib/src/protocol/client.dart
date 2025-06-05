@@ -14,9 +14,10 @@ import 'dart:async' as _i2;
 import 'package:scouts_finances_client/src/protocol/events.dart' as _i3;
 import 'package:scouts_finances_client/src/protocol/event_registration.dart'
     as _i4;
-import 'package:scouts_finances_client/src/protocol/payment.dart' as _i5;
-import 'package:scouts_finances_client/src/protocol/child.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:scouts_finances_client/src/protocol/parent.dart' as _i5;
+import 'package:scouts_finances_client/src/protocol/payment.dart' as _i6;
+import 'package:scouts_finances_client/src/protocol/child.dart' as _i7;
+import 'protocol.dart' as _i8;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -70,25 +71,47 @@ class EndpointEvent extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointParent extends _i1.EndpointRef {
+  EndpointParent(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'parent';
+
+  _i2.Future<List<_i5.Parent>> getParents() =>
+      caller.callServerEndpoint<List<_i5.Parent>>(
+        'parent',
+        'getParents',
+        {},
+      );
+
+  _i2.Future<_i5.Parent?> getParentById(int id) =>
+      caller.callServerEndpoint<_i5.Parent?>(
+        'parent',
+        'getParentById',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointPayment extends _i1.EndpointRef {
   EndpointPayment(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'payment';
 
-  _i2.Future<List<_i5.Payment>> getPayments() =>
-      caller.callServerEndpoint<List<_i5.Payment>>(
+  _i2.Future<List<_i6.Payment>> getPayments() =>
+      caller.callServerEndpoint<List<_i6.Payment>>(
         'payment',
         'getPayments',
         {},
       );
 
-  _i2.Future<List<_i5.Payment>> insertPayment(
+  _i2.Future<List<_i6.Payment>> insertPayment(
     int amount,
     String payee,
     DateTime? date,
   ) =>
-      caller.callServerEndpoint<List<_i5.Payment>>(
+      caller.callServerEndpoint<List<_i6.Payment>>(
         'payment',
         'insertPayment',
         {
@@ -98,11 +121,24 @@ class EndpointPayment extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i5.Payment?> getPaymentById(int paymentId) =>
-      caller.callServerEndpoint<_i5.Payment?>(
+  _i2.Future<_i6.Payment?> getPaymentById(int paymentId) =>
+      caller.callServerEndpoint<_i6.Payment?>(
         'payment',
         'getPaymentById',
         {'paymentId': paymentId},
+      );
+
+  _i2.Future<void> updatePayment(
+    int paymentId,
+    _i5.Parent parent,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'payment',
+        'updatePayment',
+        {
+          'paymentId': paymentId,
+          'parent': parent,
+        },
       );
 }
 
@@ -113,8 +149,8 @@ class EndpointScouts extends _i1.EndpointRef {
   @override
   String get name => 'scouts';
 
-  _i2.Future<List<_i6.Child>> getChildren() =>
-      caller.callServerEndpoint<List<_i6.Child>>(
+  _i2.Future<List<_i7.Child>> getChildren() =>
+      caller.callServerEndpoint<List<_i7.Child>>(
         'scouts',
         'getChildren',
         {},
@@ -137,7 +173,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i7.Protocol(),
+          _i8.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -149,6 +185,7 @@ class Client extends _i1.ServerpodClientShared {
         ) {
     admin = EndpointAdmin(this);
     event = EndpointEvent(this);
+    parent = EndpointParent(this);
     payment = EndpointPayment(this);
     scouts = EndpointScouts(this);
   }
@@ -156,6 +193,8 @@ class Client extends _i1.ServerpodClientShared {
   late final EndpointAdmin admin;
 
   late final EndpointEvent event;
+
+  late final EndpointParent parent;
 
   late final EndpointPayment payment;
 
@@ -165,6 +204,7 @@ class Client extends _i1.ServerpodClientShared {
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'admin': admin,
         'event': event,
+        'parent': parent,
         'payment': payment,
         'scouts': scouts,
       };

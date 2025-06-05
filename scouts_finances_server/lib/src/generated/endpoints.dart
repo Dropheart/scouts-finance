@@ -12,9 +12,11 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../admin.dart' as _i2;
 import '../events.dart' as _i3;
-import '../payments.dart' as _i4;
-import '../scouts.dart' as _i5;
-import 'package:scouts_finances_server/src/generated/protocol.dart' as _i6;
+import '../parent.dart' as _i4;
+import '../payments.dart' as _i5;
+import '../scouts.dart' as _i6;
+import 'package:scouts_finances_server/src/generated/protocol.dart' as _i7;
+import 'package:scouts_finances_server/src/generated/parent.dart' as _i8;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -32,13 +34,19 @@ class Endpoints extends _i1.EndpointDispatch {
           'event',
           null,
         ),
-      'payment': _i4.PaymentEndpoint()
+      'parent': _i4.ParentEndpoint()
+        ..initialize(
+          server,
+          'parent',
+          null,
+        ),
+      'payment': _i5.PaymentEndpoint()
         ..initialize(
           server,
           'payment',
           null,
         ),
-      'scouts': _i5.ScoutsEndpoint()
+      'scouts': _i6.ScoutsEndpoint()
         ..initialize(
           server,
           'scouts',
@@ -91,7 +99,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['id'],
                   )
-                  .then((record) => _i6.mapRecordToJson(record)),
+                  .then((record) => _i7.mapRecordToJson(record)),
         ),
         'insertEvent': _i1.MethodConnector(
           name: 'insertEvent',
@@ -125,6 +133,39 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['parent'] = _i1.EndpointConnector(
+      name: 'parent',
+      endpoint: endpoints['parent']!,
+      methodConnectors: {
+        'getParents': _i1.MethodConnector(
+          name: 'getParents',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint).getParents(session),
+        ),
+        'getParentById': _i1.MethodConnector(
+          name: 'getParentById',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint).getParentById(
+            session,
+            params['id'],
+          ),
+        ),
+      },
+    );
     connectors['payment'] = _i1.EndpointConnector(
       name: 'payment',
       endpoint: endpoints['payment']!,
@@ -136,7 +177,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['payment'] as _i4.PaymentEndpoint)
+              (endpoints['payment'] as _i5.PaymentEndpoint)
                   .getPayments(session),
         ),
         'insertPayment': _i1.MethodConnector(
@@ -162,7 +203,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['payment'] as _i4.PaymentEndpoint).insertPayment(
+              (endpoints['payment'] as _i5.PaymentEndpoint).insertPayment(
             session,
             params['amount'],
             params['payee'],
@@ -182,9 +223,33 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['payment'] as _i4.PaymentEndpoint).getPaymentById(
+              (endpoints['payment'] as _i5.PaymentEndpoint).getPaymentById(
             session,
             params['paymentId'],
+          ),
+        ),
+        'updatePayment': _i1.MethodConnector(
+          name: 'updatePayment',
+          params: {
+            'paymentId': _i1.ParameterDescription(
+              name: 'paymentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'parent': _i1.ParameterDescription(
+              name: 'parent',
+              type: _i1.getType<_i8.Parent>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['payment'] as _i5.PaymentEndpoint).updatePayment(
+            session,
+            params['paymentId'],
+            params['parent'],
           ),
         ),
       },
@@ -200,7 +265,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['scouts'] as _i5.ScoutsEndpoint).getChildren(session),
+              (endpoints['scouts'] as _i6.ScoutsEndpoint).getChildren(session),
         )
       },
     );

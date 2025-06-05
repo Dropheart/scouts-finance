@@ -12,15 +12,24 @@ class PaymentsHome extends StatefulWidget {
 }
 
 class _PaymentsHomeState extends State<PaymentsHome> {
-  late List<Payment> payments;
+  late List<Payment> classifiedPayments;
+  late List<Payment> unclassifiedPayments;
   String? err;
   bool loading = true;
 
-  void _getEvents() async {
+  void _getPayments() async {
     try {
       final result = await client.payment.getPayments();
+
+      final classifiedPayments = result.where((p) => p.parentId != null).toList();
+      classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
+
+      final unclassifiedPayments = result.where((p) => p.parentId == null).toList();
+      unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
+
       setState(() {
-        payments = result;
+        this.classifiedPayments = classifiedPayments;
+        this.unclassifiedPayments = unclassifiedPayments;
         loading = false;
       });
     } catch (e) {
@@ -35,7 +44,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   @override
   void initState() {
     super.initState();
-    _getEvents();
+    _getPayments();
   }
 
   @override
@@ -54,71 +63,38 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       );
     }
 
-    List<Card> paymentCards = payments.map((payment) {
-      return Card(
-        child: ListTile(
-          title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
-          subtitle: Row(children: [
-            Text(payment.payee),
-            const Spacer(),
-            Text(payment.date.toLocal().toString().split(' ')[0]),
-          ]),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SinglePaymentView(paymentId: payment.id!),
-              ),
-            );
-          },
-          trailing: const Icon(Icons.edit_square),
-        ),
-      );
+    List<Card> unclassifiedPaymentCards = unclassifiedPayments.map((payment) {
+      return toCard(context, payment);
     }).toList();
 
-    Column body = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('Action Required - 1',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ...paymentCards,
-        const Text('Known Payees - 2',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Card(
-          child: ListTile(
-            title: const Text('£2.49'),
-            subtitle: const Row(
-              children: [
-                Text('Nishant Aanjaney Jalan'),
-                Spacer(),
-                Text('01/01/2025'),
-              ],
-            ),
-            onTap: () {},
-            trailing: const Icon(Icons.arrow_forward),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('£3.14'),
-            subtitle: const Row(
-              children: [
-                Text('Nishant Aanjaney Jalan'),
-                Spacer(),
-                Text('07/05/2025'),
-              ],
-            ),
-            onTap: () {},
-            trailing: const Icon(Icons.arrow_forward),
-          ),
-        ),
-        const SizedBox(height: 128.0),
-      ],
-    );
+    List<Card> classifiedPaymentCards = classifiedPayments.map((payment) {
+      return toCard(context, payment);
+    }).toList();
+
+    final List<Widget> body = [];
+    if (unclassifiedPaymentCards.isNotEmpty) {
+      body.add(Text("Unclassified Payments - ${unclassifiedPaymentCards.length}",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
+      body.addAll(unclassifiedPaymentCards);
+    }
+    
+    if (classifiedPaymentCards.isNotEmpty) {
+      body.add(Text("Classified Payments - ${classifiedPaymentCards.length}",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
+      body.addAll(classifiedPaymentCards);
+    }
+
+    body.add(const SizedBox(height: 128.0));
+
 
     return Scaffold(
       body: Padding(
           padding: EdgeInsetsGeometry.all(8.0),
-          child: SingleChildScrollView(child: body)),
+          child: SingleChildScrollView(child: 
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: body,
+          ))),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -155,7 +131,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                     return AddPaymentDialog();
                   },
                 ).then((_) {
-                  _getEvents();
+                  _getPayments();
                 });
               },
             ),
@@ -163,6 +139,28 @@ class _PaymentsHomeState extends State<PaymentsHome> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Card toCard(BuildContext context, Payment payment) {
+    return Card(
+      child: ListTile(
+        title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+        subtitle: Row(children: [
+          Text(payment.payee),
+          const Spacer(),
+          Text(payment.date.toLocal().toString().split(' ')[0]),
+        ]),
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SinglePaymentView(paymentId: payment.id!),
+            ),
+          );
+          _getPayments(); // Refresh payments after viewing
+        },
+        trailing: const Icon(Icons.edit_square),
+      ),
     );
   }
 }

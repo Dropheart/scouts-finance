@@ -21,8 +21,9 @@ import 'payment_method.dart' as _i9;
 import 'package:scouts_finances_server/src/generated/events.dart' as _i10;
 import 'package:scouts_finances_server/src/generated/event_registration.dart'
     as _i11;
-import 'package:scouts_finances_server/src/generated/payment.dart' as _i12;
-import 'package:scouts_finances_server/src/generated/child.dart' as _i13;
+import 'package:scouts_finances_server/src/generated/parent.dart' as _i12;
+import 'package:scouts_finances_server/src/generated/payment.dart' as _i13;
+import 'package:scouts_finances_server/src/generated/child.dart' as _i14;
 export 'bank_account.dart';
 export 'child.dart';
 export 'event_registration.dart';
@@ -520,12 +521,16 @@ class Protocol extends _i1.SerializationManagerServer {
           .map((e) => deserialize<_i11.EventRegistration>(e))
           .toList() as T;
     }
-    if (t == List<_i12.Payment>) {
-      return (data as List).map((e) => deserialize<_i12.Payment>(e)).toList()
+    if (t == List<_i12.Parent>) {
+      return (data as List).map((e) => deserialize<_i12.Parent>(e)).toList()
           as T;
     }
-    if (t == List<_i13.Child>) {
-      return (data as List).map((e) => deserialize<_i13.Child>(e)).toList()
+    if (t == List<_i13.Payment>) {
+      return (data as List).map((e) => deserialize<_i13.Payment>(e)).toList()
+          as T;
+    }
+    if (t == List<_i14.Child>) {
+      return (data as List).map((e) => deserialize<_i14.Child>(e)).toList()
           as T;
     }
     try {
