@@ -92,23 +92,43 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }).toList();
 
     SearchBar searchBar = SearchBar(
-        onChanged: (String value) {
-          setState(() {
-            query = value;
-          });
-        },
-        leading: const Icon(Icons.search),
-        hintText: 'Search payments by ${searchBy[searchByIndex]}',
-        trailing: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              setState(() {
-                searchByIndex = (searchByIndex + 1) % searchBy.length;
-              });
-            },
-          )
-        ]);
+      onChanged: (String value) {
+        setState(() {
+          query = value;
+        });
+      },
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+      hintText: 'Search payments',
+    );
+
+    Widget sortSelection = Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Row(
+        children: [
+          Text("Sort by:"),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: DropdownButton<int>(
+              value: searchByIndex,
+              items: searchBy.map((value) {
+                return DropdownMenuItem<int>(
+                  value: searchBy.indexOf(value),
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (int? newValue) {
+                setState(() {
+                  searchByIndex = newValue!;
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
 
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,6 +137,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
           padding: const EdgeInsets.all(8.0),
           child: searchBar,
         ),
+        sortSelection,
         const Text('Action Required - 1',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ...paymentCards,
