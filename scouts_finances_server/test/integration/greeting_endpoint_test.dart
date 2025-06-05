@@ -1,4 +1,3 @@
-
 // Import the generated test helper file, it contains everything you need.
 
 // THIS IS AN EXAMPLE TEST FILE - FILL IN WITH ACTUAL TESTS LATER
