@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
+import 'package:scouts_finances_flutter/payments/single_payment.dart';
 
 class PaymentsHome extends StatefulWidget {
   const PaymentsHome({super.key});
@@ -11,7 +12,8 @@ class PaymentsHome extends StatefulWidget {
 }
 
 class _PaymentsHomeState extends State<PaymentsHome> {
-  late List<Payment> payments;
+  late List<Payment> classifiedPayments;
+  late List<Payment> unclassifiedPayments;
   String? err;
   bool loading = true;
   String query = '';
@@ -22,15 +24,27 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   ];
   int searchByIndex = 0;
 
-  void _getEvents() async {
+  void _getPayments() async {
     try {
       final result = await client.payment.getPayments();
+
+      final classifiedPayments =
+          result.where((p) => p.parentId != null).toList();
+      classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
+
+      final unclassifiedPayments =
+          result.where((p) => p.parentId == null).toList();
+      unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
+
       setState(() {
-        payments = result;
+        this.classifiedPayments = classifiedPayments;
+        this.unclassifiedPayments = unclassifiedPayments;
         loading = false;
       });
     } catch (e) {
       setState(() {
+        err =
+            'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         err =
             'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         loading = false;
@@ -41,7 +55,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   @override
   void initState() {
     super.initState();
-    _getEvents();
+    _getPayments();
   }
 
   @override
@@ -52,44 +66,47 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }
     if (err != null) {
       return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Text(err!,
-              style: const TextStyle(color: Colors.red, fontSize: 16)),
-        ),
-      );
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+              child: Text(err!,
+                  style: const TextStyle(color: Colors.red, fontSize: 16))));
     }
 
-    // Filter payments by query
-    List<Payment> filteredPayments = payments.where((payment) {
-      switch (searchBy[searchByIndex]) {
-        case 'payee':
-          return payment.payee.toLowerCase().contains(query.toLowerCase());
-        case 'amount':
-          return (payment.amount / 100).toString().contains(query);
-        case 'date':
-          return payment.date.toLocal().toString().contains(query);
-        default:
-          return false;
-      }
+    List<Card> unclassifiedPaymentCards = unclassifiedPayments.map((payment) {
+      return toCard(context, payment);
     }).toList();
 
-    List<Card> paymentCards = filteredPayments.map((payment) {
-      return Card(
-        child: ListTile(
-          title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
-          subtitle: Row(children: [
-            Text(payment.payee),
-            const Spacer(),
-            Text(payment.date.toLocal().toString().split(' ')[0]),
-          ]),
-          onTap: () {
-            // Navigate to payment details
-          },
-          trailing: const Icon(Icons.edit_square),
-        ),
-      );
+    // // Filter payments by query
+    // List<Payment> filteredUnclassifiedPayments = unclassifiedPayments.where((payment) {
+    //   switch (searchBy[searchByIndex]) {
+    //     case 'payee':
+    //       return payment.payee.toLowerCase().contains(query.toLowerCase());
+    //     case 'amount':
+    //       return (payment.amount / 100).toString().contains(query);
+    //     case 'date':
+    //       return payment.date.toLocal().toString().contains(query);
+    //     default:
+    //       return false;
+    //   }
+    // }).toList();
+
+    List<Card> classifiedPaymentCards = classifiedPayments.map((payment) {
+      return toCard(context, payment);
     }).toList();
+
+    // // Filter payments by query
+    // List<Payment> filteredClassifiedPayments = unclassifiedPayments.where((payment) {
+    //   switch (searchBy[searchByIndex]) {
+    //     case 'payee':
+    //       return payment.payee.toLowerCase().contains(query.toLowerCase());
+    //     case 'amount':
+    //       return (payment.amount / 100).toString().contains(query);
+    //     case 'date':
+    //       return payment.date.toLocal().toString().contains(query);
+    //     default:
+    //       return false;
+    //   }
+    // }).toList();
 
     SearchBar searchBar = SearchBar(
       onChanged: (String value) {
@@ -108,7 +125,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       padding: const EdgeInsets.only(left: 8.0),
       child: Row(
         children: [
-          Text("Sort by:"),
+          Text("Search by:"),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: DropdownButton<int>(
@@ -130,59 +147,36 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       ),
     );
 
-    Column body = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: searchBar,
-        ),
-        sortSelection,
-        const Text('Action Required - 1',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ...paymentCards,
-        const Text('Known Payees - 2',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        Card(
-          child: ListTile(
-            title: const Text('£2.49'),
-            subtitle: const Row(
-              children: [
-                Text('Nishant Aanjaney Jalan'),
-                Spacer(),
-                Text('01/01/2025'),
-              ],
-            ),
-            onTap: () {
-              // Navigate to event details
-            },
-            trailing: const Icon(Icons.arrow_forward),
-          ),
-        ),
-        Card(
-          child: ListTile(
-            title: const Text('£3.14'),
-            subtitle: const Row(
-              children: [
-                Text('Nishant Aanjaney Jalan'),
-                Spacer(),
-                Text('07/05/2025'),
-              ],
-            ),
-            onTap: () {
-              // Navigate to event details
-            },
-            trailing: const Icon(Icons.arrow_forward),
-          ),
-        ),
-        const SizedBox(height: 128.0),
-      ],
-    );
+    final List<Widget> body = [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: searchBar,
+      ),
+      sortSelection,
+    ];
+    if (unclassifiedPaymentCards.isNotEmpty) {
+      body.add(Text(
+          "Unclassified Payments - ${unclassifiedPaymentCards.length}",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
+      body.addAll(unclassifiedPaymentCards);
+    }
+
+    if (classifiedPaymentCards.isNotEmpty) {
+      body.add(Text("Classified Payments - ${classifiedPaymentCards.length}",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
+      body.addAll(classifiedPaymentCards);
+    }
+
+    body.add(const SizedBox(height: 128.0));
 
     return Scaffold(
       body: Padding(
           padding: EdgeInsetsGeometry.all(8.0),
-          child: SingleChildScrollView(child: body)),
+          child: SingleChildScrollView(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: body,
+          ))),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -219,7 +213,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                     return AddPaymentDialog();
                   },
                 ).then((_) {
-                  _getEvents();
+                  _getPayments();
                 });
               },
             ),
@@ -227,6 +221,28 @@ class _PaymentsHomeState extends State<PaymentsHome> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Card toCard(BuildContext context, Payment payment) {
+    return Card(
+      child: ListTile(
+        title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+        subtitle: Row(children: [
+          Text(payment.payee),
+          const Spacer(),
+          Text(payment.date.toLocal().toString().split(' ')[0]),
+        ]),
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SinglePaymentView(paymentId: payment.id!),
+            ),
+          );
+          _getPayments(); // Refresh payments after viewing
+        },
+        trailing: const Icon(Icons.edit_square),
+      ),
     );
   }
 }

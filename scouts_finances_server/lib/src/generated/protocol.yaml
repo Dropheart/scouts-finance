@@ -4,8 +4,13 @@ event:
   - getEvents:
   - getEventById:
   - insertEvent:
+parent:
+  - getParents:
+  - getParentById:
 payment:
   - getPayments:
   - insertPayment:
+  - getPaymentById:
+  - updatePayment:
 scouts:
   - getChildren:

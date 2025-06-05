@@ -1,0 +1,7 @@
+class: Parent
+table: parents
+fields:
+    firstName: String
+    lastName: String
+    email: String
+    phone: String

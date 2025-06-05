@@ -21,4 +21,23 @@ class PaymentEndpoint extends Endpoint {
     // Return the updated list of payments
     return Payment.db.find(session);
   }
+
+  Future<Payment?> getPaymentById(Session session, int paymentId) async {
+    // Find the payment by ID
+    return Payment.db.findById(session, paymentId);
+  }
+
+  Future<void> updatePayment(
+      Session session, int paymentId, Parent parent) async {
+    // Find the payment by ID
+    final payment = await Payment.db.findById(session, paymentId);
+    if (payment == null) {
+      throw ArgumentError('Payment with id $paymentId not found');
+    }
+    // Update the payment with the new parent information
+    //payment.parent = parent;
+    payment.parentId = parent.id!;
+    print('Updating payment with ID: $paymentId for parent: ${parent.id}');
+    await Payment.db.updateRow(session, payment);
+  }
 }

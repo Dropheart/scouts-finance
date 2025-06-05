@@ -3,3 +3,5 @@ table: bank_accounts
 fields:
   accountNumber: String
   sortCode: String
+  name: String # Name of the account holder
+  parent: Parent?, relation(optional) # Association with a parent

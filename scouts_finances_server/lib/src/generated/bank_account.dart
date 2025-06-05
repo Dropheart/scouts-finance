@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'parent.dart' as _i2;
 
 abstract class BankAccount
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -17,12 +20,18 @@ abstract class BankAccount
     this.id,
     required this.accountNumber,
     required this.sortCode,
+    required this.name,
+    this.parentId,
+    this.parent,
   });
 
   factory BankAccount({
     int? id,
     required String accountNumber,
     required String sortCode,
+    required String name,
+    int? parentId,
+    _i2.Parent? parent,
   }) = _BankAccountImpl;
 
   factory BankAccount.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -30,6 +39,12 @@ abstract class BankAccount
       id: jsonSerialization['id'] as int?,
       accountNumber: jsonSerialization['accountNumber'] as String,
       sortCode: jsonSerialization['sortCode'] as String,
+      name: jsonSerialization['name'] as String,
+      parentId: jsonSerialization['parentId'] as int?,
+      parent: jsonSerialization['parent'] == null
+          ? null
+          : _i2.Parent.fromJson(
+              (jsonSerialization['parent'] as Map<String, dynamic>)),
     );
   }
 
@@ -44,6 +59,12 @@ abstract class BankAccount
 
   String sortCode;
 
+  String name;
+
+  int? parentId;
+
+  _i2.Parent? parent;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -54,6 +75,9 @@ abstract class BankAccount
     int? id,
     String? accountNumber,
     String? sortCode,
+    String? name,
+    int? parentId,
+    _i2.Parent? parent,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -61,6 +85,9 @@ abstract class BankAccount
       if (id != null) 'id': id,
       'accountNumber': accountNumber,
       'sortCode': sortCode,
+      'name': name,
+      if (parentId != null) 'parentId': parentId,
+      if (parent != null) 'parent': parent?.toJson(),
     };
   }
 
@@ -70,11 +97,14 @@ abstract class BankAccount
       if (id != null) 'id': id,
       'accountNumber': accountNumber,
       'sortCode': sortCode,
+      'name': name,
+      if (parentId != null) 'parentId': parentId,
+      if (parent != null) 'parent': parent?.toJsonForProtocol(),
     };
   }
 
-  static BankAccountInclude include() {
-    return BankAccountInclude._();
+  static BankAccountInclude include({_i2.ParentInclude? parent}) {
+    return BankAccountInclude._(parent: parent);
   }
 
   static BankAccountIncludeList includeList({
@@ -110,10 +140,16 @@ class _BankAccountImpl extends BankAccount {
     int? id,
     required String accountNumber,
     required String sortCode,
+    required String name,
+    int? parentId,
+    _i2.Parent? parent,
   }) : super._(
           id: id,
           accountNumber: accountNumber,
           sortCode: sortCode,
+          name: name,
+          parentId: parentId,
+          parent: parent,
         );
 
   /// Returns a shallow copy of this [BankAccount]
@@ -124,11 +160,17 @@ class _BankAccountImpl extends BankAccount {
     Object? id = _Undefined,
     String? accountNumber,
     String? sortCode,
+    String? name,
+    Object? parentId = _Undefined,
+    Object? parent = _Undefined,
   }) {
     return BankAccount(
       id: id is int? ? id : this.id,
       accountNumber: accountNumber ?? this.accountNumber,
       sortCode: sortCode ?? this.sortCode,
+      name: name ?? this.name,
+      parentId: parentId is int? ? parentId : this.parentId,
+      parent: parent is _i2.Parent? ? parent : this.parent?.copyWith(),
     );
   }
 }
@@ -143,25 +185,66 @@ class BankAccountTable extends _i1.Table<int?> {
       'sortCode',
       this,
     );
+    name = _i1.ColumnString(
+      'name',
+      this,
+    );
+    parentId = _i1.ColumnInt(
+      'parentId',
+      this,
+    );
   }
 
   late final _i1.ColumnString accountNumber;
 
   late final _i1.ColumnString sortCode;
 
+  late final _i1.ColumnString name;
+
+  late final _i1.ColumnInt parentId;
+
+  _i2.ParentTable? _parent;
+
+  _i2.ParentTable get parent {
+    if (_parent != null) return _parent!;
+    _parent = _i1.createRelationTable(
+      relationFieldName: 'parent',
+      field: BankAccount.t.parentId,
+      foreignField: _i2.Parent.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.ParentTable(tableRelation: foreignTableRelation),
+    );
+    return _parent!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         accountNumber,
         sortCode,
+        name,
+        parentId,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'parent') {
+      return parent;
+    }
+    return null;
+  }
 }
 
 class BankAccountInclude extends _i1.IncludeObject {
-  BankAccountInclude._();
+  BankAccountInclude._({_i2.ParentInclude? parent}) {
+    _parent = parent;
+  }
+
+  _i2.ParentInclude? _parent;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'parent': _parent};
 
   @override
   _i1.Table<int?> get table => BankAccount.t;
@@ -189,6 +272,10 @@ class BankAccountIncludeList extends _i1.IncludeList {
 
 class BankAccountRepository {
   const BankAccountRepository._();
+
+  final attachRow = const BankAccountAttachRowRepository._();
+
+  final detachRow = const BankAccountDetachRowRepository._();
 
   /// Returns a list of [BankAccount]s matching the given query parameters.
   ///
@@ -221,6 +308,7 @@ class BankAccountRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<BankAccountTable>? orderByList,
     _i1.Transaction? transaction,
+    BankAccountInclude? include,
   }) async {
     return session.db.find<BankAccount>(
       where: where?.call(BankAccount.t),
@@ -230,6 +318,7 @@ class BankAccountRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -258,6 +347,7 @@ class BankAccountRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<BankAccountTable>? orderByList,
     _i1.Transaction? transaction,
+    BankAccountInclude? include,
   }) async {
     return session.db.findFirstRow<BankAccount>(
       where: where?.call(BankAccount.t),
@@ -266,6 +356,7 @@ class BankAccountRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -274,10 +365,12 @@ class BankAccountRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    BankAccountInclude? include,
   }) async {
     return session.db.findById<BankAccount>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -395,6 +488,59 @@ class BankAccountRepository {
     return session.db.count<BankAccount>(
       where: where?.call(BankAccount.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class BankAccountAttachRowRepository {
+  const BankAccountAttachRowRepository._();
+
+  /// Creates a relation between the given [BankAccount] and [Parent]
+  /// by setting the [BankAccount]'s foreign key `parentId` to refer to the [Parent].
+  Future<void> parent(
+    _i1.Session session,
+    BankAccount bankAccount,
+    _i2.Parent parent, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (bankAccount.id == null) {
+      throw ArgumentError.notNull('bankAccount.id');
+    }
+    if (parent.id == null) {
+      throw ArgumentError.notNull('parent.id');
+    }
+
+    var $bankAccount = bankAccount.copyWith(parentId: parent.id);
+    await session.db.updateRow<BankAccount>(
+      $bankAccount,
+      columns: [BankAccount.t.parentId],
+      transaction: transaction,
+    );
+  }
+}
+
+class BankAccountDetachRowRepository {
+  const BankAccountDetachRowRepository._();
+
+  /// Detaches the relation between this [BankAccount] and the [Parent] set in `parent`
+  /// by setting the [BankAccount]'s foreign key `parentId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> parent(
+    _i1.Session session,
+    BankAccount bankaccount, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (bankaccount.id == null) {
+      throw ArgumentError.notNull('bankaccount.id');
+    }
+
+    var $bankaccount = bankaccount.copyWith(parentId: null);
+    await session.db.updateRow<BankAccount>(
+      $bankaccount,
+      columns: [BankAccount.t.parentId],
       transaction: transaction,
     );
   }
