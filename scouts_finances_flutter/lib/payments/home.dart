@@ -59,13 +59,10 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }
     if (err != null) {
       return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Text(err!,
-              style: const TextStyle(color: Colors.red, fontSize: 16)),
-              style: const TextStyle(color: Colors.red, fontSize: 16)),
-        ),
-      );
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+              child: Text(err!,
+                  style: const TextStyle(color: Colors.red, fontSize: 16))));
     }
 
     List<Card> unclassifiedPaymentCards = unclassifiedPayments.map((payment) {
@@ -130,11 +127,9 @@ class _PaymentsHomeState extends State<PaymentsHome> {
               heroTag: 'fab_right',
               child: const Icon(Icons.add),
               onPressed: () {
-              onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AddPaymentDialog();
                     return AddPaymentDialog();
                   },
                 ).then((_) {
