@@ -83,23 +83,39 @@ class _ScoutsHomeState extends State<ScoutsHome> {
     }).toList();
 
     SearchBar searchBar = SearchBar(
-        onChanged: (value) {
-          setState(() {
-            query = value;
-          });
-        },
-        leading: const Icon(Icons.search),
-        hintText: 'Search by ${searchBy[searchByIndex]}',
-        trailing: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              setState(() {
-                searchByIndex = (searchByIndex + 1) % searchBy.length;
-              });
+      onChanged: (value) {
+        setState(() {
+          query = value;
+        });
+      },
+      leading: const Icon(Icons.search),
+      hintText: 'Search scouts',
+    );
+
+    Widget searchSelection = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Text("Search by: "),
+          DropdownButton<int>(
+            value: searchByIndex,
+            items: List.generate(searchBy.length, (index) {
+              return DropdownMenuItem<int>(
+                value: index,
+                child: Text(searchBy[index]),
+              );
+            }),
+            onChanged: (int? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  searchByIndex = newValue;
+                });
+              }
             },
           )
-        ]);
+        ],
+      ),
+    );
 
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,6 +124,7 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           padding: const EdgeInsets.all(8.0),
           child: searchBar,
         ),
+        searchSelection,
         ...childCards,
         ElevatedButton(
             onPressed: () async {
