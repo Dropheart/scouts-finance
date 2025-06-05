@@ -5,11 +5,56 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: macos-latest # macOS is needed for iOS builds
-    env:
-      SERVER_URL: localhost
+  checkFormat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+
+      - name: Install server dependencies
+        working-directory: ./scouts_finances_server
+        run: dart pub get
+
+      - name: Install Flutter dependencies
+        working-directory: ./scouts_finances_flutter
+        run: flutter pub get
+
+      - name: Check server code format
+        working-directory: ./scouts_finances_server
+        run: dart format --set-exit-if-changed .
+
+      - name: Check Flutter code format
+        working-directory: ./scouts_finances_flutter
+        run: dart format --set-exit-if-changed .
+
+  analyzeServer:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scouts_finances_server
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 'stable'
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Analyze server code
+        run: dart analyze
     
+  analyzeFlutter:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./scouts_finances_flutter
@@ -26,11 +71,5 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Style check
+      - name: Analyze Flutter code
         run: flutter analyze
-
-      - name: Build Android APK
-        run: flutter build apk --release
-    
-      - name: Build iOS App
-        run: flutter build ios --release --no-codesign
