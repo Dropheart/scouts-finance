@@ -111,8 +111,7 @@ class _EventHomeState extends State<EventHome> {
 
     Center body = Center(
         child: ListView(children: [
-      Padding(
-          padding: EdgeInsets.all(16.0), child: searchBar),
+      Padding(padding: EdgeInsets.all(16.0), child: searchBar),
       ExpansionTile(
           title: const Text('Future Events'),
           initiallyExpanded: true,
@@ -168,7 +167,10 @@ class _EventHomeState extends State<EventHome> {
           sortIndex = (sortIndex + 1) % sorts.length;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sorted by: ${sorts[sortIndex]}')),
+          SnackBar(
+            content: Text('Sorted by: ${sorts[sortIndex]}'),
+            duration: Duration(seconds: 1),
+          ),
         );
         return;
       },
