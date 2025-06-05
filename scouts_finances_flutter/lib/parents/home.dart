@@ -66,7 +66,25 @@ class _ParentHomeState extends State<ParentHome> {
       List<Card> parentCards = parents.map((e) => Card(
         child: ListTile(
           title: Text("${e.firstName} ${e.lastName}"),
-          subtitle: Text(e.email),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.email_rounded, size: 14.0),
+                  SizedBox(width: 4.0),
+                  Text(e.email),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(Icons.phone, size: 14.0),
+                  SizedBox(width: 4.0),
+                  Text(e.phone),
+                ],
+              ),
+            ],
+          ),
           trailing: Icon(Icons.info_outline),
           onTap: () => {},
         ),
