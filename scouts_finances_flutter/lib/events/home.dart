@@ -15,6 +15,13 @@ class _EventHomeState extends State<EventHome> {
   late List<Event> events;
   String? errorMessage;
   bool loading = true;
+  final sorts = [
+    'Upcoming First',
+    'Upcoming Last',
+    /*'Most Paid', 'Least Paid' */
+  ];
+  int sortIndex = 0;
+  String query = '';
 
   void _getEvents() async {
     try {
@@ -53,7 +60,28 @@ class _EventHomeState extends State<EventHome> {
       );
     }
 
-    List<Card> eventCards = events.map((event) {
+    // Filter events based on the search query
+    List<Event> filteredEvents = events.where((event) {
+      return event.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    filteredEvents.sort((a, b) {
+      switch (sortIndex) {
+        case 0: // Upcoming First
+          return b.date.compareTo(a.date);
+        case 1: // Upcoming Last
+          return a.date.compareTo(b.date);
+        // Paid count tbd
+        case 2: // Most Paid
+        // return b.paidCount.compareTo(a.paidCount);
+        case 3: // Least Paid
+        // return a.paidCount.compareTo(b.paidCount);
+        default:
+          return 0; // No sorting
+      }
+    });
+
+    List<Card> eventCards = filteredEvents.map((event) {
       return Card(
         child: ListTile(
           title: Text(event.name),
@@ -73,17 +101,58 @@ class _EventHomeState extends State<EventHome> {
       );
     }).toList();
 
+    SearchBar searchBar = SearchBar(
+      hintText: 'Search Events',
+      onChanged: (value) => setState(() {
+        query = value;
+      }),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+    );
+
+    Widget sortSelection = Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Row(
+        children: [
+          const Text("Sort by:"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: DropdownButton<String>(
+              value: sorts[sortIndex],
+              onChanged: (String? newValue) {
+                setState(() {
+                  sortIndex = sorts.indexOf(newValue!);
+                });
+              },
+              items: sorts.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+
     Center body = Center(
         child: ListView(children: [
+      Padding(padding: EdgeInsets.all(16.0), child: searchBar),
+      sortSelection,
       ExpansionTile(
           title: const Text('Future Events'),
           initiallyExpanded: true,
+          shape: const Border(),
           children: eventCards),
       //   child: ListView(children: [
       // ...eventCards,
       ExpansionTile(
           title: const Text('Past Events'),
           initiallyExpanded: true,
+          shape: const Border(),
           children: [
             Card(
               child: ListTile(
@@ -102,24 +171,30 @@ class _EventHomeState extends State<EventHome> {
               ),
             ),
           ]),
+      const SizedBox(height: 128.0),
     ]));
+
+    FloatingActionButton addEventButton = FloatingActionButton(
+      heroTag: 'addEvent',
+      child: const Icon(Icons.add),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AddEventDialog();
+          },
+        ).then((_) {
+          // Refresh the event list after adding a new event
+          _getEvents();
+        });
+      },
+    );
 
     return Scaffold(
       body: body,
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const AddEventDialog();
-            },
-          ).then((_) {
-            // Refresh the event list after adding a new event
-            _getEvents();
-          });
-        },
-      ),
+      // Padding is required so the buttons don't clip the bottom/sides of the screen
+      floatingActionButton: addEventButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
