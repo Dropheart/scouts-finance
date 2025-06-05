@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
 
@@ -100,7 +101,7 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
                 items: PaymentMethod.values.map((method) {
                   return DropdownMenuItem(
                     value: method,
-                    child: Text(method.name),
+                    child: Text(method.toDisplayString()),
                   );
                 }).toList(),
                 onChanged: (method) {

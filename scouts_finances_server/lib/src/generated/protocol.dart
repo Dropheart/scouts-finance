@@ -15,17 +15,20 @@ import 'bank_account.dart' as _i3;
 import 'child.dart' as _i4;
 import 'event_registration.dart' as _i5;
 import 'events.dart' as _i6;
-import 'payment.dart' as _i7;
-import 'payment_method.dart' as _i8;
-import 'package:scouts_finances_server/src/generated/events.dart' as _i9;
+import 'parent.dart' as _i7;
+import 'payment.dart' as _i8;
+import 'payment_method.dart' as _i9;
+import 'package:scouts_finances_server/src/generated/events.dart' as _i10;
 import 'package:scouts_finances_server/src/generated/event_registration.dart'
-    as _i10;
-import 'package:scouts_finances_server/src/generated/payment.dart' as _i11;
-import 'package:scouts_finances_server/src/generated/child.dart' as _i12;
+    as _i11;
+import 'package:scouts_finances_server/src/generated/parent.dart' as _i12;
+import 'package:scouts_finances_server/src/generated/payment.dart' as _i13;
+import 'package:scouts_finances_server/src/generated/child.dart' as _i14;
 export 'bank_account.dart';
 export 'child.dart';
 export 'event_registration.dart';
 export 'events.dart';
+export 'parent.dart';
 export 'payment.dart';
 export 'payment_method.dart';
 
@@ -62,8 +65,31 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'String',
         ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'parentId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'bank_accounts_fk_0',
+          columns: ['parentId'],
+          referenceTable: 'parents',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'bank_accounts_pkey',
@@ -258,6 +284,62 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
+      name: 'parents',
+      dartName: 'Parent',
+      schema: 'public',
+      module: 'scouts_finances',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'parents_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'firstName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'email',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'phone',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'parents_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
       name: 'payments',
       dartName: 'Payment',
       schema: 'public',
@@ -307,6 +389,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int?',
         ),
         _i2.ColumnDefinition(
+          name: 'parentId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
           name: '_eventRegistrationsPaymentsEventRegistrationsId',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
@@ -326,6 +414,16 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ForeignKeyDefinition(
           constraintName: 'payments_fk_1',
+          columns: ['parentId'],
+          referenceTable: 'parents',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'payments_fk_2',
           columns: ['_eventRegistrationsPaymentsEventRegistrationsId'],
           referenceTable: 'event_registrations',
           referenceTableSchema: 'public',
@@ -373,11 +471,14 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i6.Event) {
       return _i6.Event.fromJson(data) as T;
     }
-    if (t == _i7.Payment) {
-      return _i7.Payment.fromJson(data) as T;
+    if (t == _i7.Parent) {
+      return _i7.Parent.fromJson(data) as T;
     }
-    if (t == _i8.PaymentMethod) {
-      return _i8.PaymentMethod.fromJson(data) as T;
+    if (t == _i8.Payment) {
+      return _i8.Payment.fromJson(data) as T;
+    }
+    if (t == _i9.PaymentMethod) {
+      return _i9.PaymentMethod.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.BankAccount?>()) {
       return (data != null ? _i3.BankAccount.fromJson(data) : null) as T;
@@ -391,37 +492,45 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i6.Event?>()) {
       return (data != null ? _i6.Event.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Payment?>()) {
-      return (data != null ? _i7.Payment.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.Parent?>()) {
+      return (data != null ? _i7.Parent.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.PaymentMethod?>()) {
-      return (data != null ? _i8.PaymentMethod.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.Payment?>()) {
+      return (data != null ? _i8.Payment.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i7.Payment>?>()) {
+    if (t == _i1.getType<_i9.PaymentMethod?>()) {
+      return (data != null ? _i9.PaymentMethod.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<List<_i8.Payment>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i7.Payment>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i8.Payment>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i9.Event>) {
-      return (data as List).map((e) => deserialize<_i9.Event>(e)).toList() as T;
-    }
-    if (t == _i1.getType<(_i9.Event, List<_i10.EventRegistration>)>()) {
-      return (
-        deserialize<_i9.Event>(((data as Map)['p'] as List)[0]),
-        deserialize<List<_i10.EventRegistration>>(data['p'][1]),
-      ) as T;
-    }
-    if (t == List<_i10.EventRegistration>) {
-      return (data as List)
-          .map((e) => deserialize<_i10.EventRegistration>(e))
-          .toList() as T;
-    }
-    if (t == List<_i11.Payment>) {
-      return (data as List).map((e) => deserialize<_i11.Payment>(e)).toList()
+    if (t == List<_i10.Event>) {
+      return (data as List).map((e) => deserialize<_i10.Event>(e)).toList()
           as T;
     }
-    if (t == List<_i12.Child>) {
-      return (data as List).map((e) => deserialize<_i12.Child>(e)).toList()
+    if (t == _i1.getType<(_i10.Event, List<_i11.EventRegistration>)>()) {
+      return (
+        deserialize<_i10.Event>(((data as Map)['p'] as List)[0]),
+        deserialize<List<_i11.EventRegistration>>(data['p'][1]),
+      ) as T;
+    }
+    if (t == List<_i11.EventRegistration>) {
+      return (data as List)
+          .map((e) => deserialize<_i11.EventRegistration>(e))
+          .toList() as T;
+    }
+    if (t == List<_i12.Parent>) {
+      return (data as List).map((e) => deserialize<_i12.Parent>(e)).toList()
+          as T;
+    }
+    if (t == List<_i13.Payment>) {
+      return (data as List).map((e) => deserialize<_i13.Payment>(e)).toList()
+          as T;
+    }
+    if (t == List<_i14.Child>) {
+      return (data as List).map((e) => deserialize<_i14.Child>(e)).toList()
           as T;
     }
     try {
@@ -446,10 +555,13 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i6.Event) {
       return 'Event';
     }
-    if (data is _i7.Payment) {
+    if (data is _i7.Parent) {
+      return 'Parent';
+    }
+    if (data is _i8.Payment) {
       return 'Payment';
     }
-    if (data is _i8.PaymentMethod) {
+    if (data is _i9.PaymentMethod) {
       return 'PaymentMethod';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -477,11 +589,14 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Event') {
       return deserialize<_i6.Event>(data['data']);
     }
+    if (dataClassName == 'Parent') {
+      return deserialize<_i7.Parent>(data['data']);
+    }
     if (dataClassName == 'Payment') {
-      return deserialize<_i7.Payment>(data['data']);
+      return deserialize<_i8.Payment>(data['data']);
     }
     if (dataClassName == 'PaymentMethod') {
-      return deserialize<_i8.PaymentMethod>(data['data']);
+      return deserialize<_i9.PaymentMethod>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -507,8 +622,10 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i5.EventRegistration.t;
       case _i6.Event:
         return _i6.Event.t;
-      case _i7.Payment:
-        return _i7.Payment.t;
+      case _i7.Parent:
+        return _i7.Parent.t;
+      case _i8.Payment:
+        return _i8.Payment.t;
     }
     return null;
   }
@@ -530,7 +647,7 @@ Map<String, dynamic>? mapRecordToJson(Record? record) {
   if (record == null) {
     return null;
   }
-  if (record is (_i9.Event, List<_i10.EventRegistration>)) {
+  if (record is (_i10.Event, List<_i11.EventRegistration>)) {
     return {
       "p": [
         record.$1,
