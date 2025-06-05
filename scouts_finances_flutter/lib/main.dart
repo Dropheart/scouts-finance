@@ -51,6 +51,8 @@ class MyApp extends StatelessWidget {
         // reload" button in a Flutter-supported IDE, or press "r" if you used
         // the command line to start the app).
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        cardTheme: const CardThemeData(elevation: 1.0),
+        searchBarTheme: const SearchBarThemeData(elevation: WidgetStatePropertyAll(0.0))
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
