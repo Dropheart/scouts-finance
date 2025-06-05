@@ -92,18 +92,18 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }).toList();
 
     SearchBar searchBar = SearchBar(
-        onChanged: (String value) {
-          setState(() {
-            query = value;
-          });
-        },
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: const Icon(Icons.search),
-        ),
-        hintText: 'Search payments',
-        );
-    
+      onChanged: (String value) {
+        setState(() {
+          query = value;
+        });
+      },
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+      hintText: 'Search payments',
+    );
+
     Widget sortSelection = Padding(
       padding: const EdgeInsets.only(left: 8.0),
       child: Row(
