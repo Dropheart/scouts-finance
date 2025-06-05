@@ -112,7 +112,7 @@ class _EventHomeState extends State<EventHome> {
     Center body = Center(
         child: ListView(children: [
       Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0), child: searchBar),
+          padding: EdgeInsets.all(16.0), child: searchBar),
       ExpansionTile(
           title: const Text('Future Events'),
           initiallyExpanded: true,

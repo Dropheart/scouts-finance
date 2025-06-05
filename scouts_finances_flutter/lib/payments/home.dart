@@ -14,6 +14,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   late List<Payment> payments;
   String? err;
   bool loading = true;
+  String query = '';
 
   void _getEvents() async {
     try {
@@ -53,7 +54,13 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       );
     }
 
-    List<Card> paymentCards = payments.map((payment) {
+    // Filter payments by query
+    List<Payment> filteredPayments = payments
+        .where((payment) =>
+            payment.payee.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    List<Card> paymentCards = filteredPayments.map((payment) {
       return Card(
         child: ListTile(
           title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
@@ -70,9 +77,23 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       );
     }).toList();
 
+    SearchBar searchBar = SearchBar(
+      onChanged: (String value) {
+        setState(() {
+          query = value;
+        });
+      },
+      leading: const Icon(Icons.search),
+      hintText: 'Search payments by payee',
+    );
+
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: searchBar,
+        ),
         const Text('Action Required - 1',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ...paymentCards,
