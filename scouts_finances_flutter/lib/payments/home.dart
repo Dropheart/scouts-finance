@@ -15,6 +15,12 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   String? err;
   bool loading = true;
   String query = '';
+  final searchBy = [
+    'payee',
+    'amount',
+    'date',
+  ];
+  int searchByIndex = 0;
 
   void _getEvents() async {
     try {
@@ -55,10 +61,18 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }
 
     // Filter payments by query
-    List<Payment> filteredPayments = payments
-        .where((payment) =>
-            payment.payee.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    List<Payment> filteredPayments = payments.where((payment) {
+      switch (searchBy[searchByIndex]) {
+        case 'payee':
+          return payment.payee.toLowerCase().contains(query.toLowerCase());
+        case 'amount':
+          return (payment.amount / 100).toString().contains(query);
+        case 'date':
+          return payment.date.toLocal().toString().contains(query);
+        default:
+          return false;
+      }
+    }).toList();
 
     List<Card> paymentCards = filteredPayments.map((payment) {
       return Card(
@@ -78,14 +92,23 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }).toList();
 
     SearchBar searchBar = SearchBar(
-      onChanged: (String value) {
-        setState(() {
-          query = value;
-        });
-      },
-      leading: const Icon(Icons.search),
-      hintText: 'Search payments by payee',
-    );
+        onChanged: (String value) {
+          setState(() {
+            query = value;
+          });
+        },
+        leading: const Icon(Icons.search),
+        hintText: 'Search payments by ${searchBy[searchByIndex]}',
+        trailing: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              setState(() {
+                searchByIndex = (searchByIndex + 1) % searchBy.length;
+              });
+            },
+          )
+        ]);
 
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
