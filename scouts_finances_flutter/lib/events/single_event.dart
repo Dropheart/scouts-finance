@@ -101,24 +101,18 @@ class _SingleEventState extends State<SingleEvent> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event ${widget.eventId} Details'),
+        title: Text(event.name),
       ),
       body: Center(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
-            Row(children: [
-              Text('Event: ${event.name}'),
-              Spacer(),
-              Text('Date: ${event.date}'),
-            ]),
+            Text('Date: ${event.date.day}/${event.date.month}/${event.date.year}'),
             const SizedBox(height: 10),
-            Row(children: [
-              Text('Location: TBD'),
-              Spacer(),
-              Text('Price: £${(event.cost / 100).toStringAsFixed(2)}'),
-            ]),
+            Text('Location: TBD'),
+            const SizedBox(height: 10),  
+            Text('Price: £${(event.cost / 100).toStringAsFixed(2)}'),
             const SizedBox(height: 20),
             const Text('Registrations:'),
             const SizedBox(height: 10),
