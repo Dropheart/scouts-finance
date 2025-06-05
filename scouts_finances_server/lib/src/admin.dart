@@ -12,6 +12,8 @@ class AdminEndpoint extends Endpoint {
     await EventRegistration.db.deleteWhere(session, where: (t) => t.id > -1);
     await Child.db.deleteWhere(session, where: (t) => t.id > -1);
     await Event.db.deleteWhere(session, where: (t) => t.id > -1);
+    await Parent.db.deleteWhere(session, where: (t) => t.id > -1);
+    await BankAccount.db.deleteWhere(session, where: (t) => t.id > -1);
 
     // Now create some children
     final child1 = Child(firstName: "John", lastName: "Doe");
