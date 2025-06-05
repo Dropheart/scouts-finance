@@ -76,7 +76,9 @@ jobs:
 
   build:
     needs: [checkFormat, analyzeServer, analyzeFlutter]
-    runs-on: macos-latest # macOS is needed for iOS builds
+    # runs-on: macos-latest # macOS is needed for iOS builds
+    runs-on: self-hosted # we don't care about ios builds for this 
+    if: ${{ github.event.pull_request.base.ref == 'production' }}
     env:
       SERVER_URL: localhost
     
@@ -99,5 +101,5 @@ jobs:
       - name: Build Android APK
         run: flutter build apk --release
     
-      - name: Build iOS App
-        run: flutter build ios --release --no-codesign
+      # - name: Build iOS App
+      #   run: flutter build ios --release --no-codesign
