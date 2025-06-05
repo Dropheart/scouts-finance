@@ -77,7 +77,7 @@ class _ScoutsHomeState extends State<ScoutsHome> {
         });
       },
       leading: const Icon(Icons.search),
-      hintText: 'e.g. "John Smith"',
+      hintText: 'search by name...',
     );
 
 
