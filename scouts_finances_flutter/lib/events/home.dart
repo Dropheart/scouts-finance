@@ -21,6 +21,7 @@ class _EventHomeState extends State<EventHome> {
     /*'Most Paid', 'Least Paid' */
   ];
   int sortIndex = 0;
+  String query = '';
 
   void _getEvents() async {
     try {
@@ -59,7 +60,12 @@ class _EventHomeState extends State<EventHome> {
       );
     }
 
-    events.sort((a, b) {
+    // Filter events based on the search query
+    List<Event> filteredEvents = events.where((event) {
+      return event.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    filteredEvents.sort((a, b) {
       switch (sortIndex) {
         case 0: // Upcoming First
           return b.date.compareTo(a.date);
@@ -75,7 +81,7 @@ class _EventHomeState extends State<EventHome> {
       }
     });
 
-    List<Card> eventCards = events.map((event) {
+    List<Card> eventCards = filteredEvents.map((event) {
       return Card(
         child: ListTile(
           title: Text(event.name),
@@ -95,17 +101,29 @@ class _EventHomeState extends State<EventHome> {
       );
     }).toList();
 
+    SearchBar searchBar = SearchBar(
+      hintText: 'Search Events',
+      onChanged: (value) => setState(() {
+        query = value;
+      }),
+      leading: const Icon(Icons.search),
+    );
+
     Center body = Center(
         child: ListView(children: [
+      Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0), child: searchBar),
       ExpansionTile(
           title: const Text('Future Events'),
           initiallyExpanded: true,
+          shape: const Border(),
           children: eventCards),
       //   child: ListView(children: [
       // ...eventCards,
       ExpansionTile(
           title: const Text('Past Events'),
           initiallyExpanded: true,
+          shape: const Border(),
           children: [
             Card(
               child: ListTile(
