@@ -14,6 +14,13 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   late List<Payment> payments;
   String? err;
   bool loading = true;
+  String query = '';
+  final searchBy = [
+    'payee',
+    'amount',
+    'date',
+  ];
+  int searchByIndex = 0;
 
   void _getEvents() async {
     try {
@@ -53,7 +60,21 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       );
     }
 
-    List<Card> paymentCards = payments.map((payment) {
+    // Filter payments by query
+    List<Payment> filteredPayments = payments.where((payment) {
+      switch (searchBy[searchByIndex]) {
+        case 'payee':
+          return payment.payee.toLowerCase().contains(query.toLowerCase());
+        case 'amount':
+          return (payment.amount / 100).toString().contains(query);
+        case 'date':
+          return payment.date.toLocal().toString().contains(query);
+        default:
+          return false;
+      }
+    }).toList();
+
+    List<Card> paymentCards = filteredPayments.map((payment) {
       return Card(
         child: ListTile(
           title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
@@ -70,9 +91,53 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       );
     }).toList();
 
+    SearchBar searchBar = SearchBar(
+      onChanged: (String value) {
+        setState(() {
+          query = value;
+        });
+      },
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+      hintText: 'Search payments',
+    );
+
+    Widget sortSelection = Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Row(
+        children: [
+          Text("Sort by:"),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: DropdownButton<int>(
+              value: searchByIndex,
+              items: searchBy.map((value) {
+                return DropdownMenuItem<int>(
+                  value: searchBy.indexOf(value),
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (int? newValue) {
+                setState(() {
+                  searchByIndex = newValue!;
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: searchBar,
+        ),
+        sortSelection,
         const Text('Action Required - 1',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ...paymentCards,
