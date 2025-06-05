@@ -128,7 +128,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       padding: const EdgeInsets.only(left: 8.0),
       child: Row(
         children: [
-          Text("Sort by:"),
+          Text("Search by:"),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: DropdownButton<int>(
