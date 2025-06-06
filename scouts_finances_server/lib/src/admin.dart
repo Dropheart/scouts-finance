@@ -82,15 +82,15 @@ class AdminEndpoint extends Endpoint {
 
     // Create some events
     final event1 =
-        Event(name: "Rafting", cost: 2000, date: DateTime(2025, 1, 5));
+        Event(name: "Rafting", cost: 500, date: DateTime(2025, 1, 5));
     final event2 =
-        Event(name: "Hiking", cost: 1500, date: DateTime(2025, 2, 10));
+        Event(name: "Hiking", cost: 1000, date: DateTime(2025, 2, 10));
     final event3 =
-        Event(name: "Camping", cost: 3000, date: DateTime(2025, 3, 15));
+        Event(name: "Camping", cost: 750, date: DateTime(2025, 3, 15));
     final event4 =
-        Event(name: "Swimming", cost: 1000, date: DateTime(2025, 4, 20));
+        Event(name: "Swimming", cost: 1500, date: DateTime(2025, 4, 20));
     final event5 =
-        Event(name: "Climbing", cost: 2500, date: DateTime(2025, 5, 25));
+        Event(name: "Climbing", cost: 2000, date: DateTime(2025, 5, 25));
 
     await Event.db.insert(session, [event1, event2, event3, event4, event5]);
 
