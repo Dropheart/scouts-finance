@@ -128,6 +128,13 @@ class EndpointPayment extends _i1.EndpointRef {
         {'paymentId': paymentId},
       );
 
+  _i2.Future<List<_i6.Payment>> getPaymentsByParentId(int parentId) =>
+      caller.callServerEndpoint<List<_i6.Payment>>(
+        'payment',
+        'getPaymentsByParentId',
+        {'parentId': parentId},
+      );
+
   _i2.Future<void> updatePayment(
     int paymentId,
     _i5.Parent parent,

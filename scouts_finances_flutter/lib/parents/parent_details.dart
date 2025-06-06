@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/shared/parent_transactions.dart';
 
 class ParentDetails extends StatefulWidget {
   final int parentId;
@@ -135,6 +136,10 @@ class _ParentDetailsState extends State<ParentDetails> {
           const SizedBox(height: 16),
           const Text('Transaction History:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          ParentTransactionTable(
+            parent: parent,
+          ),
         ],
       );
     }
