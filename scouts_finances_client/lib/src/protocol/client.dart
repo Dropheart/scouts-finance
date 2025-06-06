@@ -131,6 +131,13 @@ class EndpointParent extends _i1.EndpointRef {
           'amount': amount,
         },
       );
+
+  _i2.Future<void> addParent(_i5.Parent parent) =>
+      caller.callServerEndpoint<void>(
+        'parent',
+        'addParent',
+        {'parent': parent},
+      );
 }
 
 /// {@category Endpoint}

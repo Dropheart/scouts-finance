@@ -10,7 +10,7 @@ class AddEventDialog extends StatefulWidget {
 }
 
 class _AddEventDialogState extends State<AddEventDialog> {
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final MoneyMaskedTextController _priceController = MoneyMaskedTextController(
     decimalSeparator: '.',
@@ -42,7 +42,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
   }
 
   void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
+    if (formKey.currentState?.validate() ?? false) {
       client.event.insertEvent(
           _nameController.text,
           (double.parse(_priceController.text.replaceFirst('£', '')) * 100)
@@ -61,7 +61,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
     return AlertDialog(
         title: const Text('Add Event'),
         content: Form(
-          key: _formKey,
+          key: formKey,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,

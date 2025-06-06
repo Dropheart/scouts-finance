@@ -102,7 +102,7 @@ class _EventHomeState extends State<EventHome> {
     }).toList();
 
     SearchBar searchBar = SearchBar(
-      hintText: 'search by name...',
+      hintText: 'Search by name...',
       onChanged: (value) => setState(() {
         query = value;
       }),

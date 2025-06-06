@@ -240,6 +240,24 @@ class Endpoints extends _i1.EndpointDispatch {
             params['amount'],
           ),
         ),
+        'addParent': _i1.MethodConnector(
+          name: 'addParent',
+          params: {
+            'parent': _i1.ParameterDescription(
+              name: 'parent',
+              type: _i1.getType<_i8.Parent>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint).addParent(
+            session,
+            params['parent'],
+          ),
+        ),
       },
     );
     connectors['payment'] = _i1.EndpointConnector(

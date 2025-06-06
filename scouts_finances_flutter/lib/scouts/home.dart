@@ -78,8 +78,11 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           query = value;
         });
       },
-      leading: const Icon(Icons.search),
-      hintText: 'search by name...',
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+      hintText: 'Search by name...',
     );
 
     Column body = Column(

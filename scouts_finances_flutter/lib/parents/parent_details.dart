@@ -16,6 +16,7 @@ class _ParentDetailsState extends State<ParentDetails> {
   String? errorMessage;
   bool loading = true;
   late Parent parent;
+  late List<Child> children;
 
   @override
   void initState() {
@@ -26,11 +27,14 @@ class _ParentDetailsState extends State<ParentDetails> {
   void _getParentDetails() async {
     try {
       final result = await client.parent.getParentById(widget.parentId);
+      final childrenResult =
+          await client.scouts.getChildrenOfParent(widget.parentId);
       setState(() {
         if (result == null) {
           errorMessage = "Parent not found.";
         } else {
           parent = result;
+          children = childrenResult;
         }
         loading = false;
       });
@@ -110,28 +114,36 @@ class _ParentDetailsState extends State<ParentDetails> {
           Row(
             children: [
               Text('Children:', style: const TextStyle(fontSize: 16)),
-              TextButton(onPressed: () => {}, child: Text('TBD')),
+              ...children.map((child) => TextButton(
+                  onPressed: () => {},
+                  child: Text('${child.firstName} ${child.lastName}'))),
             ],
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Not Implemented'),
-                  content: const Text(
-                      'Editing parent details is not implemented yet.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('OK'),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Not Implemented'),
+                      content: const Text(
+                          'Editing parent details is not implemented yet.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('OK'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-            child: const Text('Edit Parent Details'),
+                  );
+                },
+                child: const Text('Edit Parent Details'),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(onPressed: () => {}, child: Text('Delete')),
+            ],
           ),
           const SizedBox(height: 16),
           const Text('Transaction History:',
