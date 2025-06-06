@@ -14,7 +14,6 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'events.dart' as _i2;
 import 'child.dart' as _i3;
-import 'payment.dart' as _i4;
 
 abstract class EventRegistration
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -24,7 +23,7 @@ abstract class EventRegistration
     this.event,
     required this.childId,
     this.child,
-    this.payments,
+    this.paidDate,
   });
 
   factory EventRegistration({
@@ -33,7 +32,7 @@ abstract class EventRegistration
     _i2.Event? event,
     required int childId,
     _i3.Child? child,
-    List<_i4.Payment>? payments,
+    DateTime? paidDate,
   }) = _EventRegistrationImpl;
 
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -49,9 +48,9 @@ abstract class EventRegistration
           ? null
           : _i3.Child.fromJson(
               (jsonSerialization['child'] as Map<String, dynamic>)),
-      payments: (jsonSerialization['payments'] as List?)
-          ?.map((e) => _i4.Payment.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      paidDate: jsonSerialization['paidDate'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['paidDate']),
     );
   }
 
@@ -70,7 +69,7 @@ abstract class EventRegistration
 
   _i3.Child? child;
 
-  List<_i4.Payment>? payments;
+  DateTime? paidDate;
 
   @override
   _i1.Table<int?> get table => t;
@@ -84,7 +83,7 @@ abstract class EventRegistration
     _i2.Event? event,
     int? childId,
     _i3.Child? child,
-    List<_i4.Payment>? payments,
+    DateTime? paidDate,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -94,8 +93,7 @@ abstract class EventRegistration
       if (event != null) 'event': event?.toJson(),
       'childId': childId,
       if (child != null) 'child': child?.toJson(),
-      if (payments != null)
-        'payments': payments?.toJson(valueToJson: (v) => v.toJson()),
+      if (paidDate != null) 'paidDate': paidDate?.toJson(),
     };
   }
 
@@ -107,20 +105,17 @@ abstract class EventRegistration
       if (event != null) 'event': event?.toJsonForProtocol(),
       'childId': childId,
       if (child != null) 'child': child?.toJsonForProtocol(),
-      if (payments != null)
-        'payments': payments?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (paidDate != null) 'paidDate': paidDate?.toJson(),
     };
   }
 
   static EventRegistrationInclude include({
     _i2.EventInclude? event,
     _i3.ChildInclude? child,
-    _i4.PaymentIncludeList? payments,
   }) {
     return EventRegistrationInclude._(
       event: event,
       child: child,
-      payments: payments,
     );
   }
 
@@ -159,14 +154,14 @@ class _EventRegistrationImpl extends EventRegistration {
     _i2.Event? event,
     required int childId,
     _i3.Child? child,
-    List<_i4.Payment>? payments,
+    DateTime? paidDate,
   }) : super._(
           id: id,
           eventId: eventId,
           event: event,
           childId: childId,
           child: child,
-          payments: payments,
+          paidDate: paidDate,
         );
 
   /// Returns a shallow copy of this [EventRegistration]
@@ -179,7 +174,7 @@ class _EventRegistrationImpl extends EventRegistration {
     Object? event = _Undefined,
     int? childId,
     Object? child = _Undefined,
-    Object? payments = _Undefined,
+    Object? paidDate = _Undefined,
   }) {
     return EventRegistration(
       id: id is int? ? id : this.id,
@@ -187,9 +182,7 @@ class _EventRegistrationImpl extends EventRegistration {
       event: event is _i2.Event? ? event : this.event?.copyWith(),
       childId: childId ?? this.childId,
       child: child is _i3.Child? ? child : this.child?.copyWith(),
-      payments: payments is List<_i4.Payment>?
-          ? payments
-          : this.payments?.map((e0) => e0.copyWith()).toList(),
+      paidDate: paidDate is DateTime? ? paidDate : this.paidDate,
     );
   }
 }
@@ -205,6 +198,10 @@ class EventRegistrationTable extends _i1.Table<int?> {
       'childId',
       this,
     );
+    paidDate = _i1.ColumnDateTime(
+      'paidDate',
+      this,
+    );
   }
 
   late final _i1.ColumnInt eventId;
@@ -215,9 +212,7 @@ class EventRegistrationTable extends _i1.Table<int?> {
 
   _i3.ChildTable? _child;
 
-  _i4.PaymentTable? ___payments;
-
-  _i1.ManyRelation<_i4.PaymentTable>? _payments;
+  late final _i1.ColumnDateTime paidDate;
 
   _i2.EventTable get event {
     if (_event != null) return _event!;
@@ -245,44 +240,12 @@ class EventRegistrationTable extends _i1.Table<int?> {
     return _child!;
   }
 
-  _i4.PaymentTable get __payments {
-    if (___payments != null) return ___payments!;
-    ___payments = _i1.createRelationTable(
-      relationFieldName: '__payments',
-      field: EventRegistration.t.id,
-      foreignField:
-          _i4.Payment.t.$_eventRegistrationsPaymentsEventRegistrationsId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i4.PaymentTable(tableRelation: foreignTableRelation),
-    );
-    return ___payments!;
-  }
-
-  _i1.ManyRelation<_i4.PaymentTable> get payments {
-    if (_payments != null) return _payments!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'payments',
-      field: EventRegistration.t.id,
-      foreignField:
-          _i4.Payment.t.$_eventRegistrationsPaymentsEventRegistrationsId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i4.PaymentTable(tableRelation: foreignTableRelation),
-    );
-    _payments = _i1.ManyRelation<_i4.PaymentTable>(
-      tableWithRelations: relationTable,
-      table: _i4.PaymentTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _payments!;
-  }
-
   @override
   List<_i1.Column> get columns => [
         id,
         eventId,
         childId,
+        paidDate,
       ];
 
   @override
@@ -293,9 +256,6 @@ class EventRegistrationTable extends _i1.Table<int?> {
     if (relationField == 'child') {
       return child;
     }
-    if (relationField == 'payments') {
-      return __payments;
-    }
     return null;
   }
 }
@@ -304,24 +264,19 @@ class EventRegistrationInclude extends _i1.IncludeObject {
   EventRegistrationInclude._({
     _i2.EventInclude? event,
     _i3.ChildInclude? child,
-    _i4.PaymentIncludeList? payments,
   }) {
     _event = event;
     _child = child;
-    _payments = payments;
   }
 
   _i2.EventInclude? _event;
 
   _i3.ChildInclude? _child;
 
-  _i4.PaymentIncludeList? _payments;
-
   @override
   Map<String, _i1.Include?> get includes => {
         'event': _event,
         'child': _child,
-        'payments': _payments,
       };
 
   @override
@@ -351,13 +306,7 @@ class EventRegistrationIncludeList extends _i1.IncludeList {
 class EventRegistrationRepository {
   const EventRegistrationRepository._();
 
-  final attach = const EventRegistrationAttachRepository._();
-
   final attachRow = const EventRegistrationAttachRowRepository._();
-
-  final detach = const EventRegistrationDetachRepository._();
-
-  final detachRow = const EventRegistrationDetachRowRepository._();
 
   /// Returns a list of [EventRegistration]s matching the given query parameters.
   ///
@@ -575,39 +524,6 @@ class EventRegistrationRepository {
   }
 }
 
-class EventRegistrationAttachRepository {
-  const EventRegistrationAttachRepository._();
-
-  /// Creates a relation between this [EventRegistration] and the given [Payment]s
-  /// by setting each [Payment]'s foreign key `_eventRegistrationsPaymentsEventRegistrationsId` to refer to this [EventRegistration].
-  Future<void> payments(
-    _i1.Session session,
-    EventRegistration eventRegistration,
-    List<_i4.Payment> payment, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (payment.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('payment.id');
-    }
-    if (eventRegistration.id == null) {
-      throw ArgumentError.notNull('eventRegistration.id');
-    }
-
-    var $payment = payment
-        .map((e) => _i4.PaymentImplicit(
-              e,
-              $_eventRegistrationsPaymentsEventRegistrationsId:
-                  eventRegistration.id,
-            ))
-        .toList();
-    await session.db.update<_i4.Payment>(
-      $payment,
-      columns: [_i4.Payment.t.$_eventRegistrationsPaymentsEventRegistrationsId],
-      transaction: transaction,
-    );
-  }
-}
-
 class EventRegistrationAttachRowRepository {
   const EventRegistrationAttachRowRepository._();
 
@@ -653,92 +569,6 @@ class EventRegistrationAttachRowRepository {
     await session.db.updateRow<EventRegistration>(
       $eventRegistration,
       columns: [EventRegistration.t.childId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between this [EventRegistration] and the given [Payment]
-  /// by setting the [Payment]'s foreign key `_eventRegistrationsPaymentsEventRegistrationsId` to refer to this [EventRegistration].
-  Future<void> payments(
-    _i1.Session session,
-    EventRegistration eventRegistration,
-    _i4.Payment payment, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (payment.id == null) {
-      throw ArgumentError.notNull('payment.id');
-    }
-    if (eventRegistration.id == null) {
-      throw ArgumentError.notNull('eventRegistration.id');
-    }
-
-    var $payment = _i4.PaymentImplicit(
-      payment,
-      $_eventRegistrationsPaymentsEventRegistrationsId: eventRegistration.id,
-    );
-    await session.db.updateRow<_i4.Payment>(
-      $payment,
-      columns: [_i4.Payment.t.$_eventRegistrationsPaymentsEventRegistrationsId],
-      transaction: transaction,
-    );
-  }
-}
-
-class EventRegistrationDetachRepository {
-  const EventRegistrationDetachRepository._();
-
-  /// Detaches the relation between this [EventRegistration] and the given [Payment]
-  /// by setting the [Payment]'s foreign key `_eventRegistrationsPaymentsEventRegistrationsId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> payments(
-    _i1.Session session,
-    List<_i4.Payment> payment, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (payment.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('payment.id');
-    }
-
-    var $payment = payment
-        .map((e) => _i4.PaymentImplicit(
-              e,
-              $_eventRegistrationsPaymentsEventRegistrationsId: null,
-            ))
-        .toList();
-    await session.db.update<_i4.Payment>(
-      $payment,
-      columns: [_i4.Payment.t.$_eventRegistrationsPaymentsEventRegistrationsId],
-      transaction: transaction,
-    );
-  }
-}
-
-class EventRegistrationDetachRowRepository {
-  const EventRegistrationDetachRowRepository._();
-
-  /// Detaches the relation between this [EventRegistration] and the given [Payment]
-  /// by setting the [Payment]'s foreign key `_eventRegistrationsPaymentsEventRegistrationsId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> payments(
-    _i1.Session session,
-    _i4.Payment payment, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (payment.id == null) {
-      throw ArgumentError.notNull('payment.id');
-    }
-
-    var $payment = _i4.PaymentImplicit(
-      payment,
-      $_eventRegistrationsPaymentsEventRegistrationsId: null,
-    );
-    await session.db.updateRow<_i4.Payment>(
-      $payment,
-      columns: [_i4.Payment.t.$_eventRegistrationsPaymentsEventRegistrationsId],
       transaction: transaction,
     );
   }

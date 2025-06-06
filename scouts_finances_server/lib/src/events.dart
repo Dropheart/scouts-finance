@@ -17,8 +17,7 @@ class EventEndpoint extends Endpoint {
 
     final eventRegistration = await EventRegistration.db.find(session,
         where: (t) => t.eventId.equals(id),
-        include: EventRegistration.include(
-            child: Child.include(), payments: Payment.includeList()));
+        include: EventRegistration.include(child: Child.include()));
 
     return (eventDetails, eventRegistration);
   }

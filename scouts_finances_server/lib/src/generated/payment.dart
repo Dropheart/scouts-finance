@@ -29,7 +29,7 @@ abstract class Payment
     this.bankAccount,
     this.parentId,
     this.parent,
-  }) : _eventRegistrationsPaymentsEventRegistrationsId = null;
+  });
 
   factory Payment({
     int? id,
@@ -45,7 +45,7 @@ abstract class Payment
   }) = _PaymentImpl;
 
   factory Payment.fromJson(Map<String, dynamic> jsonSerialization) {
-    return PaymentImplicit._(
+    return Payment(
       id: jsonSerialization['id'] as int?,
       amount: jsonSerialization['amount'] as int,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
@@ -63,9 +63,6 @@ abstract class Payment
           ? null
           : _i4.Parent.fromJson(
               (jsonSerialization['parent'] as Map<String, dynamic>)),
-      $_eventRegistrationsPaymentsEventRegistrationsId:
-          jsonSerialization['_eventRegistrationsPaymentsEventRegistrationsId']
-              as int?,
     );
   }
 
@@ -93,8 +90,6 @@ abstract class Payment
   int? parentId;
 
   _i4.Parent? parent;
-
-  final int? _eventRegistrationsPaymentsEventRegistrationsId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -127,9 +122,6 @@ abstract class Payment
       if (bankAccount != null) 'bankAccount': bankAccount?.toJson(),
       if (parentId != null) 'parentId': parentId,
       if (parent != null) 'parent': parent?.toJson(),
-      if (_eventRegistrationsPaymentsEventRegistrationsId != null)
-        '_eventRegistrationsPaymentsEventRegistrationsId':
-            _eventRegistrationsPaymentsEventRegistrationsId,
     };
   }
 
@@ -228,7 +220,7 @@ class _PaymentImpl extends Payment {
     Object? parentId = _Undefined,
     Object? parent = _Undefined,
   }) {
-    return PaymentImplicit._(
+    return Payment(
       id: id is int? ? id : this.id,
       amount: amount ?? this.amount,
       date: date ?? this.date,
@@ -241,62 +233,8 @@ class _PaymentImpl extends Payment {
           : this.bankAccount?.copyWith(),
       parentId: parentId is int? ? parentId : this.parentId,
       parent: parent is _i4.Parent? ? parent : this.parent?.copyWith(),
-      $_eventRegistrationsPaymentsEventRegistrationsId:
-          this._eventRegistrationsPaymentsEventRegistrationsId,
     );
   }
-}
-
-class PaymentImplicit extends _PaymentImpl {
-  PaymentImplicit._({
-    int? id,
-    required int amount,
-    required DateTime date,
-    required String reference,
-    required _i2.PaymentMethod method,
-    required String payee,
-    int? bankAccountId,
-    _i3.BankAccount? bankAccount,
-    int? parentId,
-    _i4.Parent? parent,
-    int? $_eventRegistrationsPaymentsEventRegistrationsId,
-  })  : _eventRegistrationsPaymentsEventRegistrationsId =
-            $_eventRegistrationsPaymentsEventRegistrationsId,
-        super(
-          id: id,
-          amount: amount,
-          date: date,
-          reference: reference,
-          method: method,
-          payee: payee,
-          bankAccountId: bankAccountId,
-          bankAccount: bankAccount,
-          parentId: parentId,
-          parent: parent,
-        );
-
-  factory PaymentImplicit(
-    Payment payment, {
-    int? $_eventRegistrationsPaymentsEventRegistrationsId,
-  }) {
-    return PaymentImplicit._(
-      id: payment.id,
-      amount: payment.amount,
-      date: payment.date,
-      reference: payment.reference,
-      method: payment.method,
-      payee: payment.payee,
-      bankAccountId: payment.bankAccountId,
-      bankAccount: payment.bankAccount,
-      parentId: payment.parentId,
-      parent: payment.parent,
-      $_eventRegistrationsPaymentsEventRegistrationsId:
-          $_eventRegistrationsPaymentsEventRegistrationsId,
-    );
-  }
-
-  @override
-  final int? _eventRegistrationsPaymentsEventRegistrationsId;
 }
 
 class PaymentTable extends _i1.Table<int?> {
@@ -330,10 +268,6 @@ class PaymentTable extends _i1.Table<int?> {
       'parentId',
       this,
     );
-    $_eventRegistrationsPaymentsEventRegistrationsId = _i1.ColumnInt(
-      '_eventRegistrationsPaymentsEventRegistrationsId',
-      this,
-    );
   }
 
   late final _i1.ColumnInt amount;
@@ -353,8 +287,6 @@ class PaymentTable extends _i1.Table<int?> {
   late final _i1.ColumnInt parentId;
 
   _i4.ParentTable? _parent;
-
-  late final _i1.ColumnInt $_eventRegistrationsPaymentsEventRegistrationsId;
 
   _i3.BankAccountTable get bankAccount {
     if (_bankAccount != null) return _bankAccount!;
@@ -384,19 +316,6 @@ class PaymentTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        amount,
-        date,
-        reference,
-        method,
-        payee,
-        bankAccountId,
-        parentId,
-        $_eventRegistrationsPaymentsEventRegistrationsId,
-      ];
-
-  @override
-  List<_i1.Column> get managedColumns => [
         id,
         amount,
         date,
