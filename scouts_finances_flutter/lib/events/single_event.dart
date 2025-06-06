@@ -92,7 +92,7 @@ class _SingleEventState extends State<SingleEvent> {
                     ])),
                     DataCell(Text(e.paidDate == null
                         ? 'Not paid'
-                        : 'Paid on ${e.paidDate.toString()}')),
+                        : 'Paid on ${e.paidDate!.toLocal().day}/${e.paidDate!.toLocal().month}/${e.paidDate!.toLocal().year}')),
                   ],
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
