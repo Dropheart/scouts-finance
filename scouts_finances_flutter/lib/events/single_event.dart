@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/events/event_add_participant.dart';
+import 'package:scouts_finances_flutter/events/event_add_section.dart';
 import 'package:scouts_finances_flutter/main.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
@@ -83,10 +85,10 @@ class _SingleEventState extends State<SingleEvent> {
                         onPressed: () {
                           // Handle button press, e.g., navigate to child's profile
                         },
-                        child: const Icon(Icons.arrow_forward, size: 16),
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
                         ),
+                        child: const Icon(Icons.arrow_forward, size: 16),
                       )
                     ])),
                     DataCell(Text(e.paidDate == null
@@ -161,22 +163,24 @@ class _SingleEventState extends State<SingleEvent> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle button press
-                      },
-                      child: const Text('Add Participants'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle button press
-                      },
-                      child: const Text('Add Sections'),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Card( 
+                      SizedBox(
+                        width: 200, // Fixed width
+                        child: EventAddParticipant(
+                          eventId: widget.eventId,
+                          closeFn: () => _getEventDetails(),
+                          ),
+                      ),
+                      // SizedBox(
+                      //   width: 20,
+                      //   child: EventAddSection(
+                      //     eventId: widget.eventId,
+                      //     closeFn: () => _getEventDetails(),
+                      //   ),
+                      // ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // Sets rounded corners
                     ),
