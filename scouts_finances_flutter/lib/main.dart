@@ -42,18 +42,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
-        cardTheme: const CardThemeData(elevation: 1.0),
-        searchBarTheme: const SearchBarThemeData(elevation: WidgetStatePropertyAll(0.0))
-      ),
+          // This is the theme of your application.
+          //
+          // TRY THIS: Try running your application with "flutter run". You'll see
+          // the application has a purple toolbar. Then, without quitting the app,
+          // try changing the seedColor in the colorScheme below to Colors.green
+          // and then invoke "hot reload" (save your changes or press the "hot
+          // reload" button in a Flutter-supported IDE, or press "r" if you used
+          // the command line to start the app).
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+          cardTheme: const CardThemeData(elevation: 1.0),
+          searchBarTheme:
+              const SearchBarThemeData(elevation: WidgetStatePropertyAll(0.0))),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
