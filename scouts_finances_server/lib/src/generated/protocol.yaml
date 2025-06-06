@@ -4,6 +4,7 @@ event:
   - getEvents:
   - getEventById:
   - insertEvent:
+  - unpaidEvents:
 parent:
   - getParents:
   - getParentById:

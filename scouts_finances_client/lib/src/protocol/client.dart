@@ -68,6 +68,13 @@ class EndpointEvent extends _i1.EndpointRef {
           'date': date,
         },
       );
+
+  _i2.Future<List<_i4.EventRegistration>> unpaidEvents() =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'unpaidEvents',
+        {},
+      );
 }
 
 /// {@category Endpoint}
