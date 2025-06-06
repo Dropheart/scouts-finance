@@ -18,4 +18,8 @@ class ParentEndpoint extends Endpoint {
     parent.balance += amount;
     await Parent.db.update(session, [parent]);
   }
+
+  Future<void> addParent(Session session, Parent parent) async {
+    await Parent.db.insert(session, [parent]);
+  }
 }

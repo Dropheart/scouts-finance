@@ -11,6 +11,7 @@ parent:
   - getParents:
   - getParentById:
   - addBalance:
+  - addParent:
 payment:
   - getPayments:
   - insertPayment:
