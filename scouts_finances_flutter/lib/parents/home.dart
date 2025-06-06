@@ -125,7 +125,7 @@ class _ParentHomeState extends State<ParentHome> {
           showDialog(
             context: context,
             builder: (context) {
-              final _formKey = GlobalKey<FormState>();
+              final formKey = GlobalKey<FormState>();
               String firstName = '';
               String lastName = '';
               String email = '';
@@ -137,7 +137,7 @@ class _ParentHomeState extends State<ParentHome> {
                 builder: (context, setState) => AlertDialog(
                   title: const Text('Add Parent'),
                   content: Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -186,7 +186,7 @@ class _ParentHomeState extends State<ParentHome> {
                       onPressed: submitting
                           ? null
                           : () async {
-                              if (_formKey.currentState!.validate()) {
+                              if (formKey.currentState!.validate()) {
                                 setState(() {
                                   submitting = true;
                                   error = null;
@@ -201,8 +201,10 @@ class _ParentHomeState extends State<ParentHome> {
                                       balance: 0,
                                     ),
                                   );
-                                  if (!mounted) return;
-                                  Navigator.of(context).pop();
+                                  if (mounted) {
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pop();
+                                  }
                                   _getParents();
                                 } catch (e) {
                                   setState(() {
