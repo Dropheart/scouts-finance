@@ -66,58 +66,129 @@ class _SingleEventState extends State<SingleEvent> {
       columns: [
         DataColumn(
             label: Text('Name', style: colStyle),
-            columnWidth: const FixedColumnWidth(200)),
+            columnWidth: const FlexColumnWidth()),
         DataColumn(
             label: Text(
               'Paid',
               style: colStyle,
             ),
-            columnWidth: const FixedColumnWidth(150)),
+            columnWidth: const IntrinsicColumnWidth()),
       ],
       rows: children
           .map((e) => DataRow(
                   cells: [
-                    DataCell(Text(e.name)),
+                    DataCell(Row(children: [
+                      Text(e.name),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Handle button press, e.g., navigate to child's profile
+                        },
+                        child: const Icon(Icons.arrow_forward, size: 16),
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                        ),
+                      )
+                    ])),
                     DataCell(Text(e.paidDate == null
                         ? 'Not paid'
                         : 'Paid on ${e.paidDate.toString()}')),
                   ],
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
-                      : WidgetStateProperty.all(Colors.green.shade100)))
+                      : WidgetStateProperty.all(Colors.green.shade100)
+                      )
+                  )
           .toList(),
-      decoration: BoxDecoration(
-        border: Border.all(color: colourScheme.secondary, width: 1),
-        borderRadius: BorderRadius.circular(4),
-        color: colourScheme.secondaryContainer,
+      // decoration: BoxDecoration(
+      //   border: Border.all(color: colourScheme.secondary, width: 2),
+      //   borderRadius: BorderRadius.circular(10),
+      //   color: colourScheme.secondaryContainer,
+      // ),
+      border: TableBorder.symmetric(
+        inside: BorderSide(
+          color: colourScheme.onSecondaryContainer,
+          width: 0.5,
+        ),
+        outside: BorderSide.none
       ),
-      border: TableBorder.all(
-        color: colourScheme.onSecondaryContainer,
-        width: 1,
-      ),
+      // border: TableBorder.all(
+      //   color: colourScheme.onSecondaryContainer,
+      //   width: 0.5,
+      // ),
     );
 
     return Scaffold(
       appBar: AppBar(
         title: Text(event.name),
       ),
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          children: [
-            Text('Date: ${event.date.day}/${event.date.month}/${event.date.year}'),
-            const SizedBox(height: 10),
-            Text('Location: TBD'),
-            const SizedBox(height: 10),  
-            Text('Price: £${(event.cost / 100).toStringAsFixed(2)}'),
-            const SizedBox(height: 20),
-            const Text('Registrations:'),
-            const SizedBox(height: 10),
-            childrenTable
-          ],
-        ),
-      )),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Table(
+            columnWidths: {
+              0: IntrinsicColumnWidth(),
+            },
+            children: [
+              TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('Date:', style: TextStyle(fontWeight: FontWeight.bold),),
+              ),
+              Text("${event.date.day}/${event.date.month}/${event.date.year}"),
+              ]),
+                TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('Location:', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                Text('TBD'),
+                ]),
+                TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('Price:', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                Text('£${(event.cost / 100).toStringAsFixed(2)}'),
+                ]),
+            ]
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                const Text('Registrations:', style: TextStyle(fontWeight: FontWeight.bold)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle button press
+                      },
+                      child: const Text('Add Participants'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle button press
+                      },
+                      child: const Text('Add Sections'),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Card( 
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Sets rounded corners
+                    ),
+                  color: colourScheme.secondaryContainer, 
+                  clipBehavior: Clip.antiAlias,
+                  child: childrenTable,
+                  )
+              ]
+            )
+          ),
+        ],
+      ),
     );
   }
 }
