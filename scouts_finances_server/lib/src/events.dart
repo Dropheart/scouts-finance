@@ -35,6 +35,18 @@ class EventEndpoint extends Endpoint {
     return Event.db.find(session);
   }
 
+  Future<List<EventRegistration>> unpaidEvents(Session session) async {
+    final allRegistrations = await EventRegistration.db.find(session,
+        include: EventRegistration.include(
+            child: Child.include(parent: Parent.include()),
+            event: Event.include()));
+
+    allRegistrations.sort((a, b) => a.event!.date.compareTo(b.event!.date));
+    allRegistrations.retainWhere((eventReg) => eventReg.paidDate == null);
+
+    return allRegistrations;
+  }
+
   Future<List<EventRegistration>> getRegistrationsByChildId(
       Session session, int childId) async {
     return EventRegistration.db.find(session,

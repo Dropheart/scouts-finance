@@ -69,6 +69,21 @@ class EndpointEvent extends _i1.EndpointRef {
         },
       );
 
+  _i2.Future<List<_i4.EventRegistration>> unpaidEvents() =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'unpaidEvents',
+        {},
+      );
+
+  _i2.Future<List<_i4.EventRegistration>> getRegistrationsByChildId(
+          int childId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'getRegistrationsByChildId',
+        {'childId': childId},
+      );
+
   _i2.Future<List<_i4.EventRegistration>> getRegistrationsByChildId(
           int childId) =>
       caller.callServerEndpoint<List<_i4.EventRegistration>>(

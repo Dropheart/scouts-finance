@@ -41,9 +41,43 @@ class PaymentEndpoint extends Endpoint {
       throw ArgumentError('Payment with id $paymentId not found');
     }
     // Update the payment with the new parent information
-    //payment.parent = parent;
-    payment.parentId = parent.id!;
     print('Updating payment with ID: $paymentId for parent: ${parent.id}');
-    await Payment.db.updateRow(session, payment);
+
+    // Find all event registrations that can be paid
+    // sorted by date
+    final registrations = await EventRegistration.db.find(session,
+        where: (t) =>
+            (t.child.parentId.equals(parent.id)) & (t.paidDate.equals(null)),
+        orderBy: (t) => t.event.date,
+        include: EventRegistration.include(
+          event: Event.include(),
+        ));
+
+    // Get new parent balance & see what we can pay off
+    int balance = parent.balance + payment.amount;
+    final clearableRegistrations = <EventRegistration>[];
+    while (balance > 0 && registrations.isNotEmpty) {
+      final reg = registrations.removeAt(0);
+      if (reg.event!.cost <= balance) {
+        clearableRegistrations.add(reg);
+        balance -= reg.event!.cost;
+      } else {
+        break;
+      }
+    }
+
+    await session.db.transaction((transaction) async {
+      payment.parentId = parent.id;
+      await Payment.db.updateRow(session, payment, transaction: transaction);
+
+      for (final reg in clearableRegistrations) {
+        reg.paidDate = DateTime.now();
+        await EventRegistration.db
+            .updateRow(session, reg, transaction: transaction);
+      }
+
+      parent.balance = balance;
+      await Parent.db.updateRow(session, parent, transaction: transaction);
+    });
   }
 }
