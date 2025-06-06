@@ -27,6 +27,12 @@ class PaymentEndpoint extends Endpoint {
     return Payment.db.findById(session, paymentId);
   }
 
+  Future<List<Payment>> getPaymentsByParentId(
+      Session session, int parentId) async {
+    // Find all payments associated with the given parent ID
+    return Payment.db.find(session, where: (p) => p.parentId.equals(parentId));
+  }
+
   Future<void> updatePayment(
       Session session, int paymentId, Parent parent) async {
     // Find the payment by ID

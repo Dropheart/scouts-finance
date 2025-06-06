@@ -5,6 +5,7 @@ event:
   - getEventById:
   - insertEvent:
   - unpaidEvents:
+  - getRegistrationsByChildId:
 parent:
   - getParents:
   - getParentById:
@@ -13,6 +14,8 @@ payment:
   - getPayments:
   - insertPayment:
   - getPaymentById:
+  - getPaymentsByParentId:
   - updatePayment:
 scouts:
   - getChildren:
+  - getChildrenOfParent:

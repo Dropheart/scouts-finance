@@ -140,6 +140,25 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['event'] as _i3.EventEndpoint).unpaidEvents(session),
         ),
+        'getRegistrationsByChildId': _i1.MethodConnector(
+          name: 'getRegistrationsByChildId',
+          params: {
+            'childId': _i1.ParameterDescription(
+              name: 'childId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .getRegistrationsByChildId(
+            session,
+            params['childId'],
+          ),
+        ),
       },
     );
     connectors['parent'] = _i1.EndpointConnector(
@@ -261,6 +280,25 @@ class Endpoints extends _i1.EndpointDispatch {
             params['paymentId'],
           ),
         ),
+        'getPaymentsByParentId': _i1.MethodConnector(
+          name: 'getPaymentsByParentId',
+          params: {
+            'parentId': _i1.ParameterDescription(
+              name: 'parentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['payment'] as _i5.PaymentEndpoint)
+                  .getPaymentsByParentId(
+            session,
+            params['parentId'],
+          ),
+        ),
         'updatePayment': _i1.MethodConnector(
           name: 'updatePayment',
           params: {
@@ -299,7 +337,25 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['scouts'] as _i6.ScoutsEndpoint).getChildren(session),
-        )
+        ),
+        'getChildrenOfParent': _i1.MethodConnector(
+          name: 'getChildrenOfParent',
+          params: {
+            'parentId': _i1.ParameterDescription(
+              name: 'parentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['scouts'] as _i6.ScoutsEndpoint).getChildrenOfParent(
+            session,
+            params['parentId'],
+          ),
+        ),
       },
     );
   }

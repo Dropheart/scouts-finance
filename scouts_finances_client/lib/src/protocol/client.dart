@@ -75,6 +75,14 @@ class EndpointEvent extends _i1.EndpointRef {
         'unpaidEvents',
         {},
       );
+
+  _i2.Future<List<_i4.EventRegistration>> getRegistrationsByChildId(
+          int childId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'getRegistrationsByChildId',
+        {'childId': childId},
+      );
 }
 
 /// {@category Endpoint}
@@ -148,6 +156,13 @@ class EndpointPayment extends _i1.EndpointRef {
         {'paymentId': paymentId},
       );
 
+  _i2.Future<List<_i6.Payment>> getPaymentsByParentId(int parentId) =>
+      caller.callServerEndpoint<List<_i6.Payment>>(
+        'payment',
+        'getPaymentsByParentId',
+        {'parentId': parentId},
+      );
+
   _i2.Future<void> updatePayment(
     int paymentId,
     _i5.Parent parent,
@@ -174,6 +189,13 @@ class EndpointScouts extends _i1.EndpointRef {
         'scouts',
         'getChildren',
         {},
+      );
+
+  _i2.Future<List<_i7.Child>> getChildrenOfParent(int parentId) =>
+      caller.callServerEndpoint<List<_i7.Child>>(
+        'scouts',
+        'getChildrenOfParent',
+        {'parentId': parentId},
       );
 }
 
