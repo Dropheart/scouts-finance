@@ -225,8 +225,8 @@ class _ParentHomeState extends State<ParentHome> {
               );
             },
           ).then((_) => {
-            _getParents(),
-          });
+                _getParents(),
+              });
         },
         child: const Icon(Icons.add),
       ),

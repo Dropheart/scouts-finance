@@ -114,7 +114,9 @@ class _ParentDetailsState extends State<ParentDetails> {
           Row(
             children: [
               Text('Children:', style: const TextStyle(fontSize: 16)),
-              ...children.map((child) => TextButton(onPressed: () => {}, child: Text('${child.firstName} ${child.lastName}'))),
+              ...children.map((child) => TextButton(
+                  onPressed: () => {},
+                  child: Text('${child.firstName} ${child.lastName}'))),
             ],
           ),
           const SizedBox(height: 16),
