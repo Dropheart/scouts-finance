@@ -87,9 +87,9 @@ class _EventHomeState extends State<EventHome> {
           title: Text(event.name),
           subtitle: Row(
             children: [
-              Text('${event.id}/YY Paid'),
+              Text('${event.id}/30 Paid'),
               const Spacer(),
-              Text('${event.date.day}/${event.date.month}'),
+              Text('${event.date.day}/${event.date.month}/${event.date.year}'),
             ],
           ),
           onTap: () {
@@ -102,7 +102,7 @@ class _EventHomeState extends State<EventHome> {
     }).toList();
 
     SearchBar searchBar = SearchBar(
-      hintText: 'Search Events',
+      hintText: 'search by name...',
       onChanged: (value) => setState(() {
         query = value;
       }),
