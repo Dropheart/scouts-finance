@@ -68,6 +68,14 @@ class EndpointEvent extends _i1.EndpointRef {
           'date': date,
         },
       );
+
+  _i2.Future<List<_i4.EventRegistration>> getRegistrationsByChildId(
+          int childId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'getRegistrationsByChildId',
+        {'childId': childId},
+      );
 }
 
 /// {@category Endpoint}
