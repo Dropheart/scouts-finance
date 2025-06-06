@@ -17,3 +17,4 @@ payment:
   - updatePayment:
 scouts:
   - getChildren:
+  - getChildrenOfParent:
