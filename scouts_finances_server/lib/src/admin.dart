@@ -138,14 +138,12 @@ class AdminEndpoint extends Endpoint {
       final payInTwoInstallments = Random().nextBool();
       // Create the payments
       final payee = [
-        "Phoebe Galindo",
-        "Salvatore Esparza",
-        "Ramona Stanton",
-        "Zyair Gould",
-        "Violeta Norman",
-        "Aziel Cox",
-        "Sadie Alexander"
-      ][Random().nextInt(7)];
+        "${parent1.firstName} ${parent1.lastName}",
+        "${parent2.firstName} ${parent2.lastName}",
+        "${parent3.firstName} ${parent3.lastName}",
+        "${parent4.firstName} ${parent4.lastName}",
+        "${parent5.firstName} ${parent5.lastName}",
+      ][Random().nextInt(5)];
 
       final payments = payInTwoInstallments
           ? [
