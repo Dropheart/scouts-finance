@@ -4,6 +4,7 @@ event:
   - getEvents:
   - getEventById:
   - insertEvent:
+  - registerChildForEvent:
 parent:
   - getParents:
   - getParentById:

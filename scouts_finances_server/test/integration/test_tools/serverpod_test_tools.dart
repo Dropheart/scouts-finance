@@ -286,6 +286,39 @@ class _EventEndpoint {
       }
     });
   }
+
+  _i3.Future<_i5.EventRegistration> registerChildForEvent(
+    _i1.TestSessionBuilder sessionBuilder,
+    int eventId,
+    int childId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'event',
+        method: 'registerChildForEvent',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'event',
+          methodName: 'registerChildForEvent',
+          parameters: _i1.testObjectToJson({
+            'eventId': eventId,
+            'childId': childId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.EventRegistration>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _ParentEndpoint {
