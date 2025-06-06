@@ -17,13 +17,14 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
   late List<Parent> parents;
   Parent get currParent => parents[parentIndex];
   int parentIndex = -1;
-  int loading = 2; // Number of async operations to wait for
+  int loading = 3; // Number of async operations to wait for
 
   @override
   void initState() {
     super.initState();
     _getPayment();
     _getParents();
+    _getUnpaidEvents();
   }
 
   void _getPayment() async {
@@ -51,6 +52,24 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         parents = [];
       });
     }
+  }
+
+  late List<EventRegistration> unpaidEvents;
+  void _getUnpaidEvents() async {
+    try {
+      unpaidEvents = await client.event.unpaidEvents();
+      setState(() {
+        loading = loading - 1;
+      });
+    } catch (e) {
+      setState(() {
+        unpaidEvents = [];
+      });
+    }
+  }
+
+  String formatMoney(int amount) {
+    return '£${(amount / 100).toStringAsFixed(2)}';
   }
 
   @override
@@ -94,6 +113,38 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         )
       ]);
 
+      List<EventRegistration> unpaidEventsForParent = unpaidEvents
+          .where((eventReg) => eventReg.child!.parentId == currParent.id)
+          .toList();
+
+      int bal = payment!.amount + currParent.balance;
+      List<EventRegistration> toBePaidEvents = [];
+      while (bal > 0 && unpaidEventsForParent.isNotEmpty) {
+        final event = unpaidEventsForParent.removeAt(0);
+        if (event.event!.cost <= bal) {
+          toBePaidEvents.add(event);
+          bal -= event.event!.cost;
+        } else {
+          // If the event cost is more than the balance, we can't pay it off
+          break;
+        }
+      }
+
+      List<Widget> clearedEventsInfo = [];
+      if (toBePaidEvents.isNotEmpty) {
+        clearedEventsInfo.add(
+            const Text("This payment will mark the following events as paid:"));
+        clearedEventsInfo.addAll(toBePaidEvents.map((eventReg) {
+          return Text(
+              "${eventReg.child!.firstName} - ${eventReg.event!.name} - ${formatMoney(eventReg.event!.cost)}");
+        }).toList());
+        clearedEventsInfo
+            .add(Text('Leaving a balance of ${formatMoney(bal)}.'));
+      } else {
+        clearedEventsInfo.add(const Text(
+            "This payment will not clear any unpaid events for this parent."));
+      }
+
       body = Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +154,8 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           Column(children: [parentSelection]),
           const SizedBox(height: 32),
           Text(
-              "This will change ${currParent.firstName}'s balance from ${currParent.balance} to ${currParent.balance + payment!.amount}."),
+              "This will change ${currParent.firstName}'s balance from ${formatMoney(currParent.balance)} to ${formatMoney(currParent.balance + payment!.amount)}."),
+          ...clearedEventsInfo,
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: submit,
@@ -129,7 +181,6 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
     try {
       await client.payment.updatePayment(payment!.id!, currParent);
-      await client.parent.addBalance(currParent.id!, payment!.amount);
     } catch (e) {
       if (context.mounted) {
         // ignore: use_build_context_synchronously
