@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/event_add_participant.dart';
-import 'package:scouts_finances_flutter/events/event_add_section.dart';
 import 'package:scouts_finances_flutter/main.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
@@ -97,9 +96,7 @@ class _SingleEventState extends State<SingleEvent> {
                   ],
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
-                      : WidgetStateProperty.all(Colors.green.shade100)
-                      )
-                  )
+                      : WidgetStateProperty.all(Colors.green.shade100)))
           .toList(),
       // decoration: BoxDecoration(
       //   border: Border.all(color: colourScheme.secondary, width: 2),
@@ -107,12 +104,11 @@ class _SingleEventState extends State<SingleEvent> {
       //   color: colourScheme.secondaryContainer,
       // ),
       border: TableBorder.symmetric(
-        inside: BorderSide(
-          color: colourScheme.onSecondaryContainer,
-          width: 0.5,
-        ),
-        outside: BorderSide.none
-      ),
+          inside: BorderSide(
+            color: colourScheme.onSecondaryContainer,
+            width: 0.5,
+          ),
+          outside: BorderSide.none),
       // border: TableBorder.all(
       //   color: colourScheme.onSecondaryContainer,
       //   width: 0.5,
@@ -127,70 +123,71 @@ class _SingleEventState extends State<SingleEvent> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Table(
-            columnWidths: {
-              0: IntrinsicColumnWidth(),
-            },
-            children: [
-              TableRow(children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('Date:', style: TextStyle(fontWeight: FontWeight.bold),),
+          Table(columnWidths: {
+            0: IntrinsicColumnWidth(),
+          }, children: [
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'Date:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
               Text("${event.date.day}/${event.date.month}/${event.date.year}"),
-              ]),
-                TableRow(children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('Location:', style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                Text('TBD'),
-                ]),
-                TableRow(children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('Price:', style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                Text('£${(event.cost / 100).toStringAsFixed(2)}'),
-                ]),
-            ]
-          ),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text('Location:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              Text('TBD'),
+            ]),
+            TableRow(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text('Price:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              Text('£${(event.cost / 100).toStringAsFixed(2)}'),
+            ]),
+          ]),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              children: [
-                const Text('Registrations:', style: TextStyle(fontWeight: FontWeight.bold)),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(children: [
+                const Text('Registrations:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                      SizedBox(
-                        width: 200, // Fixed width
-                        child: EventAddParticipant(
-                          eventId: widget.eventId,
-                          closeFn: () => _getEventDetails(),
-                          ),
+                    SizedBox(
+                      width: 200, // Fixed width
+                      child: EventAddParticipant(
+                        eventId: widget.eventId,
+                        closeFn: () => _getEventDetails(),
                       ),
-                      // SizedBox(
-                      //   width: 20,
-                      //   child: EventAddSection(
-                      //     eventId: widget.eventId,
-                      //     closeFn: () => _getEventDetails(),
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Sets rounded corners
                     ),
-                  color: colourScheme.secondaryContainer, 
+                    // SizedBox(
+                    //   width: 20,
+                    //   child: EventAddSection(
+                    //     eventId: widget.eventId,
+                    //     closeFn: () => _getEventDetails(),
+                    //   ),
+                    // ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // Sets rounded corners
+                  ),
+                  color: colourScheme.secondaryContainer,
                   clipBehavior: Clip.antiAlias,
                   child: childrenTable,
-                  )
-              ]
-            )
-          ),
+                )
+              ])),
         ],
       ),
     );

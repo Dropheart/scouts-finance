@@ -7,7 +7,8 @@ class EventAddSection extends StatefulWidget {
   final int eventId;
   final VoidCallback closeFn;
 
-  const EventAddSection({super.key, required this.eventId, required this.closeFn});
+  const EventAddSection(
+      {super.key, required this.eventId, required this.closeFn});
 
   @override
   State<EventAddSection> createState() => _EventAddSectionState();
@@ -36,17 +37,17 @@ class _EventAddSectionState extends State<EventAddSection> {
     _getSections();
   }
 
-  void _submit() {
-    if (selectedChildren.isNotEmpty) {
-      selectedChildren.map((child) {
-        if (child.id != null) {
-          return client.event.registerChildForEvent(widget.eventId, child.id!);
-        }
-        return null;
-      }).toList();
-      Navigator.of(context).pop(selectedChildren);
-    }
-  }
+  // void _submit() {
+  //   if (selectedChildren.isNotEmpty) {
+  //     selectedChildren.map((child) {
+  //       if (child.id != null) {
+  //         return client.event.registerChildForEvent(widget.eventId, child.id!);
+  //       }
+  //       return null;
+  //     }).toList();
+  //     Navigator.of(context).pop(selectedChildren);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

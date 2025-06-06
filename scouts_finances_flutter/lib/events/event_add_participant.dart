@@ -7,7 +7,8 @@ class EventAddParticipant extends StatefulWidget {
   final int eventId;
   final VoidCallback closeFn;
 
-  const EventAddParticipant({super.key, required this.eventId, required this.closeFn});
+  const EventAddParticipant(
+      {super.key, required this.eventId, required this.closeFn});
 
   @override
   State<EventAddParticipant> createState() => _EventAddParticipantState();
@@ -32,7 +33,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   }
 
   void _getEventChildren() async {
-    final (event, registrations) = await client.event.getEventById(widget.eventId);
+    final (event, registrations) =
+        await client.event.getEventById(widget.eventId);
     setState(() {
       eventChildren = registrations.map((e) => e.child!).toList();
     });
@@ -45,17 +47,17 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     _getEventChildren();
   }
 
-  void _submit() {
-    if (selectedChildren.isNotEmpty) {
-      selectedChildren.map((child) {
-        if (child.id != null) {
-          return client.event.registerChildForEvent(widget.eventId, child.id!);
-        }
-        return null;
-      }).toList();
-      Navigator.of(context).pop(selectedChildren);
-    }
-  }
+  // void _submit() {
+  //   if (selectedChildren.isNotEmpty) {
+  //     selectedChildren.map((child) {
+  //       if (child.id != null) {
+  //         return client.event.registerChildForEvent(widget.eventId, child.id!);
+  //       }
+  //       return null;
+  //     }).toList();
+  //     Navigator.of(context).pop(selectedChildren);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

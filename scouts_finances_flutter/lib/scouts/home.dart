@@ -55,7 +55,9 @@ class _ScoutsHomeState extends State<ScoutsHome> {
     List<Child> filteredChildren = children.where((child) {
       if (query.isEmpty) return true;
       final searchTerm = query.toLowerCase();
-      return "${child.firstName} ${child.lastName}".toLowerCase().contains(searchTerm);
+      return "${child.firstName} ${child.lastName}"
+          .toLowerCase()
+          .contains(searchTerm);
     }).toList();
 
     List<Card> childCards = filteredChildren.map((child) {
@@ -79,7 +81,6 @@ class _ScoutsHomeState extends State<ScoutsHome> {
       leading: const Icon(Icons.search),
       hintText: 'search by name...',
     );
-
 
     Column body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
