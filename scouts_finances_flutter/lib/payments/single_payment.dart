@@ -97,7 +97,10 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         parentIndex = parents.indexWhere((p) =>
             payment!.payee.contains(p.firstName) &&
             payment!.payee.contains(p.lastName));
-        parentIndex = 0; // Default to first parent
+      }
+      if (parentIndex == -1) {
+        // If we still can't find it, default to the first parent
+        parentIndex = 0;
       }
 
       Row parentSelection = Row(children: [
