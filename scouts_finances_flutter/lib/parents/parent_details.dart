@@ -114,24 +114,30 @@ class _ParentDetailsState extends State<ParentDetails> {
             ],
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Not Implemented'),
-                  content: const Text(
-                      'Editing parent details is not implemented yet.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('OK'),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Not Implemented'),
+                      content: const Text(
+                          'Editing parent details is not implemented yet.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('OK'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            },
-            child: const Text('Edit Parent Details'),
+                  );
+                },
+                child: const Text('Edit Parent Details'),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(onPressed: () => {}, child: Text('Delete')),
+            ],
           ),
           const SizedBox(height: 16),
           const Text('Transaction History:',
