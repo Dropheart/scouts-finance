@@ -132,8 +132,25 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'String',
         ),
+        _i2.ColumnDefinition(
+          name: 'parentId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'children_fk_0',
+          columns: ['parentId'],
+          referenceTable: 'parents',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'children_pkey',
@@ -175,6 +192,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'paidDate',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
@@ -320,6 +343,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'String',
         ),
+        _i2.ColumnDefinition(
+          name: 'balance',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -394,12 +423,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
-          name: '_eventRegistrationsPaymentsEventRegistrationsId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -416,16 +439,6 @@ class Protocol extends _i1.SerializationManagerServer {
           constraintName: 'payments_fk_1',
           columns: ['parentId'],
           referenceTable: 'parents',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'payments_fk_2',
-          columns: ['_eventRegistrationsPaymentsEventRegistrationsId'],
-          referenceTable: 'event_registrations',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
@@ -500,11 +513,6 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (t == _i1.getType<_i9.PaymentMethod?>()) {
       return (data != null ? _i9.PaymentMethod.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<List<_i8.Payment>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i8.Payment>(e)).toList()
-          : null) as T;
     }
     if (t == List<_i10.Event>) {
       return (data as List).map((e) => deserialize<_i10.Event>(e)).toList()

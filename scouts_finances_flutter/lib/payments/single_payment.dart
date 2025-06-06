@@ -16,7 +16,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
   late Payment? payment;
   late List<Parent> parents;
   Parent get currParent => parents[parentIndex];
-  int parentIndex = 0;
+  int parentIndex = -1;
   int loading = 2; // Number of async operations to wait for
 
   @override
@@ -73,13 +73,26 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
       if (payment!.parentId != null) {
         // Then there is already a parent assigned so the index should reflect that
         parentIndex = parents.indexWhere((p) => p.id == payment!.parentId!);
-      } else {
+      } else if (parentIndex == -1) {
         // Try to find the parent by payee name
         parentIndex = parents.indexWhere((p) =>
             payment!.payee.contains(p.firstName) &&
             payment!.payee.contains(p.lastName));
-        if (parentIndex == -1) parentIndex = 0; // Default to first parent
+        parentIndex = 0; // Default to first parent
       }
+
+      Row parentSelection = Row(children: [
+        Text("Assign this payment to parent: "),
+        ParentDropdown(
+          parents: parents,
+          defaultParentId: parents[parentIndex].id,
+          onChanged: (p) {
+            setState(() {
+              parentIndex = parents.indexWhere((parent) => parent.id == p);
+            });
+          },
+        )
+      ]);
 
       body = Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -87,24 +100,10 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         children: [
           PaymentTable(payment: payment!),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Text("Assign this payment to: "),
-              ParentDropdown(
-                parents: parents,
-                defaultParentId: parents[parentIndex].id,
-                onChanged: (p) {
-                  setState(() {
-                    parentIndex =
-                        parents.indexWhere((parent) => parent.id == p);
-                  });
-                },
-              )
-            ],
-          ),
+          Column(children: [parentSelection]),
           const SizedBox(height: 32),
           Text(
-              "This will change ${currParent.firstName}'s balance from -£10.00 to -£5.00"),
+              "This will change ${currParent.firstName}'s balance from ${currParent.balance} to ${currParent.balance + payment!.amount}."),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: submit,
@@ -130,6 +129,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
     try {
       await client.payment.updatePayment(payment!.id!, currParent);
+      await client.parent.addBalance(currParent.id!, payment!.amount);
     } catch (e) {
       if (context.mounted) {
         // ignore: use_build_context_synchronously

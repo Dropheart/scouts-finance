@@ -12,7 +12,6 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'events.dart' as _i2;
 import 'child.dart' as _i3;
-import 'payment.dart' as _i4;
 
 abstract class EventRegistration implements _i1.SerializableModel {
   EventRegistration._({
@@ -21,7 +20,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
     this.event,
     required this.childId,
     this.child,
-    this.payments,
+    this.paidDate,
   });
 
   factory EventRegistration({
@@ -30,7 +29,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
     _i2.Event? event,
     required int childId,
     _i3.Child? child,
-    List<_i4.Payment>? payments,
+    DateTime? paidDate,
   }) = _EventRegistrationImpl;
 
   factory EventRegistration.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -46,9 +45,9 @@ abstract class EventRegistration implements _i1.SerializableModel {
           ? null
           : _i3.Child.fromJson(
               (jsonSerialization['child'] as Map<String, dynamic>)),
-      payments: (jsonSerialization['payments'] as List?)
-          ?.map((e) => _i4.Payment.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      paidDate: jsonSerialization['paidDate'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['paidDate']),
     );
   }
 
@@ -65,7 +64,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
 
   _i3.Child? child;
 
-  List<_i4.Payment>? payments;
+  DateTime? paidDate;
 
   /// Returns a shallow copy of this [EventRegistration]
   /// with some or all fields replaced by the given arguments.
@@ -76,7 +75,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
     _i2.Event? event,
     int? childId,
     _i3.Child? child,
-    List<_i4.Payment>? payments,
+    DateTime? paidDate,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -86,8 +85,7 @@ abstract class EventRegistration implements _i1.SerializableModel {
       if (event != null) 'event': event?.toJson(),
       'childId': childId,
       if (child != null) 'child': child?.toJson(),
-      if (payments != null)
-        'payments': payments?.toJson(valueToJson: (v) => v.toJson()),
+      if (paidDate != null) 'paidDate': paidDate?.toJson(),
     };
   }
 
@@ -106,14 +104,14 @@ class _EventRegistrationImpl extends EventRegistration {
     _i2.Event? event,
     required int childId,
     _i3.Child? child,
-    List<_i4.Payment>? payments,
+    DateTime? paidDate,
   }) : super._(
           id: id,
           eventId: eventId,
           event: event,
           childId: childId,
           child: child,
-          payments: payments,
+          paidDate: paidDate,
         );
 
   /// Returns a shallow copy of this [EventRegistration]
@@ -126,7 +124,7 @@ class _EventRegistrationImpl extends EventRegistration {
     Object? event = _Undefined,
     int? childId,
     Object? child = _Undefined,
-    Object? payments = _Undefined,
+    Object? paidDate = _Undefined,
   }) {
     return EventRegistration(
       id: id is int? ? id : this.id,
@@ -134,9 +132,7 @@ class _EventRegistrationImpl extends EventRegistration {
       event: event is _i2.Event? ? event : this.event?.copyWith(),
       childId: childId ?? this.childId,
       child: child is _i3.Child? ? child : this.child?.copyWith(),
-      payments: payments is List<_i4.Payment>?
-          ? payments
-          : this.payments?.map((e0) => e0.copyWith()).toList(),
+      paidDate: paidDate is DateTime? ? paidDate : this.paidDate,
     );
   }
 }

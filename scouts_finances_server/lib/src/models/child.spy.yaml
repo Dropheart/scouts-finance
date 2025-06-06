@@ -3,3 +3,4 @@ table: children
 fields:
   firstName: String
   lastName: String
+  parent: Parent?, relation
