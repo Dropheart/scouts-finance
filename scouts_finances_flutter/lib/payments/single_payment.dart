@@ -135,29 +135,69 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
       List<Widget> clearedEventsInfo = [];
       if (toBePaidEvents.isNotEmpty) {
-        clearedEventsInfo.add(
-            const Text("This payment will mark the following events as paid:"));
-        clearedEventsInfo.addAll(toBePaidEvents.map((eventReg) {
-          return Text(
-              "${eventReg.child!.firstName} - ${eventReg.event!.name} - ${formatMoney(eventReg.event!.cost)}");
-        }).toList());
-        clearedEventsInfo
-            .add(Text('Leaving a balance of ${formatMoney(bal)}.'));
+        clearedEventsInfo.add(const Text(
+          "This payment will mark the following events as paid:",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ));
+        clearedEventsInfo.add(Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              alignment: Alignment.topCenter,
+              constraints: const BoxConstraints(maxHeight: 200),
+              child: Scrollbar(
+                thumbVisibility: true,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columnSpacing: 24.0,
+                      columns: const [
+                        DataColumn(label: Text('Child')),
+                        DataColumn(label: Text('Event')),
+                        DataColumn(label: Text('Cost (£)')),
+                      ],
+                      rows: toBePaidEvents
+                          .map(
+                            (event) => DataRow(
+                              cells: [
+                                DataCell(Text(
+                                    '${event.child!.firstName} ${event.child!.lastName}')),
+                                DataCell(Text(event.event!.name)),
+                                DataCell(Text(formatMoney(event.event!.cost))),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              'Leaving a balance of ${formatMoney(bal)}.',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ));
       } else {
         clearedEventsInfo.add(const Text(
-            "This payment will not clear any unpaid events for this parent."));
+          "This payment will not clear any unpaid events for this parent.",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ));
       }
 
       body = Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PaymentTable(payment: payment!),
           const SizedBox(height: 16),
           Column(children: [parentSelection]),
           const SizedBox(height: 32),
           Text(
-              "This will change ${currParent.firstName}'s balance from ${formatMoney(currParent.balance)} to ${formatMoney(currParent.balance + payment!.amount)}."),
+              "This will change ${currParent.firstName}'s balance from ${formatMoney(currParent.balance)} to ${formatMoney(currParent.balance + payment!.amount)}.",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ...clearedEventsInfo,
           const SizedBox(height: 16),
           ElevatedButton(
