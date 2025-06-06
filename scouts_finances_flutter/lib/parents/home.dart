@@ -142,36 +142,44 @@ class _ParentHomeState extends State<ParentHome> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'First Name'),
+                          decoration:
+                              const InputDecoration(labelText: 'First Name'),
                           onChanged: (v) => firstName = v,
-                          validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                          validator: (v) =>
+                              v == null || v.isEmpty ? 'Required' : null,
                         ),
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'Last Name'),
+                          decoration:
+                              const InputDecoration(labelText: 'Last Name'),
                           onChanged: (v) => lastName = v,
-                          validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                          validator: (v) =>
+                              v == null || v.isEmpty ? 'Required' : null,
                         ),
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Email'),
                           onChanged: (v) => email = v,
-                          validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                          validator: (v) =>
+                              v == null || v.isEmpty ? 'Required' : null,
                         ),
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Phone'),
                           onChanged: (v) => phone = v,
-                          validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                          validator: (v) =>
+                              v == null || v.isEmpty ? 'Required' : null,
                         ),
                         if (error != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(error!, style: const TextStyle(color: Colors.red)),
+                            child: Text(error!,
+                                style: const TextStyle(color: Colors.red)),
                           ),
                       ],
                     ),
                   ),
                   actions: [
                     TextButton(
-                      onPressed: submitting ? null : () => Navigator.of(context).pop(),
+                      onPressed:
+                          submitting ? null : () => Navigator.of(context).pop(),
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(
