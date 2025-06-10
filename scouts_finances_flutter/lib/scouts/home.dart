@@ -107,27 +107,27 @@ class _ScoutsHomeState extends State<ScoutsHome> {
         child: SingleChildScrollView(child: body),
       ),
       floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Add Child'),
-                      content: Text('This feature is not implemented yet.'),
-                      actions: [
-                        TextButton(
-                          child: Text('OK'),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    );
-                  },
-                ).then((_) {
-                  _getChildren();
-                });
-              },
-            ),
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Add Child'),
+                content: Text('This feature is not implemented yet.'),
+                actions: [
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              );
+            },
+          ).then((_) {
+            _getChildren();
+          });
+        },
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
