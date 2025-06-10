@@ -101,34 +101,7 @@ class _ScoutsHomeState extends State<ScoutsHome> {
         padding: const EdgeInsetsGeometry.all(8.0),
         child: SingleChildScrollView(child: body),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FloatingActionButton(
-              heroTag: 'fab_left',
-              child: const Icon(Icons.save),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Save Changes'),
-                      content: Text('This feature is not implemented yet.'),
-                      actions: [
-                        TextButton(
-                          child: Text('OK'),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            FloatingActionButton(
-              heroTag: 'fab_right',
+      floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add),
               onPressed: () {
                 showDialog(
@@ -150,10 +123,7 @@ class _ScoutsHomeState extends State<ScoutsHome> {
                 });
               },
             ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
