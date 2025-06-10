@@ -83,7 +83,8 @@ class EventOptionsMenu extends AbstractOptionsMenu {
 
   @override
   final List<ScoutMenuItem> menuItems = [
-    ScoutMenuItem(title: 'Export Events', value: 'export_events', icon: Icons.download)
+    ScoutMenuItem(
+        title: 'Export Events', value: 'export_events', icon: Icons.download)
   ];
 }
 
@@ -92,8 +93,12 @@ class PaymentsOptionsMenu extends AbstractOptionsMenu {
 
   @override
   final List<ScoutMenuItem> menuItems = [
-    ScoutMenuItem(title: 'Export Payments', value: 'export_payments', icon: Icons.download),
-    ScoutMenuItem(title: 'View Payments', value: 'view_payments', icon: Icons.list),
+    ScoutMenuItem(
+        title: 'Export Payments',
+        value: 'export_payments',
+        icon: Icons.download),
+    ScoutMenuItem(
+        title: 'View Payments', value: 'view_payments', icon: Icons.list),
   ];
 }
 
@@ -113,6 +118,7 @@ class ParentOptionsMenu extends AbstractOptionsMenu {
   @override
   final List<ScoutMenuItem> menuItems = [
     ScoutMenuItem(title: 'Add Parent', value: 'add_parent', icon: Icons.add),
-    ScoutMenuItem(title: 'View Parents', value: 'view_parents', icon: Icons.list),
+    ScoutMenuItem(
+        title: 'View Parents', value: 'view_parents', icon: Icons.list),
   ];
 }
