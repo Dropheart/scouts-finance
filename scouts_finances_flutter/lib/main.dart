@@ -41,26 +41,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Scouts Finances',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
           cardTheme: const CardThemeData(elevation: 1.0),
           searchBarTheme:
               const SearchBarThemeData(elevation: WidgetStatePropertyAll(0.0))),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomePage(title: 'Scouts Finances Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
   static final List<Widget> pages = [
     EventHome(),
