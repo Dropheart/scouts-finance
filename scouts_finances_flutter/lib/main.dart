@@ -96,26 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   ];
 
-  Future<void> switchScoutGroup() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Switch Scout Group'),
-          content: const Text('This feature is not implemented yet.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
