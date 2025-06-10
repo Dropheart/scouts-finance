@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_flutter/events/home.dart';
 import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
+import 'package:scouts_finances_flutter/popups.dart';
 import 'package:scouts_finances_flutter/scouts/home.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
@@ -109,10 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: false,
         backgroundColor: colours.primary,
         actions: [
-          IconButton(
-            icon: Icon(Icons.more_horiz, color: colours.onPrimary),
-            onPressed: () => {},
-          ),
+          OptionsMenu(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
