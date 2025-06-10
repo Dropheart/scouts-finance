@@ -6,27 +6,30 @@ class OptionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colours = Theme.of(context).colorScheme;
-
-    final String moreOptions;
     switch (selectedIndex) {
       case 0:
-        moreOptions = 'Export Events';
-        break;
+        return EventOptionsMenu();
       case 1:
-        moreOptions = 'Export Payments';
-        break;
+        return PaymentsOptionsMenu();
       case 2:
-        moreOptions = 'Export Scouts';
-        break;
+        return ScoutsOptionsMenu();
       case 3:
-        moreOptions = 'Export Parents';
-        break;
+        return ParentOptionsMenu();
       default:
-        throw Exception('Invalid selectedIndex: $selectedIndex');
+        return const SizedBox.shrink();
     }
+  }
+}
 
-    return PopupMenuButton<String>(
+abstract class AbstractOptionsMenu extends StatelessWidget {
+  const AbstractOptionsMenu({super.key});
+
+  abstract final List<PopupMenuEntry<String>> menuItems;
+  
+  @override
+  Widget build(BuildContext context) {
+    final colours = Theme.of(context).colorScheme;
+        return PopupMenuButton<String>(
         icon: Icon(Icons.more_horiz,
             color: Theme.of(context).colorScheme.onPrimary),
         onSelected: (String result) {
@@ -49,16 +52,119 @@ class OptionsMenu extends StatelessWidget {
                   ],
                 ),
               ),
-              PopupMenuItem<String>(
-                value: 'export',
-                child: Row(
-                  children: [
-                    Icon(Icons.file_download, color: colours.onSurface),
-                    SizedBox(width: 8.0),
-                    Text(moreOptions),
-                  ],
-                ),
-              ),
+              ...menuItems,
             ]);
   }
+}
+
+class EventOptionsMenu extends AbstractOptionsMenu {
+  EventOptionsMenu({super.key});
+
+  @override
+  final List<PopupMenuEntry<String>> menuItems = [
+    PopupMenuItem<String>(
+      value: 'add_event',
+      child: Row(
+        children: [
+          Icon(Icons.add, color: Colors.green),
+          SizedBox(width: 8.0),
+          Text('Add Event'),
+        ],
+      ),
+    ),
+    PopupMenuItem<String>(
+      value: 'view_events',
+      child: Row(
+        children: [
+          Icon(Icons.list, color: Colors.blue),
+          SizedBox(width: 8.0),
+          Text('View Events'),
+        ],
+      ),
+    ),
+  ];
+}
+
+class PaymentsOptionsMenu extends AbstractOptionsMenu {
+  PaymentsOptionsMenu({super.key});
+
+  @override
+  final List<PopupMenuEntry<String>> menuItems = [
+    PopupMenuItem<String>(
+      value: 'add_payment',
+      child: Row(
+        children: [
+          Icon(Icons.add, color: Colors.green),
+          SizedBox(width: 8.0),
+          Text('Add Payment'),
+        ],
+      ),
+    ),
+    PopupMenuItem<String>(
+      value: 'view_payments',
+      child: Row(
+        children: [
+          Icon(Icons.list, color: Colors.blue),
+          SizedBox(width: 8.0),
+          Text('View Payments'),
+        ],
+      ),
+    ),
+  ];
+}
+
+class ScoutsOptionsMenu extends AbstractOptionsMenu {
+  ScoutsOptionsMenu({super.key});
+
+  @override
+  final List<PopupMenuEntry<String>> menuItems = [
+    PopupMenuItem<String>(
+      value: 'add_scout',
+      child: Row(
+        children: [
+          Icon(Icons.add, color: Colors.green),
+          SizedBox(width: 8.0),
+          Text('Add Scout'),
+        ],
+      ),
+    ),
+    PopupMenuItem<String>(
+      value: 'view_scouts',
+      child: Row(
+        children: [
+          Icon(Icons.list, color: Colors.blue),
+          SizedBox(width: 8.0),
+          Text('View Scouts'),
+        ],
+      ),
+    ),
+  ];
+}
+
+class ParentOptionsMenu extends AbstractOptionsMenu {
+  ParentOptionsMenu({super.key});
+
+  @override
+  final List<PopupMenuEntry<String>> menuItems = [
+    PopupMenuItem<String>(
+      value: 'add_parent',
+      child: Row(
+        children: [
+          Icon(Icons.add, color: Colors.green),
+          SizedBox(width: 8.0),
+          Text('Add Parent'),
+        ],
+      ),
+    ),
+    PopupMenuItem<String>(
+      value: 'view_parents',
+      child: Row(
+        children: [
+          Icon(Icons.list, color: Colors.blue),
+          SizedBox(width: 8.0),
+          Text('View Parents'),
+        ],
+      ),
+    ),
+  ];
 }
