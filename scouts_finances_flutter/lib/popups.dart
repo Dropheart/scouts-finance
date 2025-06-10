@@ -25,11 +25,11 @@ abstract class AbstractOptionsMenu extends StatelessWidget {
   const AbstractOptionsMenu({super.key});
 
   abstract final List<PopupMenuEntry<String>> menuItems;
-  
+
   @override
   Widget build(BuildContext context) {
     final colours = Theme.of(context).colorScheme;
-        return PopupMenuButton<String>(
+    return PopupMenuButton<String>(
         icon: Icon(Icons.more_horiz,
             color: Theme.of(context).colorScheme.onPrimary),
         onSelected: (String result) {
