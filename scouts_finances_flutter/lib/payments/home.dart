@@ -155,16 +155,20 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       sortSelection,
     ];
     if (unclassifiedPaymentCards.isNotEmpty) {
-      body.add(Text(
-          "Unclassified Payments - ${unclassifiedPaymentCards.length}",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
-      body.addAll(unclassifiedPaymentCards);
+      body.add(ExpansionTile(
+          title: Text(
+              'Unclassified Payments - ${unclassifiedPaymentCards.length}'),
+          initiallyExpanded: true,
+          shape: const Border(),
+          children: unclassifiedPaymentCards));
     }
 
     if (classifiedPaymentCards.isNotEmpty) {
-      body.add(Text("Classified Payments - ${classifiedPaymentCards.length}",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
-      body.addAll(classifiedPaymentCards);
+      body.add(ExpansionTile(
+          title: Text('Classified Payments - ${classifiedPaymentCards.length}'),
+          initiallyExpanded: false,
+          shape: const Border(),
+          children: classifiedPaymentCards));
     }
 
     body.add(const SizedBox(height: 128.0));
