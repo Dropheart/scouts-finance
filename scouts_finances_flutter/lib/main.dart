@@ -110,7 +110,9 @@ class _HomePageState extends State<HomePage> {
         centerTitle: false,
         backgroundColor: colours.primary,
         actions: [
-          OptionsMenu(),
+          OptionsMenu(
+            selectedIndex: currentPageIndex,
+          ),
         ],
       ),
       bottomNavigationBar: NavigationBar(
