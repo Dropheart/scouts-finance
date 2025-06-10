@@ -6,10 +6,16 @@ class OptionsMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: Icon(Icons.more_horiz, color: Theme.of(context).colorScheme.onPrimary),
+      icon: Icon(Icons.more_horiz,
+          color: Theme.of(context).colorScheme.onPrimary),
       onSelected: (String result) {
         // Handle the selection
       },
+      popUpAnimationStyle: AnimationStyle(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      ),
+      position: PopupMenuPosition.under,
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         const PopupMenuItem<String>(
           value: 'Option 1',
