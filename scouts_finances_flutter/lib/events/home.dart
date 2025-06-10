@@ -151,7 +151,7 @@ class _EventHomeState extends State<EventHome> {
       // ...eventCards,
       ExpansionTile(
           title: const Text('Past Events'),
-          initiallyExpanded: true,
+          initiallyExpanded: false,
           shape: const Border(),
           children: [
             Card(
