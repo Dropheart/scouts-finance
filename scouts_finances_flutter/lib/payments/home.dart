@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/parent.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/payments/single_payment.dart';
@@ -233,7 +234,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       child: ListTile(
         title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
         subtitle: Row(children: [
-          Text(payment.payee),
+          Text(payment.parent?.fullName ?? 'Unknown'),
           const Spacer(),
           Text(payment.date.toLocal().toString().split(' ')[0]),
         ]),

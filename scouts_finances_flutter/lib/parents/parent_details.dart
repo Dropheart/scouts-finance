@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/parent.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/shared/parent_transactions.dart';
 
@@ -159,7 +160,7 @@ class _ParentDetailsState extends State<ParentDetails> {
       appBar: AppBar(
           title: Text(loading
               ? 'Loading parent...'
-              : "${parent.firstName} ${parent.lastName}")),
+              : parent.fullName)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: body,
