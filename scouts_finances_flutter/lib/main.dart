@@ -42,14 +42,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // TRY THIS: Try running your application with "flutter run". You'll see
-          // the application has a purple toolbar. Then, without quitting the app,
-          // try changing the seedColor in the colorScheme below to Colors.green
-          // and then invoke "hot reload" (save your changes or press the "hot
-          // reload" button in a Flutter-supported IDE, or press "r" if you used
-          // the command line to start the app).
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
           cardTheme: const CardThemeData(elevation: 1.0),
           searchBarTheme:
@@ -61,16 +53,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -111,26 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   ];
 
-  Future<void> switchScoutGroup() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Switch Scout Group'),
-          content: const Text('This feature is not implemented yet.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final colours = Theme.of(context).colorScheme;
@@ -146,6 +108,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         centerTitle: false,
         backgroundColor: colours.primary,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_horiz, color: colours.onPrimary),
+            onPressed: () => {},
+          ),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,
