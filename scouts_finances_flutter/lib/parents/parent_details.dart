@@ -157,10 +157,8 @@ class _ParentDetailsState extends State<ParentDetails> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-          title: Text(loading
-              ? 'Loading parent...'
-              : parent.fullName)),
+      appBar:
+          AppBar(title: Text(loading ? 'Loading parent...' : parent.fullName)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: body,
