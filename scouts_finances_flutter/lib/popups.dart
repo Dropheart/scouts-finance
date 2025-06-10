@@ -24,7 +24,7 @@ class OptionsMenu extends StatelessWidget {
 abstract class AbstractOptionsMenu extends StatelessWidget {
   const AbstractOptionsMenu({super.key});
 
-  abstract final List<PopupMenuEntry<String>> menuItems;
+  abstract final List<ScoutMenuItem> menuItems;
 
   @override
   Widget build(BuildContext context) {
@@ -52,36 +52,38 @@ abstract class AbstractOptionsMenu extends StatelessWidget {
                   ],
                 ),
               ),
-              ...menuItems,
+              ...menuItems.map((item) => PopupMenuItem<String>(
+                    value: item.value,
+                    child: Row(
+                      children: [
+                        Icon(item.icon, color: colours.onSurface),
+                        SizedBox(width: 8.0),
+                        Text(item.title),
+                      ],
+                    ),
+                  )),
             ]);
   }
+}
+
+class ScoutMenuItem {
+  final String title;
+  final IconData icon;
+  final String value;
+
+  ScoutMenuItem({
+    required this.title,
+    required this.value,
+    required this.icon,
+  });
 }
 
 class EventOptionsMenu extends AbstractOptionsMenu {
   EventOptionsMenu({super.key});
 
   @override
-  final List<PopupMenuEntry<String>> menuItems = [
-    PopupMenuItem<String>(
-      value: 'add_event',
-      child: Row(
-        children: [
-          Icon(Icons.add, color: Colors.green),
-          SizedBox(width: 8.0),
-          Text('Add Event'),
-        ],
-      ),
-    ),
-    PopupMenuItem<String>(
-      value: 'view_events',
-      child: Row(
-        children: [
-          Icon(Icons.list, color: Colors.blue),
-          SizedBox(width: 8.0),
-          Text('View Events'),
-        ],
-      ),
-    ),
+  final List<ScoutMenuItem> menuItems = [
+    ScoutMenuItem(title: 'Export Events', value: 'export_events', icon: Icons.download)
   ];
 }
 
@@ -89,27 +91,9 @@ class PaymentsOptionsMenu extends AbstractOptionsMenu {
   PaymentsOptionsMenu({super.key});
 
   @override
-  final List<PopupMenuEntry<String>> menuItems = [
-    PopupMenuItem<String>(
-      value: 'add_payment',
-      child: Row(
-        children: [
-          Icon(Icons.add, color: Colors.green),
-          SizedBox(width: 8.0),
-          Text('Add Payment'),
-        ],
-      ),
-    ),
-    PopupMenuItem<String>(
-      value: 'view_payments',
-      child: Row(
-        children: [
-          Icon(Icons.list, color: Colors.blue),
-          SizedBox(width: 8.0),
-          Text('View Payments'),
-        ],
-      ),
-    ),
+  final List<ScoutMenuItem> menuItems = [
+    ScoutMenuItem(title: 'Export Payments', value: 'export_payments', icon: Icons.download),
+    ScoutMenuItem(title: 'View Payments', value: 'view_payments', icon: Icons.list),
   ];
 }
 
@@ -117,27 +101,9 @@ class ScoutsOptionsMenu extends AbstractOptionsMenu {
   ScoutsOptionsMenu({super.key});
 
   @override
-  final List<PopupMenuEntry<String>> menuItems = [
-    PopupMenuItem<String>(
-      value: 'add_scout',
-      child: Row(
-        children: [
-          Icon(Icons.add, color: Colors.green),
-          SizedBox(width: 8.0),
-          Text('Add Scout'),
-        ],
-      ),
-    ),
-    PopupMenuItem<String>(
-      value: 'view_scouts',
-      child: Row(
-        children: [
-          Icon(Icons.list, color: Colors.blue),
-          SizedBox(width: 8.0),
-          Text('View Scouts'),
-        ],
-      ),
-    ),
+  final List<ScoutMenuItem> menuItems = [
+    ScoutMenuItem(title: 'Add Scout', value: 'add_scout', icon: Icons.add),
+    ScoutMenuItem(title: 'View Scouts', value: 'view_scouts', icon: Icons.list),
   ];
 }
 
@@ -145,26 +111,8 @@ class ParentOptionsMenu extends AbstractOptionsMenu {
   ParentOptionsMenu({super.key});
 
   @override
-  final List<PopupMenuEntry<String>> menuItems = [
-    PopupMenuItem<String>(
-      value: 'add_parent',
-      child: Row(
-        children: [
-          Icon(Icons.add, color: Colors.green),
-          SizedBox(width: 8.0),
-          Text('Add Parent'),
-        ],
-      ),
-    ),
-    PopupMenuItem<String>(
-      value: 'view_parents',
-      child: Row(
-        children: [
-          Icon(Icons.list, color: Colors.blue),
-          SizedBox(width: 8.0),
-          Text('View Parents'),
-        ],
-      ),
-    ),
+  final List<ScoutMenuItem> menuItems = [
+    ScoutMenuItem(title: 'Add Parent', value: 'add_parent', icon: Icons.add),
+    ScoutMenuItem(title: 'View Parents', value: 'view_parents', icon: Icons.list),
   ];
 }
