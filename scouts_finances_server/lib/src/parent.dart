@@ -23,7 +23,8 @@ class ParentEndpoint extends Endpoint {
     await Parent.db.insert(session, [parent]);
   }
 
-  Future<List<EventRegistration>> getUnpaidEventRegistrations(Session session, int parentId) async {
+  Future<List<EventRegistration>> getUnpaidEventRegistrations(
+      Session session, int parentId) async {
     return EventRegistration.db.find(session,
         where: (t) =>
             t.child.parentId.equals(parentId) & t.paidDate.equals(null),

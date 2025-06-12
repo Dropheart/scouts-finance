@@ -73,8 +73,13 @@ class EventEndpoint extends Endpoint {
     // Makes the operation atomic
     await session.db.transaction(
       (transaction) async => {
-        await EventRegistration.db.insert(session, [registration], transaction: transaction),
-        await Parent.db.update(session, [parent], transaction: transaction,),
+        await EventRegistration.db
+            .insert(session, [registration], transaction: transaction),
+        await Parent.db.update(
+          session,
+          [parent],
+          transaction: transaction,
+        ),
       },
     );
 

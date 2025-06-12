@@ -86,7 +86,8 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
                                 .split('T')[0])),
                             DataCell(Text(r.event!.name)),
                             DataCell(Text(r.child!.firstName)),
-                            DataCell(Text((r.event!.cost/100).toStringAsFixed(2))),
+                            DataCell(
+                                Text((r.event!.cost / 100).toStringAsFixed(2))),
                           ],
                         ),
                       )

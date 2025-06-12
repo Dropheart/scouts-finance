@@ -115,7 +115,7 @@ class AdminEndpoint extends Endpoint {
 
     final endpoint = EventEndpoint();
 
-    // Use the endpoint to register children for events so we get balances 
+    // Use the endpoint to register children for events so we get balances
     for (var reg in registrationsData) {
       await endpoint.registerChildForEvent(session, reg[0], reg[1]);
     }

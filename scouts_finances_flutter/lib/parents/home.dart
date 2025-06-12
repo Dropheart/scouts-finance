@@ -105,40 +105,44 @@ class _ParentHomeState extends State<ParentHome> {
             ),
           )
           .toList();
-      
-      List<Card> outstandingCards = (allParents
-        .where((p) => p.balance < 0)
-        .toList()
-        ..sort((a, b) => a.balance.compareTo(b.balance)))
-        .map(
-          (e) => Card(
-            child: ListTile(
-              title: Text("${e.firstName} ${e.lastName}"),
-              subtitle: Text("Amount due: £${(e.balance / -100).toStringAsFixed(2)}"),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ParentDetails(parentId: e.id!),
+
+      List<Card> outstandingCards =
+          (allParents.where((p) => p.balance < 0).toList()
+                ..sort((a, b) => a.balance.compareTo(b.balance)))
+              .map(
+                (e) => Card(
+                  child: ListTile(
+                    title: Text("${e.firstName} ${e.lastName}"),
+                    subtitle: Text(
+                        "Amount due: £${(e.balance / -100).toStringAsFixed(2)}"),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () => {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ParentDetails(parentId: e.id!),
+                        ),
+                      ),
+                    },
                   ),
                 ),
-              },
-            ),
-          ),
-        )
-        .toList();
+              )
+              .toList();
 
       body = ListView(
         children: [
-          Text('Outstanding Parents', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-          SizedBox(height: 8.0),
-          ...(
-            outstandingCards.isEmpty
-                ? [Text('There are no outstanding parents at the moment.')]
-                : outstandingCards
+          Text(
+            'Outstanding Parents',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
+          SizedBox(height: 8.0),
+          ...(outstandingCards.isEmpty
+              ? [Text('There are no outstanding parents at the moment.')]
+              : outstandingCards),
           SizedBox(height: 16.0),
-          Text('All Parents', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+          Text(
+            'All Parents',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 8.0),
           searchBar,
           SizedBox(height: 16.0),
