@@ -17,6 +17,7 @@ class EventAddParticipant extends StatefulWidget {
 class _EventAddParticipantState extends State<EventAddParticipant> {
   late List<Child> allChildren;
   late List<Child> eventChildren;
+  int loading = 2;
   List<Child> selectedChildren = [];
 
   void _getChildren() async {
@@ -30,6 +31,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         allChildren = [];
       });
     }
+    loading--;
   }
 
   void _getEventChildren() async {
@@ -38,6 +40,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     setState(() {
       eventChildren = registrations.map((e) => e.child!).toList();
     });
+    loading--;
   }
 
   @override
@@ -61,6 +64,10 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
 
   @override
   Widget build(BuildContext context) {
+    if (loading > 0) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return SearchChoices.multiple(
       items: allChildren
           .where((child) => !eventChildren.any((e) => e.id == child.id))
