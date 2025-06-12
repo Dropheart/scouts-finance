@@ -75,37 +75,9 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       return toCard(context, payment);
     }).toList();
 
-    // // Filter payments by query
-    // List<Payment> filteredUnclassifiedPayments = unclassifiedPayments.where((payment) {
-    //   switch (searchBy[searchByIndex]) {
-    //     case 'payee':
-    //       return payment.payee.toLowerCase().contains(query.toLowerCase());
-    //     case 'amount':
-    //       return (payment.amount / 100).toString().contains(query);
-    //     case 'date':
-    //       return payment.date.toLocal().toString().contains(query);
-    //     default:
-    //       return false;
-    //   }
-    // }).toList();
-
     List<Card> classifiedPaymentCards = classifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
-
-    // // Filter payments by query
-    // List<Payment> filteredClassifiedPayments = unclassifiedPayments.where((payment) {
-    //   switch (searchBy[searchByIndex]) {
-    //     case 'payee':
-    //       return payment.payee.toLowerCase().contains(query.toLowerCase());
-    //     case 'amount':
-    //       return (payment.amount / 100).toString().contains(query);
-    //     case 'date':
-    //       return payment.date.toLocal().toString().contains(query);
-    //     default:
-    //       return false;
-    //   }
-    // }).toList();
 
     SearchBar searchBar = SearchBar(
       onChanged: (String value) {
