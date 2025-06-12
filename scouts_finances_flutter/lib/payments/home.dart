@@ -202,25 +202,25 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   Card toCard(BuildContext context, Payment payment) {
     return Card(
       child: ListTile(
-        title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+        title: Row(
+          children: [
+            Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+            const Spacer(),
+            Icon(
+                payment.method == PaymentMethod.cash
+                    ? Icons.money
+                    : Icons.credit_card,
+                size: 14.0),
+            const SizedBox(width: 4.0),
+            Text(payment.method.toDisplayString()),
+          ],
+        ),
         subtitle: Row(children: [
           Row(
             children: [
               const Icon(Icons.person, size: 14.0),
               const SizedBox(width: 4.0),
               Text(payment.parent?.fullName ?? 'Unclassified'),
-            ],
-          ),
-          const Spacer(),
-          Row(
-            children: [
-              Icon(
-                  payment.method == PaymentMethod.cash
-                      ? Icons.money
-                      : Icons.credit_card,
-                  size: 14.0),
-              const SizedBox(width: 4.0),
-              Text(payment.method.toDisplayString()),
             ],
           ),
           const Spacer(),
