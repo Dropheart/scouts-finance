@@ -46,8 +46,6 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       setState(() {
         err =
             'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
-        err =
-            'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         loading = false;
       });
     }
