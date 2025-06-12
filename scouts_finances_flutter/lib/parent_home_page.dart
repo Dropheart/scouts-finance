@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/admin_pages/parents/home.dart';
+import 'package:scouts_finances_flutter/parent_pages/family/home.dart';
 import 'package:scouts_finances_flutter/parent_pages/registered_events/home.dart';
 
 class ParentHomepage extends StatefulWidget {
@@ -15,7 +15,7 @@ class _ParentHomepageState extends State<ParentHomepage> {
   int currentPageIndex = 0;
   static final List<Widget> pages = [
     RegisteredEventsHome(),
-    ParentHome(), // Example parent ID
+    FamilyPage(), // Example parent ID
   ];
   static final List<String> pageTitles = [
     'Events',
