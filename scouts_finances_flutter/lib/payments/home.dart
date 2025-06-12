@@ -187,7 +187,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                     return AddPaymentDialog();
                   },
                 ).then((_) {
-                  _getPayments();
+                  _getPayments(); // Refresh the UI after adding
                 });
               },
             ),

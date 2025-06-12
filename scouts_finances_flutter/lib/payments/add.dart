@@ -18,11 +18,13 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   final TextEditingController _payeeController = TextEditingController();
   DateTime? _selectedDate;
   PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
+  final TextEditingController _referenceController = TextEditingController();
 
   @override
   void dispose() {
     _amountController.dispose();
     _payeeController.dispose();
+    _referenceController.dispose();
     super.dispose();
   }
 
@@ -48,19 +50,16 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
             .truncate(),
         _payeeController.text,
         _selectedDate,
+        _referenceController.text,
       );
-      Navigator.of(context).pop({
-        'amount': double.parse(_amountController.text.replaceFirst('£', '')),
-        'description': _payeeController.text,
-        'date': _selectedDate,
-      });
+      Navigator.of(context).pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Payment'),
+      title: const Text('Add Manual Payment'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -93,6 +92,16 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
                     child: const Text('Pick Date'),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                autocorrect: true,
+                controller: _referenceController,
+                decoration: const InputDecoration(labelText: 'Reference'),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter a reference' : null,
+                minLines: 1,
+                maxLines: 2,
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<PaymentMethod>(
@@ -129,9 +138,3 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
     );
   }
 }
-
-// Usage example:
-// showDialog(
-//   context: context,
-//   builder: (context) => const AddPaymentDialog(),
-// );

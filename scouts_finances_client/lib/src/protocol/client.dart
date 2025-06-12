@@ -158,6 +158,7 @@ class EndpointPayment extends _i1.EndpointRef {
     int amount,
     String payee,
     DateTime? date,
+    String reference,
   ) =>
       caller.callServerEndpoint<List<_i6.Payment>>(
         'payment',
@@ -166,6 +167,7 @@ class EndpointPayment extends _i1.EndpointRef {
           'amount': amount,
           'payee': payee,
           'date': date,
+          'reference': reference,
         },
       );
 

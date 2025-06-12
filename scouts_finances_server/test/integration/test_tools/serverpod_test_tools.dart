@@ -548,6 +548,7 @@ class _PaymentEndpoint {
     int amount,
     String payee,
     DateTime? date,
+    String reference,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -564,6 +565,7 @@ class _PaymentEndpoint {
             'amount': amount,
             'payee': payee,
             'date': date,
+            'reference': reference,
           }),
           serializationManager: _serializationManager,
         );

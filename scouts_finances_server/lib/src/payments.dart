@@ -9,13 +9,13 @@ class PaymentEndpoint extends Endpoint {
   }
 
   Future<List<Payment>> insertPayment(
-      Session session, int amount, String payee, DateTime? date) async {
+      Session session, int amount, String payee, DateTime? date, String reference) async {
     final payment = Payment(
       amount: amount,
       method: PaymentMethod.cash, // Default to cash, can be changed later
       payee: payee,
       date: date ?? DateTime.now(),
-      reference: "Manual Payment",
+      reference: reference,
     );
     // Insert the payment into the database
     await Payment.db.insert(session, [payment]);

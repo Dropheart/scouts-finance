@@ -292,6 +292,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<DateTime?>(),
               nullable: true,
             ),
+            'reference': _i1.ParameterDescription(
+              name: 'reference',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -302,6 +307,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['amount'],
             params['payee'],
             params['date'],
+            params['reference'],
           ),
         ),
         'getPaymentById': _i1.MethodConnector(
