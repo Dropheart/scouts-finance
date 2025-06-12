@@ -135,8 +135,14 @@ class _SnakeGameState extends State<SnakeGame> {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final isDarkBackground = backgroundColor.computeLuminance() < 0.5;
+    final borderColor = isDarkBackground ? Colors.white : Colors.black;
+    final textColor = isDarkBackground ? Colors.white : Colors.black;
+    final gridColor = isDarkBackground ? Colors.grey.shade800 : Colors.grey.shade200;
+
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text('Snake Game'),
         backgroundColor: Colors.green,
@@ -155,12 +161,12 @@ class _SnakeGameState extends State<SnakeGame> {
               children: [
                 Text(
                   'Score: $score',
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(color: textColor, fontSize: 18),
                 ),
                 if (!gameRunning && !gameOver)
-                  const Text(
+                  Text(
                     'Tap ▶️ to start or use arrow buttons to control',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                    style: TextStyle(color: textColor.withOpacity(0.6), fontSize: 12),
                   ),
               ],
             ),
@@ -169,7 +175,7 @@ class _SnakeGameState extends State<SnakeGame> {
             child: Container(
               margin: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: borderColor, width: 2),
               ),
               child: AspectRatio(
                 aspectRatio: 1.0,
@@ -184,7 +190,7 @@ class _SnakeGameState extends State<SnakeGame> {
                     final y = index ~/ boardSize;
                     final point = Point(x, y);
 
-                    Color cellColor = Colors.black;
+                    Color cellColor = gridColor;
                     if (snake.contains(point)) {
                       cellColor = snake.first == point ? Colors.green : Colors.lightGreen;
                     } else if (point == food) {
@@ -208,7 +214,7 @@ class _SnakeGameState extends State<SnakeGame> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'Game Over!',
                     style: TextStyle(color: Colors.red, fontSize: 20),
                   ),
@@ -233,7 +239,7 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.up);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_up, color: Colors.white, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_up, color: textColor, size: 32),
                     ),
                   ],
                 ),
@@ -245,7 +251,7 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.left);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_left, color: Colors.white, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_left, color: textColor, size: 32),
                     ),
                     const SizedBox(width: 32),
                     IconButton(
@@ -253,7 +259,7 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.right);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_right, color: textColor, size: 32),
                     ),
                   ],
                 ),
@@ -265,7 +271,7 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.down);
                       },
-                      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_down, color: textColor, size: 32),
                     ),
                   ],
                 ),

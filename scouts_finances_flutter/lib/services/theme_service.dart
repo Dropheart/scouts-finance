@@ -18,14 +18,15 @@ class ThemeService extends ChangeNotifier {
     // Generate base color scheme from primary and secondary colors
     final baseColorScheme = ColorScheme.fromSeed(
       seedColor: _primaryColor,
-      secondary: _secondaryColor,
       brightness: _isLightBackground ? Brightness.light : Brightness.dark,
     );
     
     // Override background and surface colors with the selected background color
+    // Apply secondary color to card surfaces
     final customColorScheme = baseColorScheme.copyWith(
       surface: _backgroundColor,
       background: _backgroundColor,
+      surfaceVariant: _secondaryColor.withOpacity(0.6), // Much stronger color
       // Adjust on-surface colors based on background brightness
       onSurface: _getContrastingTextColor(_backgroundColor),
       onBackground: _getContrastingTextColor(_backgroundColor),
@@ -36,7 +37,8 @@ class ThemeService extends ChangeNotifier {
       scaffoldBackgroundColor: _backgroundColor,
       cardTheme: CardThemeData(
         elevation: 1.0,
-        color: _backgroundColor,
+        color: _secondaryColor.withOpacity(0.4), // Much stronger from 0.15 to 0.4
+        surfaceTintColor: _secondaryColor, // Secondary color tint
       ),
       searchBarTheme: const SearchBarThemeData(
         elevation: WidgetStatePropertyAll(0.0),
