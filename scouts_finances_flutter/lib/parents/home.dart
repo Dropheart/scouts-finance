@@ -130,14 +130,13 @@ class _ParentHomeState extends State<ParentHome> {
 
       body = ListView(
         children: [
-          Text(
-            'Outstanding Parents',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8.0),
-          ...(outstandingCards.isEmpty
-              ? [Text('There are no outstanding parents at the moment.')]
-              : outstandingCards),
+          outstandingCards.isEmpty
+              ? const SizedBox.shrink()
+              : ExpansionTile(
+                  title: const Text('Outstanding Parents'),
+                  initiallyExpanded: true,
+                  children: outstandingCards,
+                ),
           SizedBox(height: 16.0),
           Text(
             'All Parents',
