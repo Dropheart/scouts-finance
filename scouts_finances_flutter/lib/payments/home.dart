@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/parent.dart';
+import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/payments/single_payment.dart';
@@ -203,9 +204,33 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       child: ListTile(
         title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
         subtitle: Row(children: [
-          Text(payment.parent?.fullName ?? 'Unclassified'),
+          Row(
+            children: [
+              const Icon(Icons.person, size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.parent?.fullName ?? 'Unclassified'),
+            ],
+          ),
           const Spacer(),
-          Text(payment.date.toLocal().toString().split(' ')[0]),
+          Row(
+            children: [
+              Icon(
+                  payment.method == PaymentMethod.cash
+                      ? Icons.money
+                      : Icons.credit_card,
+                  size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.method.toDisplayString()),
+            ],
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              const Icon(Icons.calendar_today, size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.date.toLocal().toString().split(' ')[0]),
+            ],
+          ),
         ]),
         onTap: () async {
           await Navigator.of(context).push(
