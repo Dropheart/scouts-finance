@@ -6,7 +6,7 @@ import 'package:scouts_finances_flutter/parent_pages/family/transaction_table.da
 class FamilyPage extends StatelessWidget {
   FamilyPage({super.key});
 
-  final Parent parent =  Parent(
+  final Parent parent = Parent(
       id: 0,
       firstName: 'Ebtisam',
       lastName: 'Alkhunaizi',
