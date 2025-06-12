@@ -152,7 +152,7 @@ class AdminEndpoint extends Endpoint {
                 payee: payee,
                 method: PaymentMethod.cash,
                 amount: amount ~/ 2,
-                date: DateTime.now().subtract(Duration(days: 30)),
+                date: DateTime.now().subtract(Duration(days: 15)),
               ),
               Payment(
                 reference: "Hope my child enjoys :)",
