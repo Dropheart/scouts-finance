@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
+import 'package:scouts_finances_flutter/widgets/snake_game.dart';
 
 class SettingsHome extends StatefulWidget {
   const SettingsHome({super.key});
@@ -11,6 +13,42 @@ class SettingsHome extends StatefulWidget {
 
 class _SettingsHomeState extends State<SettingsHome> {
   bool _notifications = true;
+  int _versionTapCount = 0;
+  Timer? _resetTimer;
+
+  @override
+  void dispose() {
+    _resetTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onVersionTap() {
+    setState(() {
+      _versionTapCount++;
+    });
+
+    // Reset counter after 3 seconds of no taps
+    _resetTimer?.cancel();
+    _resetTimer = Timer(const Duration(seconds: 3), () {
+      setState(() {
+        _versionTapCount = 0;
+      });
+    });
+
+    // Show snake game after 3 taps
+    if (_versionTapCount >= 3) {
+      _resetTimer?.cancel();
+      setState(() {
+        _versionTapCount = 0;
+      });
+      
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SnakeGame(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +178,10 @@ class _SettingsHomeState extends State<SettingsHome> {
                 children: [
                   ListTile(
                     title: const Text('Version'),
-                    subtitle: const Text('1.0.0'),
+                    subtitle: Text(_versionTapCount > 0 
+                        ? '1.0.0 (${3 - _versionTapCount} more taps...)'
+                        : '1.0.0'),
+                    onTap: _onVersionTap,
                   ),
                   ListTile(
                     title: const Text('About'),
