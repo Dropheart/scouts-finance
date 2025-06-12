@@ -114,36 +114,18 @@ class _ParentDetailsState extends State<ParentDetails> {
           const SizedBox(height: 8),
           Row(
             children: [
-              Text('Children:', style: const TextStyle(fontSize: 16)),
+              Text('Children:',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
               ...children.map((child) => TextButton(
-                  onPressed: () => {},
-                  child: Text('${child.firstName} ${child.lastName}'))),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Not Implemented'),
-                      content: const Text(
-                          'Editing parent details is not implemented yet.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('OK'),
-                        ),
-                      ],
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                  );
-                },
-                child: const Text('Edit Parent Details'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(onPressed: () => {}, child: Text('Delete')),
+                    onPressed: () => {},
+                    child: Text('${child.firstName} ${child.lastName}'),
+                  )),
             ],
           ),
           const SizedBox(height: 16),
@@ -163,9 +145,39 @@ class _ParentDetailsState extends State<ParentDetails> {
     }
     return Scaffold(
       appBar: AppBar(
-          title: Text(loading
-              ? 'Loading parent...'
-              : "${parent.firstName} ${parent.lastName}")),
+        title: Text(loading
+            ? 'Loading parent...'
+            : "${parent.firstName} ${parent.lastName}"),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'switchGroup',
+                child: const Row(
+                  children: [
+                    Icon(Icons.edit),
+                    SizedBox(width: 8),
+                    Text('Edit parent details'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: const Row(
+                  children: [
+                    Icon(Icons.delete),
+                    SizedBox(width: 8),
+                    Text('Delete parent'),
+                  ],
+                ),
+              )
+            ],
+            onSelected: (value) {},
+            position: PopupMenuPosition.under,
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: body,
