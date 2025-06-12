@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:scouts_finances_flutter/widgets/snake_game.dart';
+import 'dart:async';
 
 class SettingsHome extends StatefulWidget {
   const SettingsHome({super.key});
@@ -13,6 +13,9 @@ class SettingsHome extends StatefulWidget {
 
 class _SettingsHomeState extends State<SettingsHome> {
   bool _notifications = true;
+  bool _remindDayBefore = true;
+  bool _remindXDaysBefore = false;
+  int _xDaysBeforeValue = 7;
   int _versionTapCount = 0;
   Timer? _resetTimer;
 
@@ -109,22 +112,6 @@ class _SettingsHomeState extends State<SettingsHome> {
               child: Column(
                 children: [
                   SwitchListTile(
-                    title: const Text('Dark Mode'),
-                    subtitle: const Text('Toggle dark mode theme'),
-                    value: _notifications,
-                    onChanged: (value) {
-                      setState(() {
-                        _notifications = value;
-                      });
-                      // TODO: Implement theme switching
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Theme switching not implemented yet'),
-                        ),
-                      );
-                    },
-                  ),
-                  SwitchListTile(
                     title: const Text('Notifications'),
                     subtitle: const Text('Enable push notifications'),
                     value: _notifications,
@@ -140,9 +127,9 @@ class _SettingsHomeState extends State<SettingsHome> {
             
             const SizedBox(height: 32),
             
-            // Data Management Section
+            // Payment Reminders Section
             Text(
-              'Data Management',
+              'Payment Reminders',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -151,14 +138,71 @@ class _SettingsHomeState extends State<SettingsHome> {
             Card(
               child: Column(
                 children: [
-                  ListTile(
-                    title: const Text('Export Data'),
-                    subtitle: const Text('Export all data to CSV'),
-                    trailing: const Icon(Icons.download),
-                    onTap: () {
-                      _showNotImplementedDialog('Export Data');
+                  SwitchListTile(
+                    title: const Text('Remind day before'),
+                    subtitle: const Text('Send reminder 1 day before payment due'),
+                    value: _remindDayBefore,
+                    onChanged: (value) {
+                      setState(() {
+                        _remindDayBefore = value;
+                      });
                     },
                   ),
+                  SwitchListTile(
+                    title: Text('Remind $_xDaysBeforeValue days before'),
+                    subtitle: Text('Send reminder $_xDaysBeforeValue days before payment due'),
+                    value: _remindXDaysBefore,
+                    onChanged: (value) {
+                      setState(() {
+                        _remindXDaysBefore = value;
+                      });
+                    },
+                  ),
+                  if (_remindXDaysBefore)
+                    ListTile(
+                      title: const Text('Days before reminder'),
+                      subtitle: Text('Send reminder $_xDaysBeforeValue days before due date'),
+                      trailing: SizedBox(
+                        width: 80,
+                        child: TextFormField(
+                          initialValue: _xDaysBeforeValue.toString(),
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                            contentPadding: EdgeInsets.all(8),
+                          ),
+                          onChanged: (value) {
+                            final intValue = int.tryParse(value);
+                            if (intValue != null && intValue >= 2) {
+                              setState(() {
+                                _xDaysBeforeValue = intValue;
+                              });
+                            }
+                          },
+                          validator: (value) {
+                            final intValue = int.tryParse(value ?? '');
+                            if (intValue == null || intValue < 2) {
+                              return 'Must be ≥ 2';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                  if (_remindXDaysBefore)
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Note: Reminder features are not yet implemented',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
