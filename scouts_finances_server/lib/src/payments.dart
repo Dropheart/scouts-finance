@@ -70,6 +70,7 @@ class PaymentEndpoint extends Endpoint {
 
     await session.db.transaction((transaction) async {
       payment.parentId = parent.id;
+      payment.parent = parent;
       await Payment.db.updateRow(session, payment, transaction: transaction);
 
       for (final reg in clearableRegistrations) {
