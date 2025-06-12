@@ -45,10 +45,7 @@ class EventEndpoint extends Endpoint {
       throw ArgumentError('Event with id $eventId not found');
     }
 
-    final child = await Child.db.findById(session, childId,
-        include: Child.include(
-          parent: Parent.include(),
-        ));
+    final child = await Child.db.findById(session, childId);
     if (child == null) {
       throw ArgumentError('Child with id $childId not found');
     }
@@ -59,29 +56,7 @@ class EventEndpoint extends Endpoint {
       child: child,
     );
 
-    // Need to subtract this from the parent's balance
-    if (child.parent == null) {
-      throw ArgumentError(
-          'Child with id $childId has no parent and cannot be registered for events.');
-    }
-
-    final parent = child.parent!;
-    final balance = parent.balance;
-    final newBalance = balance - event.cost;
-    parent.balance = newBalance;
-
-    // Makes the operation atomic
-    await session.db.transaction(
-      (transaction) async => {
-        await EventRegistration.db
-            .insert(session, [registration], transaction: transaction),
-        await Parent.db.update(
-          session,
-          [parent],
-          transaction: transaction,
-        ),
-      },
-    );
+    await EventRegistration.db.insert(session, [registration]);
 
     return registration;
   }
