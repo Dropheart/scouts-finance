@@ -154,21 +154,11 @@ class EndpointPayment extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<List<_i6.Payment>> insertPayment(
-    int amount,
-    String payee,
-    DateTime? date,
-    String reference,
-  ) =>
+  _i2.Future<List<_i6.Payment>> insertPayment(_i6.Payment payment) =>
       caller.callServerEndpoint<List<_i6.Payment>>(
         'payment',
         'insertPayment',
-        {
-          'amount': amount,
-          'payee': payee,
-          'date': date,
-          'reference': reference,
-        },
+        {'payment': payment},
       );
 
   _i2.Future<_i6.Payment?> getPaymentById(int paymentId) =>

@@ -545,10 +545,7 @@ class _PaymentEndpoint {
 
   _i3.Future<List<_i8.Payment>> insertPayment(
     _i1.TestSessionBuilder sessionBuilder,
-    int amount,
-    String payee,
-    DateTime? date,
-    String reference,
+    _i8.Payment payment,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -561,12 +558,7 @@ class _PaymentEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'payment',
           methodName: 'insertPayment',
-          parameters: _i1.testObjectToJson({
-            'amount': amount,
-            'payee': payee,
-            'date': date,
-            'reference': reference,
-          }),
+          parameters: _i1.testObjectToJson({'payment': payment}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

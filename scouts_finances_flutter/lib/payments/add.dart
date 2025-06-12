@@ -45,13 +45,14 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      client.payment.insertPayment(
-        (double.parse(_amountController.text.replaceFirst('£', '')) * 100)
-            .truncate(),
-        _payeeController.text,
-        _selectedDate,
-        _referenceController.text,
+      final newPayment = Payment(
+        amount: (_amountController.numberValue! * 100).truncate(),
+        method: _selectedPaymentMethod ?? PaymentMethod.cash,
+        payee: _payeeController.text,
+        date: _selectedDate ?? DateTime.now(),
+        reference: _referenceController.text,
       );
+      client.payment.insertPayment(newPayment);
       Navigator.of(context).pop();
     }
   }
