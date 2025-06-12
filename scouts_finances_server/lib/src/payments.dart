@@ -8,8 +8,8 @@ class PaymentEndpoint extends Endpoint {
     // This will also fetch the parent information for each payment (if it exists)
   }
 
-  Future<List<Payment>> insertPayment(
-      Session session, int amount, String payee, DateTime? date, String reference) async {
+  Future<List<Payment>> insertPayment(Session session, int amount, String payee,
+      DateTime? date, String reference) async {
     final payment = Payment(
       amount: amount,
       method: PaymentMethod.cash, // Default to cash, can be changed later
