@@ -13,6 +13,7 @@ class ParentHome extends StatefulWidget {
 class _ParentHomeState extends State<ParentHome> {
   String query = '';
   late List<Parent> allParents;
+  late List<(Parent, int)> outstandingParents;
   String? errorMessage;
   bool loading = true;
 
@@ -25,8 +26,23 @@ class _ParentHomeState extends State<ParentHome> {
   void _getParents() async {
     try {
       final result = await client.parent.getParents();
+      final outstandingRegs = await client.event.unpaidEvents();
       setState(() {
         allParents = result;
+        outstandingParents = outstandingRegs.fold([], (acc, reg) {
+          final parent = reg.child!.parent!;
+          // Check if parent already exists in acc
+          final index = acc.indexWhere((element) => element.$1.id == parent.id);
+          if (index != -1) {
+            // If exists, increment the amount due
+            final (p, s) = acc[index];
+            acc[index] = (p, s + reg.event!.cost);
+          } else {
+            // If not, add new entry
+            acc.add((parent, reg.event!.cost));
+          }
+          return acc;
+        });
         loading = false;
       });
     } catch (e) {
@@ -106,27 +122,26 @@ class _ParentHomeState extends State<ParentHome> {
           )
           .toList();
 
-      List<Card> outstandingCards =
-          (allParents.where((p) => p.balance < 0).toList()
-                ..sort((a, b) => a.balance.compareTo(b.balance)))
-              .map(
-                (e) => Card(
-                  child: ListTile(
-                    title: Text("${e.firstName} ${e.lastName}"),
-                    subtitle: Text(
-                        "Amount due: £${(e.balance / -100).toStringAsFixed(2)}"),
-                    trailing: Icon(Icons.arrow_forward),
-                    onTap: () => {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ParentDetails(parentId: e.id!),
-                        ),
-                      ),
-                    },
+      List<Card> outstandingCards = (outstandingParents
+            ..sort((a, b) => a.$2.compareTo(b.$2)))
+          .map(
+            (e) => Card(
+              child: ListTile(
+                title: Text("${e.$1.firstName} ${e.$1.lastName}"),
+                subtitle:
+                    Text("Amount due: £${(e.$2 / 100).toStringAsFixed(2)}"),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ParentDetails(parentId: e.$1.id!),
+                    ),
                   ),
-                ),
-              )
-              .toList();
+                },
+              ),
+            ),
+          )
+          .toList();
 
       body = ListView(
         children: [
