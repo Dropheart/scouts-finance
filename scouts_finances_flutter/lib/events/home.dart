@@ -13,8 +13,9 @@ class EventHome extends StatefulWidget {
 
 class _EventHomeState extends State<EventHome> {
   late List<Event> events;
+  late Map<int, (int, int)> paidCounts; // eventId -> (paidCount, totalCount)
   String? errorMessage;
-  bool loading = true;
+  int loading = 2;
   final sorts = [
     'Upcoming First',
     'Upcoming Last',
@@ -28,26 +29,41 @@ class _EventHomeState extends State<EventHome> {
       final result = await client.event.getEvents();
       setState(() {
         events = result;
-        loading = false;
       });
     } catch (e) {
       setState(() {
         errorMessage =
             'Failed to load events. Are you connected to the internet?';
-        loading = false;
       });
     }
+    loading--;
+  }
+
+  void _getPaidCounts() async {
+    try {
+      final result = await client.event.getPaidCounts();
+      setState(() {
+        paidCounts = result;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage =
+            'Failed to load paid counts. Are you connected to the internet?';
+      });
+    }
+    loading--;
   }
 
   @override
   void initState() {
     super.initState();
     _getEvents();
+    _getPaidCounts();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
+    if (loading > 0) {
       return const Center(child: CircularProgressIndicator());
     }
     if (errorMessage != null) {
@@ -82,12 +98,14 @@ class _EventHomeState extends State<EventHome> {
     });
 
     List<Card> eventCards = filteredEvents.map((event) {
+      final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+
       return Card(
         child: ListTile(
           title: Text(event.name),
           subtitle: Row(
             children: [
-              Text('${event.id}/30 Paid'),
+              Text('$paid/$total Paid'),
               const Spacer(),
               Text('${event.date.day}/${event.date.month}/${event.date.year}'),
             ],

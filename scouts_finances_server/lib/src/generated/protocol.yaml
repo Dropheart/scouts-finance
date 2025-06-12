@@ -2,6 +2,7 @@ admin:
   - resetDb:
 event:
   - getEvents:
+  - getPaidCounts:
   - getEventById:
   - insertEvent:
   - registerChildForEvent:

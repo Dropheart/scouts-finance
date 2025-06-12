@@ -47,6 +47,13 @@ class EndpointEvent extends _i1.EndpointRef {
         {},
       );
 
+  _i2.Future<Map<int, (int, int)>> getPaidCounts() =>
+      caller.callServerEndpoint<Map<int, (int, int)>>(
+        'event',
+        'getPaidCounts',
+        {},
+      );
+
   _i2.Future<(_i3.Event, List<_i4.EventRegistration>)> getEventById(int id) =>
       caller.callServerEndpoint<(_i3.Event, List<_i4.EventRegistration>)>(
         'event',

@@ -81,6 +81,18 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['event'] as _i3.EventEndpoint).getEvents(session),
         ),
+        'getPaidCounts': _i1.MethodConnector(
+          name: 'getPaidCounts',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .getPaidCounts(session)
+                  .then((container) =>
+                      _i7.mapRecordContainingContainerToJson(container)),
+        ),
         'getEventById': _i1.MethodConnector(
           name: 'getEventById',
           params: {
