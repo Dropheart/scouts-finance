@@ -19,6 +19,7 @@ class _SingleEventState extends State<SingleEvent> {
   late List<EventRegistration> registrations;
   String? errorMessage;
   bool loading = true;
+  String query = '';
 
   void _getEventDetails() async {
     try {
@@ -57,7 +58,16 @@ class _SingleEventState extends State<SingleEvent> {
       return Center(child: Text(errorMessage!));
     }
 
-    final children = registrations.map((e) => (
+    final filteredRegistrations = registrations
+        .where((e) =>
+            e.child != null &&
+                (e.child!.firstName
+                    .toLowerCase()
+                    .contains(query.toLowerCase())) ||
+            (e.child!.lastName.toLowerCase().contains(query.toLowerCase())))
+        .toList();
+
+    final children = filteredRegistrations.map((e) => (
           childId: e.child!.id,
           name: "${e.child!.firstName} ${e.child!.lastName}",
           paidDate: e.paidDate
@@ -113,6 +123,19 @@ class _SingleEventState extends State<SingleEvent> {
       //   color: colourScheme.onSecondaryContainer,
       //   width: 0.5,
       // ),
+    );
+
+    SearchBar searchBar = SearchBar(
+      onChanged: (value) {
+        setState(() {
+          query = value;
+        });
+      },
+      hintText: 'Search by child name...',
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
     );
 
     return Scaffold(
@@ -177,6 +200,7 @@ class _SingleEventState extends State<SingleEvent> {
                     // ),
                   ],
                 ),
+                searchBar,
                 const SizedBox(height: 16),
                 Card(
                   shape: RoundedRectangleBorder(
