@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:scouts_finances_server/src/events.dart';
 import 'package:scouts_finances_server/src/generated/protocol.dart';
+import 'package:scouts_finances_server/src/parent.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AdminEndpoint extends Endpoint {
@@ -99,25 +101,24 @@ class AdminEndpoint extends Endpoint {
     final insertedEvents = await Event.db.find(session);
 
     // Register some children for events
-    final registrations = [
-      EventRegistration(
-          eventId: insertedEvents[0].id!, childId: insertedChildren[0].id!),
-      EventRegistration(
-          eventId: insertedEvents[0].id!, childId: insertedChildren[1].id!),
-      EventRegistration(
-          eventId: insertedEvents[0].id!, childId: insertedChildren[2].id!),
-      EventRegistration(
-          eventId: insertedEvents[1].id!, childId: insertedChildren[1].id!),
-      EventRegistration(
-          eventId: insertedEvents[1].id!, childId: insertedChildren[2].id!),
-      EventRegistration(
-          eventId: insertedEvents[2].id!, childId: insertedChildren[3].id!),
-      EventRegistration(
-          eventId: insertedEvents[3].id!, childId: insertedChildren[4].id!),
-      EventRegistration(
-          eventId: insertedEvents[4].id!, childId: insertedChildren[0].id!),
+    // Register children for events using the registerChildForEvent endpoint
+    final registrationsData = [
+      [insertedEvents[0].id!, insertedChildren[0].id!],
+      [insertedEvents[0].id!, insertedChildren[1].id!],
+      [insertedEvents[0].id!, insertedChildren[2].id!],
+      [insertedEvents[1].id!, insertedChildren[1].id!],
+      [insertedEvents[1].id!, insertedChildren[2].id!],
+      [insertedEvents[2].id!, insertedChildren[3].id!],
+      [insertedEvents[3].id!, insertedChildren[4].id!],
+      [insertedEvents[4].id!, insertedChildren[0].id!],
     ];
-    await EventRegistration.db.insert(session, registrations);
+
+    final endpoint = EventEndpoint();
+
+    // Use the endpoint to register children for events so we get balances 
+    for (var reg in registrationsData) {
+      await endpoint.registerChildForEvent(session, reg[0], reg[1]);
+    }
 
     // So we have the IDs
     final insertedRegistrations = await EventRegistration.db.find(session);
