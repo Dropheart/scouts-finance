@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/parents/parent_details.dart';
+import 'package:scouts_finances_flutter/admin_pages/parents/parent_details.dart';
 
 class ParentHome extends StatefulWidget {
   const ParentHome({super.key});

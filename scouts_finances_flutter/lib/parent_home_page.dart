@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scouts_finances_flutter/events/home.dart';
+import 'package:scouts_finances_flutter/admin_pages/events/home.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/parents/home.dart';
+import 'package:scouts_finances_flutter/admin_pages/parents/home.dart';
 
 class ParentHomepage extends StatefulWidget {
   final SetPageFunc setPageFunc;

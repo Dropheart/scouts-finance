@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/parent.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/payments/add.dart';
-import 'package:scouts_finances_flutter/payments/single_payment.dart';
+import 'package:scouts_finances_flutter/admin_pages/payments/add.dart';
+import 'package:scouts_finances_flutter/admin_pages/payments/single_payment.dart';
 
 class PaymentsHome extends StatefulWidget {
   const PaymentsHome({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/payments/payment_table.dart';
+import 'package:scouts_finances_flutter/admin_pages/payments/payment_table.dart';
 import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
 
 class SinglePaymentView extends StatefulWidget {

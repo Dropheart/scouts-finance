@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/events/single_event.dart';
+import 'package:scouts_finances_flutter/admin_pages/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/events/add.dart';
+import 'package:scouts_finances_flutter/admin_pages/events/add.dart';
 
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
