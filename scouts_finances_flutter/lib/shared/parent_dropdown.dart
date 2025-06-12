@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/parent.dart';
 
 class ParentDropdown extends DropdownButton<int> {
   final List<Parent> parents;
@@ -15,7 +16,7 @@ class ParentDropdown extends DropdownButton<int> {
           items: parents
               .map((parent) => DropdownMenuItem<int>(
                     value: parent.id,
-                    child: Text('${parent.firstName} ${parent.lastName}'),
+                    child: Text(parent.fullName),
                   ))
               .toList(),
         );
