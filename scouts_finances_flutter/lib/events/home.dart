@@ -19,7 +19,8 @@ class _EventHomeState extends State<EventHome> {
   final sorts = [
     'Upcoming First',
     'Upcoming Last',
-    /*'Most Paid', 'Least Paid' */
+    'Paid count',
+    'Unpaid count',
   ];
   int sortIndex = 0;
   String query = '';
@@ -89,9 +90,13 @@ class _EventHomeState extends State<EventHome> {
           return a.date.compareTo(b.date);
         // Paid count tbd
         case 2: // Most Paid
-        // return b.paidCount.compareTo(a.paidCount);
+          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+          return paidB.compareTo(paidA); // Sort by most paid
         case 3: // Least Paid
-        // return a.paidCount.compareTo(b.paidCount);
+          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+          return paidA.compareTo(paidB); // Sort by least paid
         default:
           return 0; // No sorting
       }
