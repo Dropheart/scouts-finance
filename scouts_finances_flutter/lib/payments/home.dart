@@ -234,7 +234,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       child: ListTile(
         title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
         subtitle: Row(children: [
-          Text(payment.parent?.fullName ?? 'Unknown'),
+          Text(payment.parent?.fullName ?? 'Unclassified'),
           const Spacer(),
           Text(payment.date.toLocal().toString().split(' ')[0]),
         ]),
