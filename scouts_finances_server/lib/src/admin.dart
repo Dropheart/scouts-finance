@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:scouts_finances_server/src/events.dart';
 import 'package:scouts_finances_server/src/generated/protocol.dart';
-import 'package:scouts_finances_server/src/parent.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AdminEndpoint extends Endpoint {
