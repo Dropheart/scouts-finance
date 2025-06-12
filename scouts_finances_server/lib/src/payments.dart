@@ -3,7 +3,8 @@ import 'package:serverpod/serverpod.dart';
 
 class PaymentEndpoint extends Endpoint {
   Future<List<Payment>> getPayments(Session session) async {
-    return Payment.db.find(session, include: Payment.include(parent: Parent.include()));
+    return Payment.db
+        .find(session, include: Payment.include(parent: Parent.include()));
     // This will also fetch the parent information for each payment (if it exists)
   }
 

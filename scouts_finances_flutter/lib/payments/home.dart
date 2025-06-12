@@ -73,7 +73,6 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                   style: const TextStyle(color: Colors.red, fontSize: 16))));
     }
 
-
     // Filter payments based on the search query
     List<Payment> filteredUnclassifiedPayments = unclassifiedPayments
         .where((payment) =>
@@ -82,7 +81,8 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> unclassifiedPaymentCards = filteredUnclassifiedPayments.map((payment) {
+    List<Card> unclassifiedPaymentCards =
+        filteredUnclassifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
@@ -94,7 +94,8 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> classifiedPaymentCards = filteredClassifiedPayments.map((payment) {
+    List<Card> classifiedPaymentCards =
+        filteredClassifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
