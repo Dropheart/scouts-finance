@@ -20,6 +20,15 @@ class _SingleEventState extends State<SingleEvent> {
   String? errorMessage;
   bool loading = true;
   String query = '';
+  final sorts = [
+    'First Name',
+    'First Name (Reverse)',
+    'Last Name',
+    'Last Name (Reverse)',
+    'Paid First',
+    'Paid Last',
+  ];
+  int sortIndex = 0;
 
   void _getEventDetails() async {
     try {
@@ -67,11 +76,44 @@ class _SingleEventState extends State<SingleEvent> {
             (e.child!.lastName.toLowerCase().contains(query.toLowerCase())))
         .toList();
 
-    final children = filteredRegistrations.map((e) => (
-          childId: e.child!.id,
-          name: "${e.child!.firstName} ${e.child!.lastName}",
-          paidDate: e.paidDate
-        ));
+    final children = filteredRegistrations
+        .map((e) => (
+              childId: e.child!.id,
+              name: "${e.child!.firstName} ${e.child!.lastName}",
+              paidDate: e.paidDate
+            ))
+        .toList();
+
+    children.sort((a, b) {
+      switch (sorts[sortIndex]) {
+        case 'First Name':
+          return a.name.split(' ')[0].compareTo(b.name.split(' ')[0]);
+        case 'First Name (Reverse)':
+          return b.name.split(' ')[0].compareTo(a.name.split(' ')[0]);
+        case 'Last Name':
+          return a.name.split(' ').last.compareTo(b.name.split(' ').last);
+        case 'Last Name (Reverse)':
+          return b.name.split(' ').last.compareTo(a.name.split(' ').last);
+        case 'Paid First':
+          return a.paidDate == null && b.paidDate == null
+              ? 0
+              : (a.paidDate == null
+                  ? 1
+                  : (b.paidDate == null
+                      ? -1
+                      : a.paidDate!.compareTo(b.paidDate!)));
+        case 'Paid Last':
+          return a.paidDate == null && b.paidDate == null
+              ? 0
+              : (a.paidDate == null
+                  ? -1
+                  : (b.paidDate == null
+                      ? 1
+                      : a.paidDate!.compareTo(b.paidDate!)));
+        default:
+          return 0;
+      }
+    });
 
     final childrenTable = DataTable(
       columns: [
@@ -138,6 +180,32 @@ class _SingleEventState extends State<SingleEvent> {
       ),
     );
 
+    Widget sortSelection = Padding(
+      padding: const EdgeInsets.only(left: 16.0),
+      child: Row(
+        children: [
+          const Text("Sort by:"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: DropdownButton<String>(
+              value: sorts[sortIndex],
+              onChanged: (String? newValue) {
+                setState(() {
+                  sortIndex = sorts.indexOf(newValue!);
+                });
+              },
+              items: sorts.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(event.name),
@@ -201,6 +269,7 @@ class _SingleEventState extends State<SingleEvent> {
                   ],
                 ),
                 searchBar,
+                sortSelection,
                 const SizedBox(height: 16),
                 Card(
                   shape: RoundedRectangleBorder(
