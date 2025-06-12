@@ -30,11 +30,11 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       final result = await client.payment.getPayments();
 
       final classifiedPayments =
-          result.where((p) => p.parentId != null).toList();
+          result.where((p) => p.parent != null).toList();
       classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       final unclassifiedPayments =
-          result.where((p) => p.parentId == null).toList();
+          result.where((p) => p.parent == null).toList();
       unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
