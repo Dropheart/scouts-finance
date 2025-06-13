@@ -130,53 +130,26 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsetsGeometry.all(16.0),
-        child: ListView(children: body),
+          padding: EdgeInsetsGeometry.all(8.0),
+          child: SingleChildScrollView(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: body,
+          ))),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AddPaymentDialog();
+            },
+          ).then((_) {
+            _getPayments();
+          });
+        },
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FloatingActionButton(
-              heroTag: 'fab_left',
-              child: const Icon(Icons.save),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Export'),
-                      content: const Text('Feature not implemented yet!'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            FloatingActionButton(
-              heroTag: 'fab_right',
-              child: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AddPaymentDialog();
-                  },
-                ).then((_) {
-                  _getPayments(); // Refresh the UI after adding
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

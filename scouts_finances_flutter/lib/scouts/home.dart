@@ -90,11 +90,6 @@ class _ScoutsHomeState extends State<ScoutsHome> {
         searchBar,
         SizedBox(height: 16.0),
         ...childCards,
-        ElevatedButton(
-            onPressed: () async {
-              await client.admin.resetDb();
-            },
-            child: const Text('Secret debug button (Reset DB)'))
       ],
     );
 
@@ -105,59 +100,29 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           child: body,
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FloatingActionButton(
-              heroTag: 'fab_left',
-              child: const Icon(Icons.save),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Save Changes'),
-                      content: Text('This feature is not implemented yet.'),
-                      actions: [
-                        TextButton(
-                          child: Text('OK'),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            FloatingActionButton(
-              heroTag: 'fab_right',
-              child: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Add Child'),
-                      content: Text('This feature is not implemented yet.'),
-                      actions: [
-                        TextButton(
-                          child: Text('OK'),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    );
-                  },
-                ).then((_) {
-                  _getChildren();
-                });
-              },
-            ),
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Add Child'),
+                content: Text('This feature is not implemented yet.'),
+                actions: [
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              );
+            },
+          ).then((_) {
+            _getChildren();
+          });
+        },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

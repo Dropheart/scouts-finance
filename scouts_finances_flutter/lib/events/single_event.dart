@@ -109,8 +109,9 @@ class _SingleEventState extends State<SingleEvent> {
     final childrenTable = DataTable(
       columns: [
         DataColumn(
-            label: Text('Name', style: colStyle),
-            columnWidth: const FlexColumnWidth()),
+          label: Text('Name', style: colStyle),
+          columnWidth: const FlexColumnWidth(),
+        ),
         DataColumn(
             label: Text(
               'Paid',
@@ -118,6 +119,7 @@ class _SingleEventState extends State<SingleEvent> {
             ),
             columnWidth: const IntrinsicColumnWidth()),
       ],
+      headingRowColor: WidgetStateProperty.all(colourScheme.secondaryContainer),
       rows: children
           .map((e) => DataRow(
                   cells: [
@@ -139,7 +141,8 @@ class _SingleEventState extends State<SingleEvent> {
                   ],
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
-                      : WidgetStateProperty.all(Colors.green.shade100)))
+                      : WidgetStateProperty.all(
+                          const Color.fromARGB(255, 82, 152, 84))))
           .toList(),
       // decoration: BoxDecoration(
       //   border: Border.all(color: colourScheme.secondary, width: 2),
