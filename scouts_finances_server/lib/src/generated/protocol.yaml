@@ -6,6 +6,7 @@ event:
   - getEventById:
   - insertEvent:
   - registerChildForEvent:
+  - registerChildrenForEvent:
   - unpaidEvents:
   - getRegistrationsByChildId:
   - getRegistrationsByEventId:

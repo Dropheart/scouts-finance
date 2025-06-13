@@ -67,10 +67,13 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       );
     }
 
+    final unregisteredChildren = allChildren
+        .where((child) => !eventChildren.any((e) => e.id == child.id))
+        .toList();
+
     final choices = SearchChoices.multiple(
       selectedItems: selectedChildrenIndices,
-      items: allChildren
-          .where((child) => !eventChildren.any((e) => e.id == child.id))
+      items: unregisteredChildren
           .map((child) => DropdownMenuItem<Child>(
                 value: child,
                 child: Text('${child.firstName} ${child.lastName}'),
@@ -80,8 +83,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       onChanged: (List selections) {
         setState(() {
           selectedChildrenIndices = selections.cast<int>();
-          selectedChildren = allChildren.where((child) {
-            return selections.contains(allChildren.indexOf(child));
+          selectedChildren = unregisteredChildren.where((child) {
+            return selections.contains(unregisteredChildren.indexOf(child));
           }).toList();
         });
       },
@@ -106,8 +109,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
           ? null
           : () async {
               try {
-                // await client.event.addParticipantsToEvent(
-                //     widget.eventId, selectedChildren.map((e) => e.id).toList());
+                await client.event.registerChildrenForEvent(widget.eventId,
+                    selectedChildren.map((c) => c.id!).toList());
                 setState(() {
                   selectedChildrenIndices = [];
                   selectedChildren = [];
