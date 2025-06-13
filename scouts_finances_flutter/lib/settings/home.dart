@@ -272,7 +272,8 @@ class _SettingsHomeState extends State<SettingsHome> {
                 children: [
                   ListTile(
                     title: const Text('Reset Database'),
-                    subtitle: const Text('Reseed the database with default data'),
+                    subtitle:
+                        const Text('Reseed the database with default data'),
                     trailing: const Icon(Icons.refresh),
                     onTap: () async {
                       await client.admin.resetDb();
