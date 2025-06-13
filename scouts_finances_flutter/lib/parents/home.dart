@@ -148,7 +148,8 @@ class _ParentHomeState extends State<ParentHome> {
           outstandingCards.isEmpty
               ? const SizedBox.shrink()
               : ExpansionTile(
-                  title: const Text('Outstanding Parents',
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text('Payments Outstanding',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   tilePadding: EdgeInsets.zero,

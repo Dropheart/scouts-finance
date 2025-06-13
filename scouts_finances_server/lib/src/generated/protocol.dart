@@ -545,6 +545,9 @@ class Protocol extends _i1.SerializationManagerServer {
           .map((e) => deserialize<_i11.EventRegistration>(e))
           .toList() as T;
     }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
     if (t == List<_i12.Parent>) {
       return (data as List).map((e) => deserialize<_i12.Parent>(e)).toList()
           as T;

@@ -18,7 +18,8 @@ class EventEndpoint extends Endpoint {
           where: (t) => t.eventId.equals(event.id),
           include: EventRegistration.include(child: Child.include()));
       int totalCount = registrations.length;
-      int paidCount = registrations.where((r) => r.paidDate == null).length;
+      int paidCount =
+          totalCount - registrations.where((r) => r.paidDate == null).length;
 
       res[event.id!] = (paidCount, totalCount);
     }
@@ -77,6 +78,40 @@ class EventEndpoint extends Endpoint {
     await EventRegistration.db.insert(session, [registration]);
 
     return registration;
+  }
+
+  Future<void> registerChildrenForEvent(
+      Session session, int eventId, List<int> childIds) async {
+    final event = await Event.db.findById(session, eventId);
+    if (event == null) {
+      throw ArgumentError('Event with id $eventId not found');
+    }
+
+    final children = await Child.db
+        .find(session, where: (c) => c.id.inSet(childIds.toSet()));
+
+    if (children.length != childIds.length) {
+      throw ArgumentError('Some children not found');
+    }
+
+    final registrations = children.map((child) {
+      return EventRegistration(
+        eventId: eventId,
+        childId: child.id!,
+      );
+    }).toList();
+
+    print("-");
+    // select all event registrations for the event
+    final existingRegs = await EventRegistration.db.find(
+      session,
+      where: (r) => r.eventId.equals(eventId),
+    );
+    print(existingRegs);
+
+    print("-");
+
+    await EventRegistration.db.insert(session, registrations);
   }
 
   Future<List<EventRegistration>> unpaidEvents(Session session) =>

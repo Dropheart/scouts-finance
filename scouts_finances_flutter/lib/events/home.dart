@@ -171,14 +171,14 @@ class _EventHomeState extends State<EventHome> {
       ExpansionTile(
           title: const Text('Future Events'),
           initiallyExpanded: true,
-          shape: const Border(),
+          controlAffinity: ListTileControlAffinity.leading,
           children: eventCards),
       //   child: ListView(children: [
       // ...eventCards,
       ExpansionTile(
           title: const Text('Past Events'),
+          controlAffinity: ListTileControlAffinity.leading,
           initiallyExpanded: false,
-          shape: const Border(),
           children: [
             Card(
               child: ListTile(

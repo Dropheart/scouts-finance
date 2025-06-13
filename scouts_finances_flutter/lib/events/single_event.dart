@@ -22,9 +22,7 @@ class _SingleEventState extends State<SingleEvent> {
   String query = '';
   final sorts = [
     'First Name',
-    'First Name (Reverse)',
     'Last Name',
-    'Last Name (Reverse)',
     'Paid First',
     'Paid Last',
   ];
@@ -85,12 +83,8 @@ class _SingleEventState extends State<SingleEvent> {
       switch (sorts[sortIndex]) {
         case 'First Name':
           return a.name.split(' ')[0].compareTo(b.name.split(' ')[0]);
-        case 'First Name (Reverse)':
-          return b.name.split(' ')[0].compareTo(a.name.split(' ')[0]);
         case 'Last Name':
           return a.name.split(' ').last.compareTo(b.name.split(' ').last);
-        case 'Last Name (Reverse)':
-          return b.name.split(' ').last.compareTo(a.name.split(' ').last);
         case 'Paid First':
           return a.paidDate == null && b.paidDate == null
               ? 0
@@ -131,15 +125,15 @@ class _SingleEventState extends State<SingleEvent> {
                   cells: [
                     DataCell(Row(children: [
                       Text(e.name),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button press, e.g., navigate to child's profile
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                        ),
-                        child: const Icon(Icons.arrow_forward, size: 16),
-                      )
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     // Handle button press, e.g., navigate to child's profile
+                      //   },
+                      //   style: ElevatedButton.styleFrom(
+                      //     shape: const CircleBorder(),
+                      //   ),
+                      //   child: const Icon(Icons.arrow_forward, size: 16),
+                      // )
                     ])),
                     DataCell(Text(e.paidDate == null
                         ? 'Not paid'
@@ -148,7 +142,7 @@ class _SingleEventState extends State<SingleEvent> {
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
                       : WidgetStateProperty.all(
-                          const Color.fromARGB(255, 82, 152, 84))))
+                          const Color.fromARGB(199, 1, 230, 104))))
           .toList(),
       // decoration: BoxDecoration(
       //   border: Border.all(color: colourScheme.secondary, width: 2),
@@ -207,82 +201,81 @@ class _SingleEventState extends State<SingleEvent> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(event.name),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Table(columnWidths: {
-            0: IntrinsicColumnWidth(),
-          }, children: [
-            TableRow(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  'Date:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Text("${event.date.day}/${event.date.month}/${event.date.year}"),
-            ]),
-            TableRow(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('Location:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              Text('TBD'),
-            ]),
-            TableRow(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('Price:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              Text('£${(event.cost / 100).toStringAsFixed(2)}'),
-            ]),
-          ]),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(children: [
-                const Text('Registrations:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 200, // Fixed width
-                      child: EventAddParticipant(
-                        eventId: widget.eventId,
-                        closeFn: () => _getEventDetails(),
-                      ),
+        appBar: AppBar(
+          title: Text(event.name),
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Table(columnWidths: {
+                0: IntrinsicColumnWidth(),
+              }, children: [
+                TableRow(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      'Date:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    // SizedBox(
-                    //   width: 20,
-                    //   child: EventAddSection(
-                    //     eventId: widget.eventId,
-                    //     closeFn: () => _getEventDetails(),
-                    //   ),
-                    // ),
-                  ],
-                ),
-                searchBar,
-                sortSelection,
-                const SizedBox(height: 16),
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10), // Sets rounded corners
                   ),
-                  color: colourScheme.secondaryContainer,
-                  clipBehavior: Clip.antiAlias,
-                  child: childrenTable,
-                )
-              ])),
-        ],
-      ),
-    );
+                  Text(
+                      "${event.date.day}/${event.date.month}/${event.date.year}"),
+                ]),
+                TableRow(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('Location:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Text('TBD'),
+                ]),
+                TableRow(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('Price:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Text('£${(event.cost / 100).toStringAsFixed(2)}'),
+                ]),
+              ]),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(children: [
+                    const SizedBox(height: 16),
+                    searchBar,
+                    sortSelection,
+                    const SizedBox(height: 16),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(10), // Sets rounded corners
+                      ),
+                      color: colourScheme.secondaryContainer,
+                      clipBehavior: Clip.antiAlias,
+                      child: childrenTable,
+                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     SizedBox(
+                    //       width: 200, // Fixed width
+                    //       child: EventAddParticipant(
+                    //         eventId: widget.eventId,
+                    //         closeFn: () => _getEventDetails(),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    EventAddParticipant(
+                      eventId: widget.eventId,
+                      closeFn: () => _getEventDetails(),
+                    ),
+                  ])),
+            ],
+          ),
+        ));
   }
 }

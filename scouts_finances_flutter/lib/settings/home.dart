@@ -215,18 +215,18 @@ class _SettingsHomeState extends State<SettingsHome> {
                         ),
                       ),
                     ),
-                  if (_remindXDaysBefore)
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        'Note: Reminder features are not yet implemented',
-                        style: TextStyle(
-                          color: Colors.orange,
-                          fontSize: 12,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
+                  // if (_remindXDaysBefore)
+                  //   Padding(
+                  //     padding: const EdgeInsets.all(16.0),
+                  //     child: Text(
+                  //       'Note: Reminder features are not yet implemented',
+                  //       style: TextStyle(
+                  //         color: Colors.orange,
+                  //         fontSize: 12,
+                  //         fontStyle: FontStyle.italic,
+                  //       ),
+                  //     ),
+                  //   ),
                 ],
               ),
             ),
