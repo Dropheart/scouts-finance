@@ -44,7 +44,7 @@ class _SettingsHomeState extends State<SettingsHome> {
       setState(() {
         _versionTapCount = 0;
       });
-      
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const SnakeGame(),
@@ -64,31 +64,41 @@ class _SettingsHomeState extends State<SettingsHome> {
             Text(
               'Theme Settings',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             Card(
               child: Column(
                 children: [
+                  Consumer<ThemeService>(
+                    builder: (context, themeService, child) => SwitchListTile(
+                      title: const Text('Theme'),
+                      subtitle: const Text('Enable custom theme colours'),
+                      value: themeService.enabled,
+                        onChanged: (value) {
+                        themeService.toggleTheme();
+                      },
+                    ),
+                  ),
                   const ColorSelectorTile(
-                    title: 'Primary Color',
-                    subtitle: 'Main app color',
+                    title: 'Primary Colour',
+                    subtitle: 'Main app colour',
                     colorType: ColorType.primary,
                   ),
                   const ColorSelectorTile(
-                    title: 'Secondary Color',
-                    subtitle: 'Accent color',
+                    title: 'Secondary Colour',
+                    subtitle: 'Accent colour',
                     colorType: ColorType.secondary,
                   ),
                   const ColorSelectorTile(
-                    title: 'Background Color',
-                    subtitle: 'App background color',
+                    title: 'Background Colour',
+                    subtitle: 'App background colour',
                     colorType: ColorType.background,
                   ),
                   ListTile(
-                    title: const Text('Reset Colors'),
-                    subtitle: const Text('Reset to default colors'),
+                    title: const Text('Reset Colours'),
+                    subtitle: const Text('Reset to default colours'),
                     trailing: const Icon(Icons.refresh),
                     onTap: () {
                       _showResetColorsDialog();
@@ -97,15 +107,15 @@ class _SettingsHomeState extends State<SettingsHome> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // App Settings Section
             Text(
               'App Settings',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             Card(
@@ -124,15 +134,15 @@ class _SettingsHomeState extends State<SettingsHome> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // Payment Reminders Section
             Text(
               'Payment Reminders',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             Card(
@@ -140,7 +150,8 @@ class _SettingsHomeState extends State<SettingsHome> {
                 children: [
                   SwitchListTile(
                     title: const Text('Remind day before'),
-                    subtitle: const Text('Send reminder 1 day before payment due'),
+                    subtitle:
+                        const Text('Send reminder 1 day before payment due'),
                     value: _remindDayBefore,
                     onChanged: (value) {
                       setState(() {
@@ -150,7 +161,8 @@ class _SettingsHomeState extends State<SettingsHome> {
                   ),
                   SwitchListTile(
                     title: Text('Remind $_xDaysBeforeValue days before'),
-                    subtitle: Text('Send reminder $_xDaysBeforeValue days before payment due'),
+                    subtitle: Text(
+                        'Send reminder $_xDaysBeforeValue days before payment due'),
                     value: _remindXDaysBefore,
                     onChanged: (value) {
                       setState(() {
@@ -161,7 +173,8 @@ class _SettingsHomeState extends State<SettingsHome> {
                   if (_remindXDaysBefore)
                     ListTile(
                       title: const Text('Days before reminder'),
-                      subtitle: Text('Send reminder $_xDaysBeforeValue days before due date'),
+                      subtitle: Text(
+                          'Send reminder $_xDaysBeforeValue days before due date'),
                       trailing: SizedBox(
                         width: 80,
                         child: TextFormField(
@@ -206,15 +219,15 @@ class _SettingsHomeState extends State<SettingsHome> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // About Section
             Text(
               'About',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             Card(
@@ -222,7 +235,7 @@ class _SettingsHomeState extends State<SettingsHome> {
                 children: [
                   ListTile(
                     title: const Text('Version'),
-                    subtitle: Text(_versionTapCount > 0 
+                    subtitle: Text(_versionTapCount > 0
                         ? '1.0.0 (${3 - _versionTapCount} more taps...)'
                         : '1.0.0'),
                     onTap: _onVersionTap,
@@ -248,7 +261,8 @@ class _SettingsHomeState extends State<SettingsHome> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Reset Colors'),
-        content: const Text('Are you sure you want to reset all colors to their default values?'),
+        content: const Text(
+            'Are you sure you want to reset all colors to their default values?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -256,7 +270,8 @@ class _SettingsHomeState extends State<SettingsHome> {
           ),
           ElevatedButton(
             onPressed: () {
-              Provider.of<ThemeService>(context, listen: false).resetToDefaults();
+              Provider.of<ThemeService>(context, listen: false)
+                  .resetToDefaults();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -265,22 +280,6 @@ class _SettingsHomeState extends State<SettingsHome> {
               );
             },
             child: const Text('Reset'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showNotImplementedDialog(String feature) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(feature),
-        content: const Text('This feature is not implemented yet.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
           ),
         ],
       ),
@@ -357,7 +356,8 @@ class ColorSelectorTile extends StatelessWidget {
     );
   }
 
-  void _showColorPicker(BuildContext context, ThemeService themeService, Color currentColor) {
+  void _showColorPicker(
+      BuildContext context, ThemeService themeService, Color currentColor) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -380,8 +380,8 @@ class ColorSelectorTile extends StatelessWidget {
                     Text(
                       'Enter Hex Color',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -426,23 +426,23 @@ class ColorSelectorTile extends StatelessWidget {
                     Text(
                       'Current: ${ThemeService.colorToHex(currentColor)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey.shade600,
-                      ),
+                            color: Colors.grey.shade600,
+                          ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              
+
               // Predefined colors section
               Text(
                 'Or choose from presets:',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(height: 8),
-              
+
               // Color grid
               Expanded(
                 child: GridView.builder(
@@ -454,7 +454,8 @@ class ColorSelectorTile extends StatelessWidget {
                   itemCount: ThemeService.predefinedColors.length,
                   itemBuilder: (context, index) {
                     final color = ThemeService.predefinedColors[index];
-                    final isSelected = color.value == currentColor.value;
+                    final isSelected =
+                        color.toARGB32() == currentColor.toARGB32();
 
                     return GestureDetector(
                       onTap: () {
