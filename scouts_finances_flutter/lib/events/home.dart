@@ -89,6 +89,8 @@ class _EventHomeState extends State<EventHome> {
             children: [
               Text('${event.id}/30 Paid'),
               const Spacer(),
+              Icon(Icons.calendar_today, size: 14),
+              const SizedBox(width: 4.0),
               Text('${event.date.day}/${event.date.month}/${event.date.year}'),
             ],
           ),

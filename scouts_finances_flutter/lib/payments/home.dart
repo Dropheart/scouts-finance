@@ -200,11 +200,6 @@ class _PaymentsHomeState extends State<PaymentsHome> {
           children: [
             Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
             const Spacer(),
-            Icon(
-                payment.method == PaymentMethod.cash
-                    ? Icons.money
-                    : Icons.credit_card,
-                size: 14.0),
             const SizedBox(width: 4.0),
             Text(payment.method.toDisplayString()),
           ],
