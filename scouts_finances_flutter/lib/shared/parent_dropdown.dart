@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/extensions/parent.dart';
+import 'package:scouts_finances_flutter/extensions/name.dart';
 
 class ParentDropdown extends DropdownButton<int> {
   final List<Parent> parents;

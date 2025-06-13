@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/extensions/parent.dart';
+import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
