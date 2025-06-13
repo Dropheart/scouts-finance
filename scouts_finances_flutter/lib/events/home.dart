@@ -15,11 +15,7 @@ class _EventHomeState extends State<EventHome> {
   late List<EventWithRegistrations> events;
   String? errorMessage;
   bool loading = true;
-  final sorts = [
-    'Upcoming First',
-    'Upcoming Last',
-    /*'Most Paid', 'Least Paid' */
-  ];
+  final sorts = ['Upcoming First', 'Upcoming Last', 'Most Paid', 'Least Paid'];
   int sortIndex = 0;
   String query = '';
 
@@ -78,9 +74,9 @@ class _EventHomeState extends State<EventHome> {
           return a.event.date.compareTo(b.event.date);
         // Paid count tbd
         case 2: // Most Paid
-        // return b.paidCount.compareTo(a.paidCount);
+          return b.paid.compareTo(a.paid);
         case 3: // Least Paid
-        // return a.paidCount.compareTo(b.paidCount);
+          return a.paid.compareTo(b.paid);
         default:
           return 0; // No sorting
       }
