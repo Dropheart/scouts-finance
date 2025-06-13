@@ -170,7 +170,7 @@ class _SnakeGameState extends State<SnakeGame> {
                   Text(
                     'Tap ▶️ to start or use arrow buttons to control',
                     style: TextStyle(
-                        color: textColor.withOpacity(0.6), fontSize: 12),
+                        color: textColor, fontSize: 12),
                   ),
               ],
             ),
