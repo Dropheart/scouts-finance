@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 
 class ScoutsHome extends StatefulWidget {
   const ScoutsHome({super.key});
@@ -65,8 +66,9 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           child: ListTile(
         title: Text('${child.firstName} ${child.lastName}'),
         subtitle: Text('Section, finance overview here'),
-        onTap: () {
-          // Navigate to child's profile page
+        onTap: () async {
+          await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ScoutDetailsView(scoutId: child.id!)));
         },
         trailing: const Icon(Icons.arrow_forward),
       ));

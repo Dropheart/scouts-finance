@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 import 'package:scouts_finances_flutter/shared/parent_transactions.dart';
 import 'package:scouts_finances_flutter/shared/unpaid_events.dart';
 
@@ -123,8 +125,13 @@ class _ParentDetailsState extends State<ParentDetails> {
                       minimumSize: Size(0, 0),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    onPressed: () => {},
-                    child: Text('${child.firstName} ${child.lastName}'),
+                    onPressed: () => {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return ScoutDetailsView(scoutId: child.id!);
+                      })),
+                    },
+                    child: Text(child.fullName),
                   )),
             ],
           ),
