@@ -19,12 +19,6 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   String? err;
   bool loading = true;
   String query = '';
-  final searchBy = [
-    'payee',
-    'amount',
-    'date',
-  ];
-  int searchByIndex = 0;
 
   void _getPayments() async {
     try {
@@ -71,11 +65,28 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                   style: const TextStyle(color: Colors.red, fontSize: 16))));
     }
 
-    List<Card> unclassifiedPaymentCards = unclassifiedPayments.map((payment) {
+    List<Card> unclassifiedPaymentCards = unclassifiedPayments
+        .where((p) =>
+            p.method
+                .toDisplayString()
+                .toLowerCase()
+                .contains(query.toLowerCase()) ||
+            p.date.toLocal().toString().contains(query.toLowerCase()) ||
+            (p.amount / 100).toStringAsFixed(2).contains(query.toLowerCase()))
+        .map((payment) {
       return toCard(context, payment);
     }).toList();
 
-    List<Card> classifiedPaymentCards = classifiedPayments.map((payment) {
+    List<Card> classifiedPaymentCards = classifiedPayments
+        .where((p) =>
+            p.parent!.fullName.toLowerCase().contains(query.toLowerCase()) ||
+            p.method
+                .toDisplayString()
+                .toLowerCase()
+                .contains(query.toLowerCase()) ||
+            p.date.toLocal().toString().contains(query.toLowerCase()) ||
+            (p.amount / 100).toStringAsFixed(2).contains(query.toLowerCase()))
+        .map((payment) {
       return toCard(context, payment);
     }).toList();
 
@@ -92,35 +103,8 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       hintText: 'Search payments',
     );
 
-    Widget sortSelection = Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Row(
-        children: [
-          Text("Search by:"),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: DropdownButton<int>(
-              value: searchByIndex,
-              items: searchBy.map((value) {
-                return DropdownMenuItem<int>(
-                  value: searchBy.indexOf(value),
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (int? newValue) {
-                setState(() {
-                  searchByIndex = newValue!;
-                });
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-
     final List<Widget> body = [
       searchBar,
-      sortSelection,
     ];
     if (unclassifiedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
