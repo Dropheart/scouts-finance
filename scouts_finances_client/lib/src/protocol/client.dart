@@ -161,6 +161,19 @@ class EndpointParent extends _i1.EndpointRef {
         'getUnpaidEventRegistrations',
         {'parentId': parentId},
       );
+
+  _i2.Future<void> remindParent(int parentId) =>
+      caller.callServerEndpoint<void>(
+        'parent',
+        'remindParent',
+        {'parentId': parentId},
+      );
+
+  _i2.Future<void> remindAllParents() => caller.callServerEndpoint<void>(
+        'parent',
+        'remindAllParents',
+        {},
+      );
 }
 
 /// {@category Endpoint}
