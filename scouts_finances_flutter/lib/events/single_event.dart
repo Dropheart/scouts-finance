@@ -142,7 +142,7 @@ class _SingleEventState extends State<SingleEvent> {
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
                       : WidgetStateProperty.all(
-                          const Color.fromARGB(255, 82, 152, 84))))
+                          const Color.fromARGB(199, 1, 230, 104))))
           .toList(),
       // decoration: BoxDecoration(
       //   border: Border.all(color: colourScheme.secondary, width: 2),
