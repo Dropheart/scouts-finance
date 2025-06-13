@@ -178,18 +178,18 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             children: body,
           ))),
       floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AddPaymentDialog();
-                  },
-                ).then((_) {
-                  _getPayments();
-                });
-              },
-            ),
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AddPaymentDialog();
+            },
+          ).then((_) {
+            _getPayments();
+          });
+        },
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

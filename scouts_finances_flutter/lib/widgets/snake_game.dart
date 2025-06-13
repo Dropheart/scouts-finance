@@ -169,8 +169,7 @@ class _SnakeGameState extends State<SnakeGame> {
                 if (!gameRunning && !gameOver)
                   Text(
                     'Tap ▶️ to start or use arrow buttons to control',
-                    style: TextStyle(
-                        color: textColor, fontSize: 12),
+                    style: TextStyle(color: textColor, fontSize: 12),
                   ),
               ],
             ),
