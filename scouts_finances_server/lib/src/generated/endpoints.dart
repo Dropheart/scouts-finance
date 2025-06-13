@@ -309,6 +309,34 @@ class Endpoints extends _i1.EndpointDispatch {
             params['parentId'],
           ),
         ),
+        'remindParent': _i1.MethodConnector(
+          name: 'remindParent',
+          params: {
+            'parentId': _i1.ParameterDescription(
+              name: 'parentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint).remindParent(
+            session,
+            params['parentId'],
+          ),
+        ),
+        'remindAllParents': _i1.MethodConnector(
+          name: 'remindAllParents',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint)
+                  .remindAllParents(session),
+        ),
       },
     );
     connectors['payment'] = _i1.EndpointConnector(
