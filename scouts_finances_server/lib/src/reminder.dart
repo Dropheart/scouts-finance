@@ -1,3 +1,4 @@
+import 'package:scouts_finances_server/src/extensions.dart';
 import 'package:scouts_finances_server/src/generated/protocol.dart';
 import 'package:scouts_finances_server/src/twlilio.dart';
 import 'package:serverpod/serverpod.dart';
@@ -69,8 +70,8 @@ Future<String> eventRemindersForParent(Session session, Parent parent) async {
   final buffer = StringBuffer();
 
   final eventRegistrations = await EventRegistration.db.find(session,
-      where: (t) =>
-          t.child.parentId.equals(parent.id) & (t.event.date > DateTime.now()),
+      where: (t) => t.child.parentId.equals(parent
+          .id) /*& (t.event.date > DateTime.now())*/, // reintro this line if our data permits lol
       include: EventRegistration.include(
         event: Event.include(),
         child: Child.include(parent: Parent.include()),
@@ -81,28 +82,30 @@ Future<String> eventRemindersForParent(Session session, Parent parent) async {
   final paidRegistrations =
       eventRegistrations.where((r) => r.paidDate != null).toList();
 
-  buffer.writeln('Current balance: ${parent.balance}');
-  buffer.writeln('Unpaid registrations:');
+  buffer.writeln('Current balance: ${parent.balance.formatMoney}');
+  buffer.writeln('\nUnpaid registrations:');
   if (unpaidRegistrations.isEmpty) {
     buffer.writeln('None');
   } else {
     for (var registration in unpaidRegistrations) {
       buffer.writeln(
-          '- ${registration.event!.name} on ${registration.event!.date} (Cost: ${registration.event!.cost})');
+          '- ${registration.event!.name} on ${registration.event!.date.formattedDate} (Cost: ${registration.event!.cost.formatMoney})');
     }
   }
-  buffer.writeln('Paid registrations:');
+  buffer.writeln('\nPaid registrations:');
   if (paidRegistrations.isEmpty) {
     buffer.writeln('None');
   } else {
     for (var registration in paidRegistrations) {
       buffer.writeln(
-          '- ${registration.event!.name} on ${registration.event!.date} (Paid on: ${registration.paidDate})');
+          '- ${registration.event!.name} on ${registration.event!.date.formattedDate} (Paid on: ${registration.paidDate!.formattedDate})');
     }
   }
-  final outstandingBalance = parent.balance -
-      unpaidRegistrations.fold(0, (sum, r) => sum + (r.event?.cost ?? 0));
-  buffer.writeln('Outstanding balance: $outstandingBalance');
+  final outstandingBalance =
+      unpaidRegistrations.fold(0, (sum, r) => sum + (r.event?.cost ?? 0)) -
+          parent.balance;
+
+  buffer.writeln('Outstanding balance: ${outstandingBalance.formatMoney}');
   if (outstandingBalance > 0) {
     buffer.writeln(
         'To pay your outstanding balance, please transfer to the BACS details below:');
@@ -111,8 +114,9 @@ Future<String> eventRemindersForParent(Session session, Parent parent) async {
     buffer.writeln('Sort Code: 12-34-56');
     buffer.writeln('Reference: SCOUT${parent.id}');
   } else {
-    buffer.writeln('Thank you for keeping your account up to date!');
+    buffer.writeln('Thank you for keeping your account up to date!\n');
   }
 
   return buffer.toString();
 }
+
