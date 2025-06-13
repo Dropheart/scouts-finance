@@ -18,7 +18,7 @@ class EventEndpoint extends Endpoint {
           where: (t) => t.eventId.equals(event.id),
           include: EventRegistration.include(child: Child.include()));
       int totalCount = registrations.length;
-      int paidCount = registrations.where((r) => r.paidDate == null).length;
+      int paidCount = totalCount - registrations.where((r) => r.paidDate == null).length;
 
       res[event.id!] = (paidCount, totalCount);
     }
