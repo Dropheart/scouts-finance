@@ -25,11 +25,9 @@ class ThemeService extends ChangeNotifier {
     // Apply secondary color to card surfaces
     final customColorScheme = baseColorScheme.copyWith(
       surface: _backgroundColor,
-      background: _backgroundColor,
-      surfaceVariant: _secondaryColor.withOpacity(0.8), // Much stronger color
+      surfaceContainerHighest: _secondaryColor, // Much stronger color
       // Adjust on-surface colors based on background brightness
       onSurface: _getContrastingTextColor(_backgroundColor),
-      onBackground: _getContrastingTextColor(_backgroundColor),
     );
 
     return ThemeData(
@@ -46,13 +44,13 @@ class ThemeService extends ChangeNotifier {
         elevation: 0,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: _secondaryColor.withOpacity(0.8),
-        foregroundColor: _getContrastingTextColor(_secondaryColor.withOpacity(0.8)),
+        backgroundColor: _secondaryColor,
+        foregroundColor: _getContrastingTextColor(_secondaryColor),
         elevation: 2.0,
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: _primaryColor,
-        indicatorColor: _primaryColor.withOpacity(0.3),
+        indicatorColor: _primaryColor,
         labelTextStyle: WidgetStatePropertyAll(
           TextStyle(color: _getContrastingTextColor(_primaryColor)),
         ),
@@ -62,13 +60,13 @@ class ThemeService extends ChangeNotifier {
       ),
       cardTheme: CardThemeData(
         elevation: 1.0,
-        color: _secondaryColor.withOpacity(0.7), // Much stronger from 0.15 to 0.4
+        color: _secondaryColor, // Much stronger from 0.15 to 0.4
         surfaceTintColor: _secondaryColor, // Secondary color tint
       ),
       searchBarTheme: SearchBarThemeData(
-        backgroundColor: WidgetStatePropertyAll(_secondaryColor.withOpacity(0.8)),
+        backgroundColor: WidgetStatePropertyAll(_secondaryColor),
         surfaceTintColor: WidgetStatePropertyAll(_secondaryColor),
-        overlayColor: WidgetStatePropertyAll(_secondaryColor.withOpacity(0.1)),
+        overlayColor: WidgetStatePropertyAll(_secondaryColor),
         elevation: const WidgetStatePropertyAll(0.0),
       ),
     );
@@ -138,7 +136,7 @@ class ThemeService extends ChangeNotifier {
 
   /// Converts a Color object to a hex string
   static String colorToHex(Color color) {
-    return '#${color.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
+    return '#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
   }
 
   Future<void> loadTheme() async {
@@ -164,21 +162,21 @@ class ThemeService extends ChangeNotifier {
   Future<void> setPrimaryColor(Color color) async {
     _primaryColor = color;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_primaryColorKey, color.value);
+    await prefs.setInt(_primaryColorKey, color.toARGB32());
     notifyListeners();
   }
 
   Future<void> setSecondaryColor(Color color) async {
     _secondaryColor = color;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_secondaryColorKey, color.value);
+    await prefs.setInt(_secondaryColorKey, color.toARGB32());
     notifyListeners();
   }
 
   Future<void> setBackgroundColor(Color color) async {
     _backgroundColor = color;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_backgroundColorKey, color.value);
+    await prefs.setInt(_backgroundColorKey, color.toARGB32());
     notifyListeners();
   }
 
