@@ -26,12 +26,12 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       allChildren = await client.scouts.getChildren();
       setState(() {
         selectedChildren = [];
-        loading = loading-1;
+        loading = loading - 1;
       });
     } catch (e) {
       setState(() {
         allChildren = [];
-        loading = loading-1;
+        loading = loading - 1;
       });
     }
   }
@@ -41,7 +41,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         await client.event.getEventById(widget.eventId);
     setState(() {
       eventChildren = registrations.map((e) => e.child!).toList();
-      loading = loading-1;
+      loading = loading - 1;
     });
   }
 
