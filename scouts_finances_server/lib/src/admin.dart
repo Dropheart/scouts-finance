@@ -150,14 +150,14 @@ class AdminEndpoint extends Endpoint {
               Payment(
                 reference: "Hope my child enjoys :)",
                 payee: payee,
-                method: PaymentMethod.cash,
+                method: PaymentMethod.bank_transfer,
                 amount: amount ~/ 2,
-                date: DateTime.now().subtract(Duration(days: 30)),
+                date: DateTime.now().subtract(Duration(days: 15)),
               ),
               Payment(
                 reference: "Hope my child enjoys :)",
                 payee: payee,
-                method: PaymentMethod.cash,
+                method: PaymentMethod.bank_transfer,
                 amount: amount ~/ 2,
                 date: DateTime.now(),
               ),
@@ -166,7 +166,7 @@ class AdminEndpoint extends Endpoint {
               Payment(
                 reference: "Hope my child enjoys :)",
                 payee: payee,
-                method: PaymentMethod.cash,
+                method: PaymentMethod.bank_transfer,
                 amount: amount,
                 date: DateTime.now(),
               ),

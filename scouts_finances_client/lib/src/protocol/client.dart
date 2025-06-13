@@ -96,6 +96,14 @@ class EndpointEvent extends _i1.EndpointRef {
         'getRegistrationsByChildId',
         {'childId': childId},
       );
+
+  _i2.Future<List<_i4.EventRegistration>> getRegistrationsByEventId(
+          int eventId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'getRegistrationsByEventId',
+        {'eventId': eventId},
+      );
 }
 
 /// {@category Endpoint}
@@ -162,19 +170,11 @@ class EndpointPayment extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<List<_i6.Payment>> insertPayment(
-    int amount,
-    String payee,
-    DateTime? date,
-  ) =>
+  _i2.Future<List<_i6.Payment>> insertPayment(_i6.Payment payment) =>
       caller.callServerEndpoint<List<_i6.Payment>>(
         'payment',
         'insertPayment',
-        {
-          'amount': amount,
-          'payee': payee,
-          'date': date,
-        },
+        {'payment': payment},
       );
 
   _i2.Future<_i6.Payment?> getPaymentById(int paymentId) =>

@@ -85,13 +85,10 @@ class _ScoutsHomeState extends State<ScoutsHome> {
       hintText: 'Search by name...',
     );
 
-    Column body = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    ListView body = ListView(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: searchBar,
-        ),
+        searchBar,
+        SizedBox(height: 16.0),
         ...childCards,
         ElevatedButton(
             onPressed: () async {
@@ -102,9 +99,11 @@ class _ScoutsHomeState extends State<ScoutsHome> {
     );
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsetsGeometry.all(8.0),
-        child: SingleChildScrollView(child: body),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsetsGeometry.all(16.0),
+          child: body,
+        ),
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

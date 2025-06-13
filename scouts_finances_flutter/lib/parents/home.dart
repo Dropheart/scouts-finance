@@ -39,7 +39,7 @@ class _ParentHomeState extends State<ParentHome> {
             acc[index] = (p, s + reg.event!.cost);
           } else {
             // If not, add new entry
-            acc.add((parent, reg.event!.cost));
+            acc.add((parent, reg.event!.cost - parent.balance));
           }
           return acc;
         });
@@ -169,9 +169,7 @@ class _ParentHomeState extends State<ParentHome> {
     }
 
     return Scaffold(
-      body: Center(
-        child: Padding(padding: const EdgeInsets.all(16.0), child: body),
-      ),
+      body: Padding(padding: const EdgeInsets.all(16.0), child: body),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {

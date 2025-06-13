@@ -74,4 +74,9 @@ class EventEndpoint extends Endpoint {
         where: (t) => t.childId.equals(childId),
         include: EventRegistration.include(event: Event.include()));
   }
+
+  Future<List<EventRegistration>> getRegistrationsByEventId(
+          Session session, int eventId) =>
+      EventRegistration.db
+          .find(session, where: (t) => t.eventId.equals(eventId));
 }
