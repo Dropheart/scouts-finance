@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/extensions/parent.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/shared/parent_transactions.dart';
 import 'package:scouts_finances_flutter/shared/unpaid_events.dart';
