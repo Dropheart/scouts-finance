@@ -1,9 +1,8 @@
-import 'dart:collection';
-
 import 'package:scouts_finances_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
+typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
 
 class EventEndpoint extends Endpoint {
   Future<List<Event>> getEvents(Session session) async {
@@ -11,7 +10,7 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<Map<int, (int, int)>> getPaidCounts(Session session) async {
-    final res = HashMap<int, (int, int)>();
+    final res = EventPaidCounts();
 
     final allEvents = await Event.db.find(session);
     for (var event in allEvents) {

@@ -4,6 +4,8 @@ import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/events/add.dart';
 
+typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
+
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
 
@@ -13,7 +15,7 @@ class EventHome extends StatefulWidget {
 
 class _EventHomeState extends State<EventHome> {
   late List<Event> events;
-  late Map<int, (int, int)> paidCounts; // eventId -> (paidCount, totalCount)
+  late EventPaidCounts paidCounts; // eventId -> (paidCount, totalCount)
   String? errorMessage;
   int loading = 2;
   final sorts = [
