@@ -119,10 +119,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     );
 
     final List<Widget> body = [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: searchBar,
-      ),
+      searchBar,
       sortSelection,
     ];
     if (unclassifiedPaymentCards.isNotEmpty) {
@@ -146,12 +143,9 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     return Scaffold(
       body: Padding(
-          padding: EdgeInsetsGeometry.all(8.0),
-          child: SingleChildScrollView(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: body,
-          ))),
+          padding: EdgeInsetsGeometry.all(16.0),
+          child: ListView(children: body),
+          ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
