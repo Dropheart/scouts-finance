@@ -4,6 +4,8 @@ import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/events/add.dart';
 
+typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
+
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
 
@@ -12,43 +14,59 @@ class EventHome extends StatefulWidget {
 }
 
 class _EventHomeState extends State<EventHome> {
-  late List<EventWithRegistrations> events;
+  late List<Event> events;
+  late EventPaidCounts paidCounts; // eventId -> (paidCount, totalCount)
   String? errorMessage;
-  bool loading = true;
-  final sorts = ['Upcoming First', 'Upcoming Last', 'Most Paid', 'Least Paid'];
+  int loading = 2;
+  final sorts = [
+    'Upcoming First',
+    'Upcoming Last',
+    'Paid count',
+    'Unpaid count',
+  ];
   int sortIndex = 0;
   String query = '';
 
   void _getEvents() async {
     try {
       final result = await client.event.getEvents();
-      final eventWithRegs = await Future.wait(result.map((e) async {
-        final reg = await client.event.getRegistrationsByEventId(e.id!);
-        return EventWithRegistrations(
-            e, reg.length, reg.where((r) => r.paidDate != null).length);
-      }));
       setState(() {
-        events = eventWithRegs;
-        loading = false;
+        events = result;
       });
     } catch (e) {
       setState(() {
         errorMessage =
             'Failed to load events. Are you connected to the internet?';
-        loading = false;
       });
     }
+    loading--;
+  }
+
+  void _getPaidCounts() async {
+    try {
+      final result = await client.event.getPaidCounts();
+      setState(() {
+        paidCounts = result;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage =
+            'Failed to load paid counts. Are you connected to the internet?';
+      });
+    }
+    loading--;
   }
 
   @override
   void initState() {
     super.initState();
     _getEvents();
+    _getPaidCounts();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
+    if (loading > 0) {
       return const Center(child: CircularProgressIndicator());
     }
     if (errorMessage != null) {
@@ -62,42 +80,48 @@ class _EventHomeState extends State<EventHome> {
     }
 
     // Filter events based on the search query
-    final List<EventWithRegistrations> filteredEvents = events.where((event) {
-      return event.event.name.toLowerCase().contains(query.toLowerCase());
+    List<Event> filteredEvents = events.where((event) {
+      return event.name.toLowerCase().contains(query.toLowerCase());
     }).toList();
 
     filteredEvents.sort((a, b) {
       switch (sortIndex) {
         case 0: // Upcoming First
-          return b.event.date.compareTo(a.event.date);
+          return b.date.compareTo(a.date);
         case 1: // Upcoming Last
-          return a.event.date.compareTo(b.event.date);
+          return a.date.compareTo(b.date);
         // Paid count tbd
         case 2: // Most Paid
-          return b.paid.compareTo(a.paid);
+          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+          return paidB.compareTo(paidA); // Sort by most paid
         case 3: // Least Paid
-          return a.paid.compareTo(b.paid);
+          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+          return paidA.compareTo(paidB); // Sort by least paid
         default:
           return 0; // No sorting
       }
     });
 
     List<Card> eventCards = filteredEvents.map((event) {
+      final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+
       return Card(
         child: ListTile(
-          title: Text(event.event.name),
+          title: Text(event.name),
           subtitle: Row(
             children: [
-              Text('${event.paid}/${event.totalRegs} Paid'),
+              Text('$paid/$total Paid'),
               const Spacer(),
               Icon(Icons.calendar_today, size: 14),
               const SizedBox(width: 4.0),
-              Text(event.event.date.toLocal().toIso8601String().split('T')[0]),
+              Text(event.date.toLocal().toIso8601String().split('T')[0]),
             ],
           ),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SingleEvent(eventId: event.event.id!)));
+                builder: (context) => SingleEvent(eventId: event.id!)));
           },
           trailing: const Icon(Icons.arrow_forward),
         ),
@@ -202,12 +226,4 @@ class _EventHomeState extends State<EventHome> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
-}
-
-class EventWithRegistrations {
-  final Event event;
-  final int totalRegs;
-  final int paid;
-
-  const EventWithRegistrations(this.event, this.totalRegs, this.paid);
 }

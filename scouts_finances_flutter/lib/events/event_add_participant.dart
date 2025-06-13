@@ -34,6 +34,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         loading = loading - 1;
       });
     }
+    loading--;
   }
 
   void _getEventChildren() async {
@@ -43,6 +44,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       eventChildren = registrations.map((e) => e.child!).toList();
       loading = loading - 1;
     });
+    loading--;
   }
 
   @override

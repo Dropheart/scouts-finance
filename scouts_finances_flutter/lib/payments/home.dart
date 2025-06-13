@@ -65,28 +65,29 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                   style: const TextStyle(color: Colors.red, fontSize: 16))));
     }
 
-    List<Card> unclassifiedPaymentCards = unclassifiedPayments
-        .where((p) =>
-            p.method
-                .toDisplayString()
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            p.date.toLocal().toString().contains(query.toLowerCase()) ||
-            (p.amount / 100).toStringAsFixed(2).contains(query.toLowerCase()))
-        .map((payment) {
+    // Filter payments based on the search query
+    List<Payment> filteredUnclassifiedPayments = unclassifiedPayments
+        .where((payment) =>
+            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
+            (payment.amount / 100).toString().contains(query) ||
+            payment.date.toLocal().toString().contains(query))
+        .toList();
+
+    List<Card> unclassifiedPaymentCards =
+        filteredUnclassifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
-    List<Card> classifiedPaymentCards = classifiedPayments
-        .where((p) =>
-            p.parent!.fullName.toLowerCase().contains(query.toLowerCase()) ||
-            p.method
-                .toDisplayString()
-                .toLowerCase()
-                .contains(query.toLowerCase()) ||
-            p.date.toLocal().toString().contains(query.toLowerCase()) ||
-            (p.amount / 100).toStringAsFixed(2).contains(query.toLowerCase()))
-        .map((payment) {
+    // Filter payments based on the search query
+    List<Payment> filteredClassifiedPayments = classifiedPayments
+        .where((payment) =>
+            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
+            payment.amount.toString().contains(query) ||
+            payment.date.toLocal().toString().contains(query))
+        .toList();
+
+    List<Card> classifiedPaymentCards =
+        filteredClassifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
@@ -100,12 +101,13 @@ class _PaymentsHomeState extends State<PaymentsHome> {
         padding: const EdgeInsets.only(left: 8.0),
         child: const Icon(Icons.search),
       ),
-      hintText: 'Search payments',
+      hintText: 'Search by payee, amount, date...',
     );
 
     final List<Widget> body = [
       searchBar,
     ];
+
     if (unclassifiedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
           title: Text(

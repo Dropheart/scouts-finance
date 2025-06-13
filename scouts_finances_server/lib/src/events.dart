@@ -2,10 +2,28 @@ import 'package:scouts_finances_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
+typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
 
 class EventEndpoint extends Endpoint {
   Future<List<Event>> getEvents(Session session) async {
     return Event.db.find(session);
+  }
+
+  Future<Map<int, (int, int)>> getPaidCounts(Session session) async {
+    final res = EventPaidCounts();
+
+    final allEvents = await Event.db.find(session);
+    for (var event in allEvents) {
+      final registrations = await EventRegistration.db.find(session,
+          where: (t) => t.eventId.equals(event.id),
+          include: EventRegistration.include(child: Child.include()));
+      int totalCount = registrations.length;
+      int paidCount = registrations.where((r) => r.paidDate == null).length;
+
+      res[event.id!] = (paidCount, totalCount);
+    }
+
+    return res;
   }
 
   Future<EventDetails> getEventById(Session session, int id) async {

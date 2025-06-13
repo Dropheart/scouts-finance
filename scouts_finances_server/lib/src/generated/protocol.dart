@@ -518,6 +518,22 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i10.Event>(e)).toList()
           as T;
     }
+    if (t == Map<int, (int, int)>) {
+      return Map.fromEntries((data as List).map((e) => MapEntry(
+          deserialize<int>(e['k']), deserialize<(int, int)>(e['v'])))) as T;
+    }
+    if (t == _i1.getType<(int, int)>()) {
+      return (
+        deserialize<int>(((data as Map)['p'] as List)[0]),
+        deserialize<int>(data['p'][1]),
+      ) as T;
+    }
+    if (t == _i1.getType<(int, int)>()) {
+      return (
+        deserialize<int>(((data as Map)['p'] as List)[0]),
+        deserialize<int>(data['p'][1]),
+      ) as T;
+    }
     if (t == _i1.getType<(_i10.Event, List<_i11.EventRegistration>)>()) {
       return (
         deserialize<_i10.Event>(((data as Map)['p'] as List)[0]),
@@ -654,6 +670,14 @@ class Protocol extends _i1.SerializationManagerServer {
 Map<String, dynamic>? mapRecordToJson(Record? record) {
   if (record == null) {
     return null;
+  }
+  if (record is (int, int)) {
+    return {
+      "p": [
+        record.$1,
+        record.$2,
+      ],
+    };
   }
   if (record is (_i10.Event, List<_i11.EventRegistration>)) {
     return {
