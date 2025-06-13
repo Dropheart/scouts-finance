@@ -254,17 +254,21 @@ class _SingleEventState extends State<SingleEvent> {
                       clipBehavior: Clip.antiAlias,
                       child: childrenTable,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 200, // Fixed width
-                          child: EventAddParticipant(
-                            eventId: widget.eventId,
-                            closeFn: () => _getEventDetails(),
-                          ),
-                        ),
-                      ],
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     SizedBox(
+                    //       width: 200, // Fixed width
+                    //       child: EventAddParticipant(
+                    //         eventId: widget.eventId,
+                    //         closeFn: () => _getEventDetails(),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    EventAddParticipant(
+                      eventId: widget.eventId,
+                      closeFn: () => _getEventDetails(),
                     ),
                   ])),
             ],
