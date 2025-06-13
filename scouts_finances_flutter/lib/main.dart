@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Scout Finance Manager',
             theme: themeService.themeData,
-            home: const MyHomePage(title: 'Scout Finance Manager'),
+            home: const HomePage(title: 'Scout Finance Manager'),
           );
         },
       ),
