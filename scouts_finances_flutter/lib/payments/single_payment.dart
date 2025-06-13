@@ -23,7 +23,6 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
   void initState() {
     super.initState();
     _getPayment();
-    _getParents();
     _getUnpaidEvents();
   }
 
@@ -33,22 +32,29 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
       setState(() {
         loading = loading - 1;
       });
-    } catch (e) {
-      setState(() {
-        payment = null; // Set to null if not found
-      });
-    }
-  }
 
-  void _getParents() async {
-    try {
       parents = await client.parent.getParents();
       parents.sort((a, b) => a.lastName.compareTo(b.lastName));
       setState(() {
         loading = loading - 1;
+
+        if (payment!.parentId != null) {
+          // Then there is already a parent assigned so the index should reflect that
+          parentIndex = parents.indexWhere((p) => p.id == payment!.parentId!);
+        } else if (parentIndex == -1) {
+          // Try to find the parent by payee name
+          parentIndex = parents.indexWhere((p) =>
+              payment!.payee.contains(p.firstName) &&
+              payment!.payee.contains(p.lastName));
+        }
+        if (parentIndex == -1) {
+          // If we still can't find it, default to the first parent
+          parentIndex = 0;
+        }
       });
     } catch (e) {
       setState(() {
+        payment = null; // Set to null if not found
         parents = [];
       });
     }
@@ -89,20 +95,6 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           child: Text(
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
-      if (payment!.parentId != null) {
-        // Then there is already a parent assigned so the index should reflect that
-        parentIndex = parents.indexWhere((p) => p.id == payment!.parentId!);
-      } else if (parentIndex == -1) {
-        // Try to find the parent by payee name
-        parentIndex = parents.indexWhere((p) =>
-            payment!.payee.contains(p.firstName) &&
-            payment!.payee.contains(p.lastName));
-      }
-      if (parentIndex == -1) {
-        // If we still can't find it, default to the first parent
-        parentIndex = 0;
-      }
-
       Row parentSelection = Row(children: [
         Text("Assign this payment to parent: "),
         ParentDropdown(

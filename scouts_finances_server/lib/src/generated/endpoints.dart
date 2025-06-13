@@ -17,6 +17,7 @@ import '../payments.dart' as _i5;
 import '../scouts.dart' as _i6;
 import 'package:scouts_finances_server/src/generated/protocol.dart' as _i7;
 import 'package:scouts_finances_server/src/generated/parent.dart' as _i8;
+import 'package:scouts_finances_server/src/generated/payment.dart' as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -195,6 +196,25 @@ class Endpoints extends _i1.EndpointDispatch {
             params['childId'],
           ),
         ),
+        'getRegistrationsByEventId': _i1.MethodConnector(
+          name: 'getRegistrationsByEventId',
+          params: {
+            'eventId': _i1.ParameterDescription(
+              name: 'eventId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .getRegistrationsByEventId(
+            session,
+            params['eventId'],
+          ),
+        ),
       },
     );
     connectors['parent'] = _i1.EndpointConnector(
@@ -270,6 +290,25 @@ class Endpoints extends _i1.EndpointDispatch {
             params['parent'],
           ),
         ),
+        'getUnpaidEventRegistrations': _i1.MethodConnector(
+          name: 'getUnpaidEventRegistrations',
+          params: {
+            'parentId': _i1.ParameterDescription(
+              name: 'parentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint)
+                  .getUnpaidEventRegistrations(
+            session,
+            params['parentId'],
+          ),
+        ),
       },
     );
     connectors['payment'] = _i1.EndpointConnector(
@@ -289,21 +328,11 @@ class Endpoints extends _i1.EndpointDispatch {
         'insertPayment': _i1.MethodConnector(
           name: 'insertPayment',
           params: {
-            'amount': _i1.ParameterDescription(
-              name: 'amount',
-              type: _i1.getType<int>(),
+            'payment': _i1.ParameterDescription(
+              name: 'payment',
+              type: _i1.getType<_i9.Payment>(),
               nullable: false,
-            ),
-            'payee': _i1.ParameterDescription(
-              name: 'payee',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'date': _i1.ParameterDescription(
-              name: 'date',
-              type: _i1.getType<DateTime?>(),
-              nullable: true,
-            ),
+            )
           },
           call: (
             _i1.Session session,
@@ -311,9 +340,7 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['payment'] as _i5.PaymentEndpoint).insertPayment(
             session,
-            params['amount'],
-            params['payee'],
-            params['date'],
+            params['payment'],
           ),
         ),
         'getPaymentById': _i1.MethodConnector(

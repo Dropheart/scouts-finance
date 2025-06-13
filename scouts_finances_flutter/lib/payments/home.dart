@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/parent.dart';
+import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/payments/single_payment.dart';
@@ -18,23 +19,16 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   String? err;
   bool loading = true;
   String query = '';
-  final searchBy = [
-    'payee',
-    'amount',
-    'date',
-  ];
-  int searchByIndex = 0;
 
   void _getPayments() async {
     try {
       final result = await client.payment.getPayments();
 
-      final classifiedPayments =
-          result.where((p) => p.parentId != null).toList();
+      final classifiedPayments = result.where((p) => p.parent != null).toList();
       classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       final unclassifiedPayments =
-          result.where((p) => p.parentId == null).toList();
+          result.where((p) => p.parent == null).toList();
       unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
@@ -44,8 +38,6 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       });
     } catch (e) {
       setState(() {
-        err =
-            'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         err =
             'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         loading = false;
@@ -113,10 +105,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     );
 
     final List<Widget> body = [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: searchBar,
-      ),
+      searchBar,
     ];
 
     if (unclassifiedPaymentCards.isNotEmpty) {
@@ -140,12 +129,9 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     return Scaffold(
       body: Padding(
-          padding: EdgeInsetsGeometry.all(8.0),
-          child: SingleChildScrollView(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: body,
-          ))),
+        padding: EdgeInsetsGeometry.all(16.0),
+        child: ListView(children: body),
+      ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -182,7 +168,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                     return AddPaymentDialog();
                   },
                 ).then((_) {
-                  _getPayments();
+                  _getPayments(); // Refresh the UI after adding
                 });
               },
             ),
@@ -196,11 +182,30 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   Card toCard(BuildContext context, Payment payment) {
     return Card(
       child: ListTile(
-        title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+        title: Row(
+          children: [
+            Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+            const Spacer(),
+            const SizedBox(width: 4.0),
+            Text(payment.method.toDisplayString()),
+          ],
+        ),
         subtitle: Row(children: [
-          Text(payment.parent?.fullName ?? 'Unknown'),
+          Row(
+            children: [
+              const Icon(Icons.person, size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.parent?.fullName ?? 'Unclassified'),
+            ],
+          ),
           const Spacer(),
-          Text(payment.date.toLocal().toString().split(' ')[0]),
+          Row(
+            children: [
+              const Icon(Icons.calendar_today, size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.date.toLocal().toString().split(' ')[0]),
+            ],
+          ),
         ]),
         onTap: () async {
           await Navigator.of(context).push(

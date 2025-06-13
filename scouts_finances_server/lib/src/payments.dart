@@ -8,21 +8,11 @@ class PaymentEndpoint extends Endpoint {
     // This will also fetch the parent information for each payment (if it exists)
   }
 
-  Future<List<Payment>> insertPayment(
-      Session session, int amount, String payee, DateTime? date) async {
-    final payment = Payment(
-      amount: amount,
-      method: PaymentMethod.cash, // Default to cash, can be changed later
-      payee: payee,
-      date: date ?? DateTime.now(),
-      reference: "Manual Payment",
-    );
-    // Insert the payment into the database
-    await Payment.db.insert(session, [payment]);
-
-    // Return the updated list of payments
-    return Payment.db.find(session);
-  }
+  Future<List<Payment>> insertPayment(Session session, Payment payment) async =>
+      Payment.db.insert(
+        session,
+        [payment],
+      );
 
   Future<Payment?> getPaymentById(Session session, int paymentId) async {
     // Find the payment by ID
@@ -70,6 +60,7 @@ class PaymentEndpoint extends Endpoint {
 
     await session.db.transaction((transaction) async {
       payment.parentId = parent.id;
+      payment.parent = parent;
       await Payment.db.updateRow(session, payment, transaction: transaction);
 
       for (final reg in clearableRegistrations) {

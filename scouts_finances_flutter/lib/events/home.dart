@@ -112,7 +112,9 @@ class _EventHomeState extends State<EventHome> {
             children: [
               Text('$paid/$total Paid'),
               const Spacer(),
-              Text('${event.date.day}/${event.date.month}/${event.date.year}'),
+              Icon(Icons.calendar_today, size: 14),
+              const SizedBox(width: 4.0),
+              Text(event.date.toLocal().toIso8601String().split('T')[0]),
             ],
           ),
           onTap: () {
@@ -161,9 +163,8 @@ class _EventHomeState extends State<EventHome> {
       ),
     );
 
-    Center body = Center(
-        child: ListView(children: [
-      Padding(padding: EdgeInsets.all(16.0), child: searchBar),
+    ListView body = ListView(children: [
+      searchBar,
       sortSelection,
       ExpansionTile(
           title: const Text('Future Events'),
@@ -195,7 +196,7 @@ class _EventHomeState extends State<EventHome> {
             ),
           ]),
       const SizedBox(height: 128.0),
-    ]));
+    ]);
 
     FloatingActionButton addEventButton = FloatingActionButton(
       heroTag: 'addEvent',
@@ -214,7 +215,10 @@ class _EventHomeState extends State<EventHome> {
     );
 
     return Scaffold(
-      body: body,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: body,
+      ),
       // Padding is required so the buttons don't clip the bottom/sides of the screen
       floatingActionButton: addEventButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
