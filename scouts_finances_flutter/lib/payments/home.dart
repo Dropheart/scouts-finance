@@ -143,9 +143,9 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     return Scaffold(
       body: Padding(
-          padding: EdgeInsetsGeometry.all(16.0),
-          child: ListView(children: body),
-          ),
+        padding: EdgeInsetsGeometry.all(16.0),
+        child: ListView(children: body),
+      ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
