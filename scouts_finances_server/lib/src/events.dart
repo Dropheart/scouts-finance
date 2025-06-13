@@ -14,17 +14,11 @@ class EventEndpoint extends Endpoint {
 
     final allEvents = await Event.db.find(session);
     for (var event in allEvents) {
-      int paidCount = 0;
       final registrations = await EventRegistration.db.find(session,
           where: (t) => t.eventId.equals(event.id),
           include: EventRegistration.include(child: Child.include()));
       int totalCount = registrations.length;
-
-      for (var registration in registrations) {
-        if (registration.paidDate != null) {
-          paidCount++;
-        }
-      }
+      int paidCount = registrations.where((r) => r.paidDate == null).length;
 
       res[event.id!] = (paidCount, totalCount);
     }

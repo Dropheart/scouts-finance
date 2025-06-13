@@ -67,14 +67,11 @@ class _SingleEventState extends State<SingleEvent> {
       return Center(child: Text(errorMessage!));
     }
 
-    final filteredRegistrations = registrations
-        .where((e) =>
-            e.child != null &&
-                (e.child!.firstName
-                    .toLowerCase()
-                    .contains(query.toLowerCase())) ||
-            (e.child!.lastName.toLowerCase().contains(query.toLowerCase())))
-        .toList();
+    final filteredRegistrations = registrations.where((e) {
+      String fullName =
+          "${e.child!.firstName} ${e.child!.lastName}".toLowerCase();
+      return fullName.contains(query.toLowerCase());
+    }).toList();
 
     final children = filteredRegistrations
         .map((e) => (
