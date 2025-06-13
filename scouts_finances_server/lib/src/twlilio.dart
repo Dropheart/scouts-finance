@@ -35,15 +35,32 @@ class TwilioClient {
     required String body,
   }) async {
     final httpClient = http.Client();
+
+    // if greater than two segments, split into multiple messages
+    final messages = <String>[];
+    if (body.length > 160 * 2) {
+      final segments = (body.length / (160 * 2)).ceil();
+      for (int i = 0; i < segments; i++) {
+        final start = i * (160 * 2);
+        final end = start + (160 * 2);
+        messages
+            .add(body.substring(start, end > body.length ? body.length : end));
+      }
+    } else {
+      messages.add(body);
+    }
+
     try {
-      await httpClient.post(Uri.parse(messageUrl), headers: {
-        'Authorization': authCredentials,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }, body: {
-        'From': fromNumber,
-        'To': toNumber,
-        'Body': body,
-      });
+      for (final message in messages) {
+        await httpClient.post(Uri.parse(messageUrl), headers: {
+          'Authorization': authCredentials,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }, body: {
+          'From': fromNumber,
+          'To': toNumber,
+          'Body': message,
+        });
+      }
     } catch (e) {
       print('Failed to send message: $e');
     } finally {
