@@ -45,6 +45,11 @@ class ThemeService extends ChangeNotifier {
         ),
         elevation: 0,
       ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: _secondaryColor.withOpacity(0.8),
+        foregroundColor: _getContrastingTextColor(_secondaryColor.withOpacity(0.8)),
+        elevation: 2.0,
+      ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: _primaryColor,
         indicatorColor: _primaryColor.withOpacity(0.3),
