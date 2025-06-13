@@ -258,6 +258,25 @@ class Endpoints extends _i1.EndpointDispatch {
             params['parent'],
           ),
         ),
+        'getUnpaidEventRegistrations': _i1.MethodConnector(
+          name: 'getUnpaidEventRegistrations',
+          params: {
+            'parentId': _i1.ParameterDescription(
+              name: 'parentId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['parent'] as _i4.ParentEndpoint)
+                  .getUnpaidEventRegistrations(
+            session,
+            params['parentId'],
+          ),
+        ),
       },
     );
     connectors['payment'] = _i1.EndpointConnector(

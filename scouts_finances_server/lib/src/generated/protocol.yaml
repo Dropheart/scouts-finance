@@ -12,6 +12,7 @@ parent:
   - getParentById:
   - addBalance:
   - addParent:
+  - getUnpaidEventRegistrations:
 payment:
   - getPayments:
   - insertPayment:
