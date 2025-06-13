@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:scouts_finances_flutter/widgets/snake_game.dart';
 import 'dart:async';
@@ -258,6 +259,36 @@ class _SettingsHomeState extends State<SettingsHome> {
                     },
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text('Developer Settings',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    )),
+            const SizedBox(height: 16),
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Reset Database'),
+                    subtitle: const Text('Reseed the database with default data'),
+                    trailing: const Icon(Icons.refresh),
+                    onTap: () async {
+                      await client.admin.resetDb();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+            // Footer
+            Center(
+              child: Text(
+                'Scout Finance Manager © 2024 Scout Group Finance Management',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
               ),
             ),
           ],

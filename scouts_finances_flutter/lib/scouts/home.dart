@@ -93,11 +93,6 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           child: searchBar,
         ),
         ...childCards,
-        ElevatedButton(
-            onPressed: () async {
-              await client.admin.resetDb();
-            },
-            child: const Text('Secret debug button (Reset DB)'))
       ],
     );
 
