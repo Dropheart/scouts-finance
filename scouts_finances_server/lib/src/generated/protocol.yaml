@@ -2,16 +2,21 @@ admin:
   - resetDb:
 event:
   - getEvents:
+  - getPaidCounts:
   - getEventById:
   - insertEvent:
   - registerChildForEvent:
   - unpaidEvents:
   - getRegistrationsByChildId:
+  - getRegistrationsByEventId:
 parent:
   - getParents:
   - getParentById:
   - addBalance:
   - addParent:
+  - getUnpaidEventRegistrations:
+  - remindParent:
+  - remindAllParents:
 payment:
   - getPayments:
   - insertPayment:

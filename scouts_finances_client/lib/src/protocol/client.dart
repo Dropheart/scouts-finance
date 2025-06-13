@@ -47,6 +47,13 @@ class EndpointEvent extends _i1.EndpointRef {
         {},
       );
 
+  _i2.Future<Map<int, (int, int)>> getPaidCounts() =>
+      caller.callServerEndpoint<Map<int, (int, int)>>(
+        'event',
+        'getPaidCounts',
+        {},
+      );
+
   _i2.Future<(_i3.Event, List<_i4.EventRegistration>)> getEventById(int id) =>
       caller.callServerEndpoint<(_i3.Event, List<_i4.EventRegistration>)>(
         'event',
@@ -96,6 +103,14 @@ class EndpointEvent extends _i1.EndpointRef {
         'getRegistrationsByChildId',
         {'childId': childId},
       );
+
+  _i2.Future<List<_i4.EventRegistration>> getRegistrationsByEventId(
+          int eventId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'event',
+        'getRegistrationsByEventId',
+        {'eventId': eventId},
+      );
 }
 
 /// {@category Endpoint}
@@ -138,6 +153,27 @@ class EndpointParent extends _i1.EndpointRef {
         'addParent',
         {'parent': parent},
       );
+
+  _i2.Future<List<_i4.EventRegistration>> getUnpaidEventRegistrations(
+          int parentId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'parent',
+        'getUnpaidEventRegistrations',
+        {'parentId': parentId},
+      );
+
+  _i2.Future<void> remindParent(int parentId) =>
+      caller.callServerEndpoint<void>(
+        'parent',
+        'remindParent',
+        {'parentId': parentId},
+      );
+
+  _i2.Future<void> remindAllParents() => caller.callServerEndpoint<void>(
+        'parent',
+        'remindAllParents',
+        {},
+      );
 }
 
 /// {@category Endpoint}
@@ -154,19 +190,11 @@ class EndpointPayment extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<List<_i6.Payment>> insertPayment(
-    int amount,
-    String payee,
-    DateTime? date,
-  ) =>
+  _i2.Future<List<_i6.Payment>> insertPayment(_i6.Payment payment) =>
       caller.callServerEndpoint<List<_i6.Payment>>(
         'payment',
         'insertPayment',
-        {
-          'amount': amount,
-          'payee': payee,
-          'date': date,
-        },
+        {'payment': payment},
       );
 
   _i2.Future<_i6.Payment?> getPaymentById(int paymentId) =>

@@ -85,6 +85,10 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
         ),
       );
     }
+
+    double sumOfTransactions =
+        transactions.fold(0.0, (sum, tx) => sum + tx.amount);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -124,7 +128,9 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
           ),
         ),
         Text(
-          'Balance: £${transactions.fold(0.0, (sum, tx) => sum + tx.amount).toStringAsFixed(2)}',
+          sumOfTransactions >= 0
+              ? 'In Credit: £${sumOfTransactions.toStringAsFixed(2)}'
+              : 'Total Due: £${(-sumOfTransactions).toStringAsFixed(2)}',
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ],

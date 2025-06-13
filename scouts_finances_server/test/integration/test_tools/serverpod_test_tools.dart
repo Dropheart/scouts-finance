@@ -15,9 +15,9 @@ import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:scouts_finances_server/src/generated/events.dart' as _i4;
+import 'package:scouts_finances_server/src/generated/protocol.dart' as _i5;
 import 'package:scouts_finances_server/src/generated/event_registration.dart'
-    as _i5;
-import 'package:scouts_finances_server/src/generated/protocol.dart' as _i6;
+    as _i6;
 import 'package:scouts_finances_server/src/generated/parent.dart' as _i7;
 import 'package:scouts_finances_server/src/generated/payment.dart' as _i8;
 import 'package:scouts_finances_server/src/generated/child.dart' as _i9;
@@ -220,7 +220,37 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Future<(_i4.Event, List<_i5.EventRegistration>)> getEventById(
+  _i3.Future<Map<int, (int, int)>> getPaidCounts(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'event',
+        method: 'getPaidCounts',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'event',
+          methodName: 'getPaidCounts',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await _localCallContext.method
+            .call(
+              _localUniqueSession,
+              _localCallContext.arguments,
+            )
+            .then((record) =>
+                _i5.Protocol().deserialize<Map<int, (int, int)>>(record));
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<(_i4.Event, List<_i6.EventRegistration>)> getEventById(
     _i1.TestSessionBuilder sessionBuilder,
     int id,
   ) async {
@@ -243,8 +273,8 @@ class _EventEndpoint {
               _localUniqueSession,
               _localCallContext.arguments,
             )
-            .then((record) => _i6.Protocol()
-                .deserialize<(_i4.Event, List<_i5.EventRegistration>)>(record));
+            .then((record) => _i5.Protocol()
+                .deserialize<(_i4.Event, List<_i6.EventRegistration>)>(record));
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -287,7 +317,7 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Future<_i5.EventRegistration> registerChildForEvent(
+  _i3.Future<_i6.EventRegistration> registerChildForEvent(
     _i1.TestSessionBuilder sessionBuilder,
     int eventId,
     int childId,
@@ -312,7 +342,7 @@ class _EventEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.EventRegistration>);
+        ) as _i3.Future<_i6.EventRegistration>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -320,7 +350,7 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.EventRegistration>> unpaidEvents(
+  _i3.Future<List<_i6.EventRegistration>> unpaidEvents(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -339,7 +369,7 @@ class _EventEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.EventRegistration>>);
+        ) as _i3.Future<List<_i6.EventRegistration>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -347,7 +377,7 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.EventRegistration>> getRegistrationsByChildId(
+  _i3.Future<List<_i6.EventRegistration>> getRegistrationsByChildId(
     _i1.TestSessionBuilder sessionBuilder,
     int childId,
   ) async {
@@ -368,7 +398,36 @@ class _EventEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.EventRegistration>>);
+        ) as _i3.Future<List<_i6.EventRegistration>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i6.EventRegistration>> getRegistrationsByEventId(
+    _i1.TestSessionBuilder sessionBuilder,
+    int eventId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'event',
+        method: 'getRegistrationsByEventId',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'event',
+          methodName: 'getRegistrationsByEventId',
+          parameters: _i1.testObjectToJson({'eventId': eventId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i6.EventRegistration>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -504,6 +563,91 @@ class _ParentEndpoint {
       }
     });
   }
+
+  _i3.Future<List<_i6.EventRegistration>> getUnpaidEventRegistrations(
+    _i1.TestSessionBuilder sessionBuilder,
+    int parentId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'parent',
+        method: 'getUnpaidEventRegistrations',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'parent',
+          methodName: 'getUnpaidEventRegistrations',
+          parameters: _i1.testObjectToJson({'parentId': parentId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i6.EventRegistration>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> remindParent(
+    _i1.TestSessionBuilder sessionBuilder,
+    int parentId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'parent',
+        method: 'remindParent',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'parent',
+          methodName: 'remindParent',
+          parameters: _i1.testObjectToJson({'parentId': parentId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> remindAllParents(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'parent',
+        method: 'remindAllParents',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'parent',
+          methodName: 'remindAllParents',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _PaymentEndpoint {
@@ -545,9 +689,7 @@ class _PaymentEndpoint {
 
   _i3.Future<List<_i8.Payment>> insertPayment(
     _i1.TestSessionBuilder sessionBuilder,
-    int amount,
-    String payee,
-    DateTime? date,
+    _i8.Payment payment,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -560,11 +702,7 @@ class _PaymentEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'payment',
           methodName: 'insertPayment',
-          parameters: _i1.testObjectToJson({
-            'amount': amount,
-            'payee': payee,
-            'date': date,
-          }),
+          parameters: _i1.testObjectToJson({'payment': payment}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

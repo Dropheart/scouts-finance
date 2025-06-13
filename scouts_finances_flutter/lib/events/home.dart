@@ -4,6 +4,8 @@ import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/events/add.dart';
 
+typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
+
 class EventHome extends StatefulWidget {
   const EventHome({super.key});
 
@@ -13,12 +15,14 @@ class EventHome extends StatefulWidget {
 
 class _EventHomeState extends State<EventHome> {
   late List<Event> events;
+  late EventPaidCounts paidCounts; // eventId -> (paidCount, totalCount)
   String? errorMessage;
-  bool loading = true;
+  int loading = 2;
   final sorts = [
     'Upcoming First',
     'Upcoming Last',
-    /*'Most Paid', 'Least Paid' */
+    'Paid count',
+    'Unpaid count',
   ];
   int sortIndex = 0;
   String query = '';
@@ -28,26 +32,41 @@ class _EventHomeState extends State<EventHome> {
       final result = await client.event.getEvents();
       setState(() {
         events = result;
-        loading = false;
       });
     } catch (e) {
       setState(() {
         errorMessage =
             'Failed to load events. Are you connected to the internet?';
-        loading = false;
       });
     }
+    loading--;
+  }
+
+  void _getPaidCounts() async {
+    try {
+      final result = await client.event.getPaidCounts();
+      setState(() {
+        paidCounts = result;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage =
+            'Failed to load paid counts. Are you connected to the internet?';
+      });
+    }
+    loading--;
   }
 
   @override
   void initState() {
     super.initState();
     _getEvents();
+    _getPaidCounts();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
+    if (loading > 0) {
       return const Center(child: CircularProgressIndicator());
     }
     if (errorMessage != null) {
@@ -73,23 +92,31 @@ class _EventHomeState extends State<EventHome> {
           return a.date.compareTo(b.date);
         // Paid count tbd
         case 2: // Most Paid
-        // return b.paidCount.compareTo(a.paidCount);
+          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+          return paidB.compareTo(paidA); // Sort by most paid
         case 3: // Least Paid
-        // return a.paidCount.compareTo(b.paidCount);
+          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+          return paidA.compareTo(paidB); // Sort by least paid
         default:
           return 0; // No sorting
       }
     });
 
     List<Card> eventCards = filteredEvents.map((event) {
+      final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+
       return Card(
         child: ListTile(
           title: Text(event.name),
           subtitle: Row(
             children: [
-              Text('${event.id}/30 Paid'),
+              Text('$paid/$total Paid'),
               const Spacer(),
-              Text('${event.date.day}/${event.date.month}/${event.date.year}'),
+              Icon(Icons.calendar_today, size: 14),
+              const SizedBox(width: 4.0),
+              Text(event.date.toLocal().toIso8601String().split('T')[0]),
             ],
           ),
           onTap: () {
@@ -138,9 +165,8 @@ class _EventHomeState extends State<EventHome> {
       ),
     );
 
-    Center body = Center(
-        child: ListView(children: [
-      Padding(padding: EdgeInsets.all(16.0), child: searchBar),
+    ListView body = ListView(children: [
+      searchBar,
       sortSelection,
       ExpansionTile(
           title: const Text('Future Events'),
@@ -151,7 +177,7 @@ class _EventHomeState extends State<EventHome> {
       // ...eventCards,
       ExpansionTile(
           title: const Text('Past Events'),
-          initiallyExpanded: true,
+          initiallyExpanded: false,
           shape: const Border(),
           children: [
             Card(
@@ -172,7 +198,7 @@ class _EventHomeState extends State<EventHome> {
             ),
           ]),
       const SizedBox(height: 128.0),
-    ]));
+    ]);
 
     FloatingActionButton addEventButton = FloatingActionButton(
       heroTag: 'addEvent',
@@ -191,7 +217,10 @@ class _EventHomeState extends State<EventHome> {
     );
 
     return Scaffold(
-      body: body,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: body,
+      ),
       // Padding is required so the buttons don't clip the bottom/sides of the screen
       floatingActionButton: addEventButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

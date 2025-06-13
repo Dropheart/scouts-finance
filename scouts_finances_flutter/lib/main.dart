@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   ];
   static final List<String> pageTitles = [
     'Events',
-    'Payments',
+    'Income',
     'Scouts',
     'Parents',
   ];
@@ -83,8 +83,8 @@ class _HomePageState extends State<HomePage> {
       label: 'Events',
     ),
     const NavigationDestination(
-      icon: Icon(Icons.attach_money),
-      label: 'Payments',
+      icon: Icon(Icons.currency_pound),
+      label: 'Income',
     ),
     const NavigationDestination(
       icon: Icon(Icons.hiking),

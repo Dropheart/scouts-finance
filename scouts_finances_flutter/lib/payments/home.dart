@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/parent.dart';
+import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/payments/single_payment.dart';
@@ -17,23 +19,16 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   String? err;
   bool loading = true;
   String query = '';
-  final searchBy = [
-    'payee',
-    'amount',
-    'date',
-  ];
-  int searchByIndex = 0;
 
   void _getPayments() async {
     try {
       final result = await client.payment.getPayments();
 
-      final classifiedPayments =
-          result.where((p) => p.parentId != null).toList();
+      final classifiedPayments = result.where((p) => p.parent != null).toList();
       classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       final unclassifiedPayments =
-          result.where((p) => p.parentId == null).toList();
+          result.where((p) => p.parent == null).toList();
       unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
@@ -43,8 +38,6 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       });
     } catch (e) {
       setState(() {
-        err =
-            'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         err =
             'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
         loading = false;
@@ -72,41 +65,31 @@ class _PaymentsHomeState extends State<PaymentsHome> {
                   style: const TextStyle(color: Colors.red, fontSize: 16))));
     }
 
-    List<Card> unclassifiedPaymentCards = unclassifiedPayments.map((payment) {
+    // Filter payments based on the search query
+    List<Payment> filteredUnclassifiedPayments = unclassifiedPayments
+        .where((payment) =>
+            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
+            (payment.amount / 100).toString().contains(query) ||
+            payment.date.toLocal().toString().contains(query))
+        .toList();
+
+    List<Card> unclassifiedPaymentCards =
+        filteredUnclassifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
-    // // Filter payments by query
-    // List<Payment> filteredUnclassifiedPayments = unclassifiedPayments.where((payment) {
-    //   switch (searchBy[searchByIndex]) {
-    //     case 'payee':
-    //       return payment.payee.toLowerCase().contains(query.toLowerCase());
-    //     case 'amount':
-    //       return (payment.amount / 100).toString().contains(query);
-    //     case 'date':
-    //       return payment.date.toLocal().toString().contains(query);
-    //     default:
-    //       return false;
-    //   }
-    // }).toList();
+    // Filter payments based on the search query
+    List<Payment> filteredClassifiedPayments = classifiedPayments
+        .where((payment) =>
+            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
+            payment.amount.toString().contains(query) ||
+            payment.date.toLocal().toString().contains(query))
+        .toList();
 
-    List<Card> classifiedPaymentCards = classifiedPayments.map((payment) {
+    List<Card> classifiedPaymentCards =
+        filteredClassifiedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
-
-    // // Filter payments by query
-    // List<Payment> filteredClassifiedPayments = unclassifiedPayments.where((payment) {
-    //   switch (searchBy[searchByIndex]) {
-    //     case 'payee':
-    //       return payment.payee.toLowerCase().contains(query.toLowerCase());
-    //     case 'amount':
-    //       return (payment.amount / 100).toString().contains(query);
-    //     case 'date':
-    //       return payment.date.toLocal().toString().contains(query);
-    //     default:
-    //       return false;
-    //   }
-    // }).toList();
 
     SearchBar searchBar = SearchBar(
       onChanged: (String value) {
@@ -118,53 +101,28 @@ class _PaymentsHomeState extends State<PaymentsHome> {
         padding: const EdgeInsets.only(left: 8.0),
         child: const Icon(Icons.search),
       ),
-      hintText: 'Search payments',
-    );
-
-    Widget sortSelection = Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Row(
-        children: [
-          Text("Search by:"),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: DropdownButton<int>(
-              value: searchByIndex,
-              items: searchBy.map((value) {
-                return DropdownMenuItem<int>(
-                  value: searchBy.indexOf(value),
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (int? newValue) {
-                setState(() {
-                  searchByIndex = newValue!;
-                });
-              },
-            ),
-          ),
-        ],
-      ),
+      hintText: 'Search by payee, amount, date...',
     );
 
     final List<Widget> body = [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: searchBar,
-      ),
-      sortSelection,
+      searchBar,
     ];
+
     if (unclassifiedPaymentCards.isNotEmpty) {
-      body.add(Text(
-          "Unclassified Payments - ${unclassifiedPaymentCards.length}",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
-      body.addAll(unclassifiedPaymentCards);
+      body.add(ExpansionTile(
+          title: Text(
+              'Unclassified Payments - ${unclassifiedPaymentCards.length}'),
+          initiallyExpanded: true,
+          shape: const Border(),
+          children: unclassifiedPaymentCards));
     }
 
     if (classifiedPaymentCards.isNotEmpty) {
-      body.add(Text("Classified Payments - ${classifiedPaymentCards.length}",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
-      body.addAll(classifiedPaymentCards);
+      body.add(ExpansionTile(
+          title: Text('Classified Payments - ${classifiedPaymentCards.length}'),
+          initiallyExpanded: false,
+          shape: const Border(),
+          children: classifiedPaymentCards));
     }
 
     body.add(const SizedBox(height: 128.0));
@@ -197,11 +155,30 @@ class _PaymentsHomeState extends State<PaymentsHome> {
   Card toCard(BuildContext context, Payment payment) {
     return Card(
       child: ListTile(
-        title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+        title: Row(
+          children: [
+            Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
+            const Spacer(),
+            const SizedBox(width: 4.0),
+            Text(payment.method.toDisplayString()),
+          ],
+        ),
         subtitle: Row(children: [
-          Text(payment.payee),
+          Row(
+            children: [
+              const Icon(Icons.person, size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.parent?.fullName ?? 'Unclassified'),
+            ],
+          ),
           const Spacer(),
-          Text(payment.date.toLocal().toString().split(' ')[0]),
+          Row(
+            children: [
+              const Icon(Icons.calendar_today, size: 14.0),
+              const SizedBox(width: 4.0),
+              Text(payment.date.toLocal().toString().split(' ')[0]),
+            ],
+          ),
         ]),
         onTap: () async {
           await Navigator.of(context).push(

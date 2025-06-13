@@ -16,6 +16,8 @@ class EventAddParticipant extends StatefulWidget {
 
 class _EventAddParticipantState extends State<EventAddParticipant> {
   late List<Child> allChildren;
+  int loading = 2;
+  String? err;
   late List<Child> eventChildren;
   List<Child> selectedChildren = [];
 
@@ -30,6 +32,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         allChildren = [];
       });
     }
+    loading--;
   }
 
   void _getEventChildren() async {
@@ -38,6 +41,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     setState(() {
       eventChildren = registrations.map((e) => e.child!).toList();
     });
+    loading--;
   }
 
   @override
@@ -47,20 +51,20 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     _getEventChildren();
   }
 
-  // void _submit() {
-  //   if (selectedChildren.isNotEmpty) {
-  //     selectedChildren.map((child) {
-  //       if (child.id != null) {
-  //         return client.event.registerChildForEvent(widget.eventId, child.id!);
-  //       }
-  //       return null;
-  //     }).toList();
-  //     Navigator.of(context).pop(selectedChildren);
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
+    if (loading > 0) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (err != null) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(err!,
+              style: const TextStyle(color: Colors.red, fontSize: 16)),
+        ),
+      );
+    }
     return SearchChoices.multiple(
       items: allChildren
           .where((child) => !eventChildren.any((e) => e.id == child.id))
