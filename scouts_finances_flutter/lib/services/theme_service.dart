@@ -138,25 +138,24 @@ class ThemeService extends ChangeNotifier {
         brightness: _isLightBackground ? Brightness.light : Brightness.dark,
       );
       return ThemeData(
-        colorScheme: scheme,
-        useMaterial3: true,
-        cardTheme: CardThemeData(
-          elevation: 1.0,
-        ),
-        searchBarTheme: SearchBarThemeData(
-          elevation: const WidgetStatePropertyAll(0.0),
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: scheme.primary,
-          foregroundColor: scheme.onPrimary,
-          titleTextStyle: TextStyle(
-            color: scheme.onPrimary,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+          colorScheme: scheme,
+          useMaterial3: true,
+          cardTheme: CardThemeData(
+            elevation: 1.0,
           ),
-          elevation: 0,
-        )
-      );
+          searchBarTheme: SearchBarThemeData(
+            elevation: const WidgetStatePropertyAll(0.0),
+          ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: scheme.primary,
+            foregroundColor: scheme.onPrimary,
+            titleTextStyle: TextStyle(
+              color: scheme.onPrimary,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            elevation: 0,
+          ));
     }
   }
 

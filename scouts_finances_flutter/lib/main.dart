@@ -128,9 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         centerTitle: false,
-        actions: [
-          OptionsMenu(selectedIndex: currentPageIndex)
-        ],
+        actions: [OptionsMenu(selectedIndex: currentPageIndex)],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,

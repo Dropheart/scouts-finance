@@ -89,8 +89,10 @@ class _SnakeGameState extends State<SnakeGame> {
     }
 
     // Check wall collision
-    if (newHead.x < 0 || newHead.x >= boardSize || 
-        newHead.y < 0 || newHead.y >= boardSize) {
+    if (newHead.x < 0 ||
+        newHead.x >= boardSize ||
+        newHead.y < 0 ||
+        newHead.y >= boardSize) {
       _endGame();
       return;
     }
@@ -139,7 +141,8 @@ class _SnakeGameState extends State<SnakeGame> {
     final isDarkBackground = backgroundColor.computeLuminance() < 0.5;
     final borderColor = isDarkBackground ? Colors.white : Colors.black;
     final textColor = isDarkBackground ? Colors.white : Colors.black;
-    final gridColor = isDarkBackground ? Colors.grey.shade800 : Colors.grey.shade200;
+    final gridColor =
+        isDarkBackground ? Colors.grey.shade800 : Colors.grey.shade200;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -166,7 +169,8 @@ class _SnakeGameState extends State<SnakeGame> {
                 if (!gameRunning && !gameOver)
                   Text(
                     'Tap ▶️ to start or use arrow buttons to control',
-                    style: TextStyle(color: textColor.withOpacity(0.6), fontSize: 12),
+                    style: TextStyle(
+                        color: textColor.withOpacity(0.6), fontSize: 12),
                   ),
               ],
             ),
@@ -192,7 +196,9 @@ class _SnakeGameState extends State<SnakeGame> {
 
                     Color cellColor = gridColor;
                     if (snake.contains(point)) {
-                      cellColor = snake.first == point ? Colors.green : Colors.lightGreen;
+                      cellColor = snake.first == point
+                          ? Colors.green
+                          : Colors.lightGreen;
                     } else if (point == food) {
                       cellColor = Colors.red;
                     }
@@ -239,7 +245,8 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.up);
                       },
-                      icon: Icon(Icons.keyboard_arrow_up, color: textColor, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_up,
+                          color: textColor, size: 32),
                     ),
                   ],
                 ),
@@ -251,7 +258,8 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.left);
                       },
-                      icon: Icon(Icons.keyboard_arrow_left, color: textColor, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_left,
+                          color: textColor, size: 32),
                     ),
                     const SizedBox(width: 32),
                     IconButton(
@@ -259,7 +267,8 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.right);
                       },
-                      icon: Icon(Icons.keyboard_arrow_right, color: textColor, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_right,
+                          color: textColor, size: 32),
                     ),
                   ],
                 ),
@@ -271,7 +280,8 @@ class _SnakeGameState extends State<SnakeGame> {
                         if (!gameRunning && !gameOver) _startGame();
                         _changeDirection(Direction.down);
                       },
-                      icon: Icon(Icons.keyboard_arrow_down, color: textColor, size: 32),
+                      icon: Icon(Icons.keyboard_arrow_down,
+                          color: textColor, size: 32),
                     ),
                   ],
                 ),
