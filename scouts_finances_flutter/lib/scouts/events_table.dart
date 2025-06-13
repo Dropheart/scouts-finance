@@ -3,15 +3,15 @@ import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
 
-class UnpaidEventsTable extends StatefulWidget {
-  final Parent parent; // The parent in question
-  const UnpaidEventsTable({super.key, required this.parent});
+class ChildEventsTable extends StatefulWidget {
+  final Child child; // The child in question
+  const ChildEventsTable({super.key, required this.child});
 
   @override
-  State<UnpaidEventsTable> createState() => _UnpaidEventsTableState();
+  State<ChildEventsTable> createState() => _ChildEventsTableState();
 }
 
-class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
+class _ChildEventsTableState extends State<ChildEventsTable> {
   // Example data, replace with your actual data source
   late final List<EventRegistration> registrations;
   bool loading = true;
@@ -25,9 +25,9 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
   void _fetchRegistrations() async {
     try {
       final allRegs =
-          await client.parent.getUnpaidEventRegistrations(widget.parent.id!);
+          await client.event.getRegistrationsByChildId(widget.child.id!);
       setState(() {
-        registrations = allRegs.where((r) => r.paidDate == null).toList();
+        registrations = allRegs;
         loading = false;
       });
     } catch (e) {
@@ -51,7 +51,7 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Text(
-            'No unpaid events found for ${widget.parent.fullName}.',
+            'No events found for ${widget.child.fullName}',
             style: const TextStyle(fontSize: 16),
           ),
         ),
@@ -74,7 +74,6 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
                   columns: const [
                     DataColumn(label: Text('Date')),
                     DataColumn(label: Text('Event')),
-                    DataColumn(label: Text('Child')),
                     DataColumn(label: Text('Amount (£)')),
                   ],
                   rows: registrations
@@ -86,7 +85,6 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
                                 .toIso8601String()
                                 .split('T')[0])),
                             DataCell(Text(r.event!.name)),
-                            DataCell(Text(r.child!.firstName)),
                             DataCell(
                                 Text((r.event!.cost / 100).toStringAsFixed(2))),
                           ],

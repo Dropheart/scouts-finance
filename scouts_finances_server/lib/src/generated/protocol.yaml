@@ -27,3 +27,4 @@ payment:
 scouts:
   - getChildren:
   - getChildrenOfParent:
+  - getChildById:

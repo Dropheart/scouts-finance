@@ -12,4 +12,10 @@ class ScoutsEndpoint extends Endpoint {
     return await Child.db
         .find(session, where: (c) => c.parentId.equals(parentId));
   }
+
+  Future<Child?> getChildById(Session session, int id) async {
+    // Fetch a specific child by ID
+    return await Child.db.findById(session, id,
+        include: Child.include(parent: Parent.include()));
+  }
 }
