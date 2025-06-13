@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/parent.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/payments/single_payment.dart';
@@ -155,16 +156,20 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       sortSelection,
     ];
     if (unclassifiedPaymentCards.isNotEmpty) {
-      body.add(Text(
-          "Unclassified Payments - ${unclassifiedPaymentCards.length}",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
-      body.addAll(unclassifiedPaymentCards);
+      body.add(ExpansionTile(
+          title: Text(
+              'Unclassified Payments - ${unclassifiedPaymentCards.length}'),
+          initiallyExpanded: true,
+          shape: const Border(),
+          children: unclassifiedPaymentCards));
     }
 
     if (classifiedPaymentCards.isNotEmpty) {
-      body.add(Text("Classified Payments - ${classifiedPaymentCards.length}",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
-      body.addAll(classifiedPaymentCards);
+      body.add(ExpansionTile(
+          title: Text('Classified Payments - ${classifiedPaymentCards.length}'),
+          initiallyExpanded: false,
+          shape: const Border(),
+          children: classifiedPaymentCards));
     }
 
     body.add(const SizedBox(height: 128.0));
@@ -229,7 +234,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       child: ListTile(
         title: Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
         subtitle: Row(children: [
-          Text(payment.payee),
+          Text(payment.parent?.fullName ?? 'Unclassified'),
           const Spacer(),
           Text(payment.date.toLocal().toString().split(' ')[0]),
         ]),
