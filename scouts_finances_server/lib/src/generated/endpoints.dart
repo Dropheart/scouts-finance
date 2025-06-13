@@ -168,6 +168,31 @@ class Endpoints extends _i1.EndpointDispatch {
             params['childId'],
           ),
         ),
+        'registerChildrenForEvent': _i1.MethodConnector(
+          name: 'registerChildrenForEvent',
+          params: {
+            'eventId': _i1.ParameterDescription(
+              name: 'eventId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'childIds': _i1.ParameterDescription(
+              name: 'childIds',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .registerChildrenForEvent(
+            session,
+            params['eventId'],
+            params['childIds'],
+          ),
+        ),
         'unpaidEvents': _i1.MethodConnector(
           name: 'unpaidEvents',
           params: {},

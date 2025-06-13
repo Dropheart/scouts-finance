@@ -20,6 +20,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   String? err;
   late List<Child> eventChildren;
   List<Child> selectedChildren = [];
+  List<int> selectedChildrenIndices = [];
 
   void _getChildren() async {
     try {
@@ -65,18 +66,26 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         ),
       );
     }
-    return SearchChoices.multiple(
-      items: allChildren
-          .where((child) => !eventChildren.any((e) => e.id == child.id))
+
+    final unregisteredChildren = allChildren
+        .where((child) => !eventChildren.any((e) => e.id == child.id))
+        .toList();
+
+    final choices = SearchChoices.multiple(
+      selectedItems: selectedChildrenIndices,
+      items: unregisteredChildren
           .map((child) => DropdownMenuItem<Child>(
                 value: child,
                 child: Text('${child.firstName} ${child.lastName}'),
               ))
           .toList(),
-      hint: "Register Scouts",
-      onChanged: (value) {
+      hint: "Select Scouts",
+      onChanged: (List selections) {
         setState(() {
-          selectedChildren = value ?? [];
+          selectedChildrenIndices = selections.cast<int>();
+          selectedChildren = unregisteredChildren.where((child) {
+            return selections.contains(unregisteredChildren.indexOf(child));
+          }).toList();
         });
       },
       closeButton: (selectedChildren) {
@@ -85,17 +94,57 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
             : "${selectedChildren.length} selected");
       },
       isExpanded: true,
-
-      // actions: [
-      //   TextButton(
-      //     onPressed: () => Navigator.of(context).pop(),
-      //     child: const Text("Cancel"),
-      //   ),
-      //   ElevatedButton(
-      //     onPressed: _submit,
-      //     child: const Text("Add Participants"),
-      //   ),
-      // ],
+      selectedAggregateWidgetFn: (List selected) => Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            selected.isEmpty
+                ? "None selected"
+                : "${selected.length} scout${selected.length > 1 ? 's' : ''} selected",
+          )),
     );
+
+    // Confirm button, greyed out if no children selected
+    IconButton confirmButton = IconButton(
+      onPressed: selectedChildren.isEmpty
+          ? null
+          : () async {
+              try {
+                await client.event.registerChildrenForEvent(widget.eventId,
+                    selectedChildren.map((c) => c.id!).toList());
+                setState(() {
+                  selectedChildrenIndices = [];
+                  selectedChildren = [];
+                  widget.closeFn();
+                });
+              } catch (e) {
+                setState(() {
+                  err = 'Failed to add participants: $e';
+                });
+              }
+            },
+      icon: const Icon(Icons.check),
+      tooltip: 'Confirm',
+    );
+
+    // Cancel button
+    IconButton cancelButton = IconButton(
+      onPressed: selectedChildren.isEmpty
+          ? null
+          : () {
+              setState(() {
+                selectedChildrenIndices = [];
+                selectedChildren = [];
+                widget.closeFn();
+              });
+            },
+      icon: const Icon(Icons.cancel),
+      tooltip: 'Cancel',
+    );
+
+    return SizedBox(
+        width: double.infinity,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Expanded(child: choices), confirmButton, cancelButton]));
   }
 }
