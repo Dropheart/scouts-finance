@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:scouts_finances_flutter/events/home.dart';
 import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
+import 'package:scouts_finances_flutter/popups.dart';
 import 'package:scouts_finances_flutter/scouts/home.dart';
 import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
@@ -74,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
     'Payments',
     'Scouts',
     'Parents',
-    'Settings',
   ];
 
   static final List<NavigationDestination> destinations = [
@@ -93,10 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
     const NavigationDestination(
       icon: Icon(Icons.supervisor_account),
       label: 'Parents',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.settings),
-      label: 'Settings',
     ),
   ];
 
@@ -132,6 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         centerTitle: false,
+        actions: [
+          OptionsMenu(selectedIndex: currentPageIndex)
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,
