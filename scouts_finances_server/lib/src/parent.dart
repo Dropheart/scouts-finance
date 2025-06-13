@@ -45,7 +45,7 @@ class ParentEndpoint extends Endpoint {
     final buffer = StringBuffer();
     buffer.writeln('Dear ${parent.firstName},');
     buffer.writeln(
-        'This message is a reminder for the upcoming events your child(ren) registered for.');
+        'This message is a reminder for the upcoming events your child(ren) registered for.\n');
 
     final reminder = await eventRemindersForParent(session, parent);
 
@@ -57,7 +57,9 @@ class ParentEndpoint extends Endpoint {
 
     buffer.writeln('Thank you for your attention!');
 
-    TwilioClient().sendMessage(body: reminder);
+    final message = buffer.toString();
+
+    TwilioClient().sendMessage(body: message);
   }
 
   Future<void> remindAllParents(Session session) async {

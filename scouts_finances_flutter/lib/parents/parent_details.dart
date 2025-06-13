@@ -140,6 +140,14 @@ class _ParentDetailsState extends State<ParentDetails> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           UnpaidEventsTable(parent: parent),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            icon: Icon(Icons.send),
+            label: Text('Send registered events reminder'),
+            onPressed: () {
+              client.parent.remindParent(parent.id!);
+            },
+          ),
         ],
       );
     }
