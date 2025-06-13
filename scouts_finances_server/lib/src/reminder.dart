@@ -119,4 +119,3 @@ Future<String> eventRemindersForParent(Session session, Parent parent) async {
 
   return buffer.toString();
 }
-

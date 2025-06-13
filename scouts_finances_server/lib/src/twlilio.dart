@@ -9,7 +9,7 @@ String toAuthCredentials(String accountSid, String authToken) {
 
 class TwilioClient {
   static final TwilioClient _instance = TwilioClient._internal();
-  static final env = DotEnv()..load();
+  static final env = DotEnv(includePlatformEnvironment: true)..load();
 
   final String accountSid = env['TWILIO_ACCOUNT_SID'] ?? '';
   final String authToken = env['TWILIO_AUTH_TOKEN'] ?? '';
