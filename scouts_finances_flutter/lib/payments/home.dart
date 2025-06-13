@@ -113,6 +113,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
           title: Text(
               'Unclassified Payments - ${unclassifiedPaymentCards.length}'),
           initiallyExpanded: true,
+          controlAffinity: ListTileControlAffinity.leading,
           shape: const Border(),
           children: unclassifiedPaymentCards));
     }

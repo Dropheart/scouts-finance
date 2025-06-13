@@ -28,7 +28,7 @@ class _ParentHomeState extends State<ParentHome> {
       final result = await client.parent.getParents();
       final outstandingRegs = await client.event.unpaidEvents();
       setState(() {
-        allParents = result;
+        allParents =   result;
         outstandingParents = outstandingRegs.fold([], (acc, reg) {
           final parent = reg.child!.parent!;
           // Check if parent already exists in acc
@@ -148,7 +148,8 @@ class _ParentHomeState extends State<ParentHome> {
           outstandingCards.isEmpty
               ? const SizedBox.shrink()
               : ExpansionTile(
-                  title: const Text('Outstanding Parents',
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text('Payments Outstanding',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   tilePadding: EdgeInsets.zero,
