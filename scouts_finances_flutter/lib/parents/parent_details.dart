@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/extensions/parent.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/shared/parent_transactions.dart';
+import 'package:scouts_finances_flutter/shared/unpaid_events.dart';
 
 class ParentDetails extends StatefulWidget {
   final int parentId;
@@ -114,36 +114,18 @@ class _ParentDetailsState extends State<ParentDetails> {
           const SizedBox(height: 8),
           Row(
             children: [
-              Text('Children:', style: const TextStyle(fontSize: 16)),
+              Text('Children:',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
               ...children.map((child) => TextButton(
-                  onPressed: () => {},
-                  child: Text('${child.firstName} ${child.lastName}'))),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Not Implemented'),
-                      content: const Text(
-                          'Editing parent details is not implemented yet.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('OK'),
-                        ),
-                      ],
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                  );
-                },
-                child: const Text('Edit Parent Details'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(onPressed: () => {}, child: Text('Delete')),
+                    onPressed: () => {},
+                    child: Text('${child.firstName} ${child.lastName}'),
+                  )),
             ],
           ),
           const SizedBox(height: 16),
@@ -153,12 +135,49 @@ class _ParentDetailsState extends State<ParentDetails> {
           ParentTransactionTable(
             parent: parent,
           ),
+          const SizedBox(height: 16),
+          const Text('Unpaid Events:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          UnpaidEventsTable(parent: parent),
         ],
       );
     }
     return Scaffold(
-      appBar:
-          AppBar(title: Text(loading ? 'Loading parent...' : parent.fullName)),
+      appBar: AppBar(
+        title: Text(loading
+            ? 'Loading parent...'
+            : "${parent.firstName} ${parent.lastName}"),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'switchGroup',
+                child: const Row(
+                  children: [
+                    Icon(Icons.edit),
+                    SizedBox(width: 8),
+                    Text('Edit parent details'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: const Row(
+                  children: [
+                    Icon(Icons.delete),
+                    SizedBox(width: 8),
+                    Text('Delete parent'),
+                  ],
+                ),
+              )
+            ],
+            onSelected: (value) {},
+            position: PopupMenuPosition.under,
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: body,

@@ -146,6 +146,14 @@ class EndpointParent extends _i1.EndpointRef {
         'addParent',
         {'parent': parent},
       );
+
+  _i2.Future<List<_i4.EventRegistration>> getUnpaidEventRegistrations(
+          int parentId) =>
+      caller.callServerEndpoint<List<_i4.EventRegistration>>(
+        'parent',
+        'getUnpaidEventRegistrations',
+        {'parentId': parentId},
+      );
 }
 
 /// {@category Endpoint}
