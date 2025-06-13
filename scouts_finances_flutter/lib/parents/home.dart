@@ -116,9 +116,7 @@ class _ParentHomeState extends State<ParentHome> {
     }
 
     return Scaffold(
-      body: Center(
-        child: Padding(padding: const EdgeInsets.all(16.0), child: body),
-      ),
+      body: Padding(padding: const EdgeInsets.all(16.0), child: body),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
