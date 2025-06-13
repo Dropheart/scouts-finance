@@ -128,6 +128,15 @@ class _ParentDetailsState extends State<ParentDetails> {
                   )),
             ],
           ),
+          Row(
+            children: [
+              Text('Balance:',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 8),
+              Text('£${(parent.balance / 100).toStringAsFixed(2)}'),
+            ],
+          ),
           const SizedBox(height: 16),
           const Text('Transaction History:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
