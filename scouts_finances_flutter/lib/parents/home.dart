@@ -39,7 +39,7 @@ class _ParentHomeState extends State<ParentHome> {
             acc[index] = (p, s + reg.event!.cost);
           } else {
             // If not, add new entry
-            acc.add((parent, reg.event!.cost));
+            acc.add((parent, reg.event!.cost - parent.balance));
           }
           return acc;
         });
