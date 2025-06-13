@@ -26,7 +26,7 @@ class ThemeService extends ChangeNotifier {
     final customColorScheme = baseColorScheme.copyWith(
       surface: _backgroundColor,
       background: _backgroundColor,
-      surfaceVariant: _secondaryColor.withOpacity(0.6), // Much stronger color
+      surfaceVariant: _secondaryColor.withOpacity(0.8), // Much stronger color
       // Adjust on-surface colors based on background brightness
       onSurface: _getContrastingTextColor(_backgroundColor),
       onBackground: _getContrastingTextColor(_backgroundColor),
@@ -35,13 +35,36 @@ class ThemeService extends ChangeNotifier {
     return ThemeData(
       colorScheme: customColorScheme,
       scaffoldBackgroundColor: _backgroundColor,
+      appBarTheme: AppBarTheme(
+        backgroundColor: _primaryColor,
+        foregroundColor: _getContrastingTextColor(_primaryColor),
+        titleTextStyle: TextStyle(
+          color: _getContrastingTextColor(_primaryColor),
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        elevation: 0,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: _primaryColor,
+        indicatorColor: _primaryColor.withOpacity(0.3),
+        labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(color: _getContrastingTextColor(_primaryColor)),
+        ),
+        iconTheme: WidgetStatePropertyAll(
+          IconThemeData(color: _getContrastingTextColor(_primaryColor)),
+        ),
+      ),
       cardTheme: CardThemeData(
         elevation: 1.0,
-        color: _secondaryColor.withOpacity(0.4), // Much stronger from 0.15 to 0.4
+        color: _secondaryColor.withOpacity(0.7), // Much stronger from 0.15 to 0.4
         surfaceTintColor: _secondaryColor, // Secondary color tint
       ),
-      searchBarTheme: const SearchBarThemeData(
-        elevation: WidgetStatePropertyAll(0.0),
+      searchBarTheme: SearchBarThemeData(
+        backgroundColor: WidgetStatePropertyAll(_secondaryColor.withOpacity(0.8)),
+        surfaceTintColor: WidgetStatePropertyAll(_secondaryColor),
+        overlayColor: WidgetStatePropertyAll(_secondaryColor.withOpacity(0.1)),
+        elevation: const WidgetStatePropertyAll(0.0),
       ),
     );
   }
@@ -156,7 +179,7 @@ class ThemeService extends ChangeNotifier {
 
   Future<void> resetToDefaults() async {
     _primaryColor = Colors.orange;
-    _secondaryColor = Colors.blue;
+    _secondaryColor = Colors.orangeAccent;
     _backgroundColor = Colors.white;
     
     final prefs = await SharedPreferences.getInstance();
