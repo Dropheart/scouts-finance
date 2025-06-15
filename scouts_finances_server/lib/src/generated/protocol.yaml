@@ -24,6 +24,8 @@ payment:
   - getPaymentById:
   - getPaymentsByParentId:
   - updatePayment:
+scoutGroups:
+  - getScoutGroups:
 scouts:
   - getChildren:
   - getChildrenOfParent:

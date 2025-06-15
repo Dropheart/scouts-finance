@@ -16,8 +16,9 @@ import 'package:scouts_finances_client/src/protocol/event_registration.dart'
     as _i4;
 import 'package:scouts_finances_client/src/protocol/parent.dart' as _i5;
 import 'package:scouts_finances_client/src/protocol/payment.dart' as _i6;
-import 'package:scouts_finances_client/src/protocol/child.dart' as _i7;
-import 'protocol.dart' as _i8;
+import 'package:scouts_finances_client/src/protocol/scout_group.dart' as _i7;
+import 'package:scouts_finances_client/src/protocol/child.dart' as _i8;
+import 'protocol.dart' as _i9;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -241,28 +242,43 @@ class EndpointPayment extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointScoutGroups extends _i1.EndpointRef {
+  EndpointScoutGroups(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'scoutGroups';
+
+  _i2.Future<List<_i7.ScoutGroup>> getScoutGroups() =>
+      caller.callServerEndpoint<List<_i7.ScoutGroup>>(
+        'scoutGroups',
+        'getScoutGroups',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointScouts extends _i1.EndpointRef {
   EndpointScouts(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'scouts';
 
-  _i2.Future<List<_i7.Child>> getChildren() =>
-      caller.callServerEndpoint<List<_i7.Child>>(
+  _i2.Future<List<_i8.Child>> getChildren() =>
+      caller.callServerEndpoint<List<_i8.Child>>(
         'scouts',
         'getChildren',
         {},
       );
 
-  _i2.Future<List<_i7.Child>> getChildrenOfParent(int parentId) =>
-      caller.callServerEndpoint<List<_i7.Child>>(
+  _i2.Future<List<_i8.Child>> getChildrenOfParent(int parentId) =>
+      caller.callServerEndpoint<List<_i8.Child>>(
         'scouts',
         'getChildrenOfParent',
         {'parentId': parentId},
       );
 
-  _i2.Future<_i7.Child?> getChildById(int id) =>
-      caller.callServerEndpoint<_i7.Child?>(
+  _i2.Future<_i8.Child?> getChildById(int id) =>
+      caller.callServerEndpoint<_i8.Child?>(
         'scouts',
         'getChildById',
         {'id': id},
@@ -285,7 +301,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i8.Protocol(),
+          _i9.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -299,6 +315,7 @@ class Client extends _i1.ServerpodClientShared {
     event = EndpointEvent(this);
     parent = EndpointParent(this);
     payment = EndpointPayment(this);
+    scoutGroups = EndpointScoutGroups(this);
     scouts = EndpointScouts(this);
   }
 
@@ -310,6 +327,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointPayment payment;
 
+  late final EndpointScoutGroups scoutGroups;
+
   late final EndpointScouts scouts;
 
   @override
@@ -318,6 +337,7 @@ class Client extends _i1.ServerpodClientShared {
         'event': event,
         'parent': parent,
         'payment': payment,
+        'scoutGroups': scoutGroups,
         'scouts': scouts,
       };
 

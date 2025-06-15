@@ -14,10 +14,11 @@ import '../admin.dart' as _i2;
 import '../events.dart' as _i3;
 import '../parent.dart' as _i4;
 import '../payments.dart' as _i5;
-import '../scouts.dart' as _i6;
-import 'package:scouts_finances_server/src/generated/protocol.dart' as _i7;
-import 'package:scouts_finances_server/src/generated/parent.dart' as _i8;
-import 'package:scouts_finances_server/src/generated/payment.dart' as _i9;
+import '../scout_groups.dart' as _i6;
+import '../scouts.dart' as _i7;
+import 'package:scouts_finances_server/src/generated/protocol.dart' as _i8;
+import 'package:scouts_finances_server/src/generated/parent.dart' as _i9;
+import 'package:scouts_finances_server/src/generated/payment.dart' as _i10;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -47,7 +48,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'payment',
           null,
         ),
-      'scouts': _i6.ScoutsEndpoint()
+      'scoutGroups': _i6.ScoutGroupsEndpoint()
+        ..initialize(
+          server,
+          'scoutGroups',
+          null,
+        ),
+      'scouts': _i7.ScoutsEndpoint()
         ..initialize(
           server,
           'scouts',
@@ -92,7 +99,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['event'] as _i3.EventEndpoint)
                   .getPaidCounts(session)
                   .then((container) =>
-                      _i7.mapRecordContainingContainerToJson(container)),
+                      _i8.mapRecordContainingContainerToJson(container)),
         ),
         'getEventById': _i1.MethodConnector(
           name: 'getEventById',
@@ -112,7 +119,7 @@ class Endpoints extends _i1.EndpointDispatch {
                     session,
                     params['id'],
                   )
-                  .then((record) => _i7.mapRecordToJson(record)),
+                  .then((record) => _i8.mapRecordToJson(record)),
         ),
         'insertEvent': _i1.MethodConnector(
           name: 'insertEvent',
@@ -308,7 +315,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'parent': _i1.ParameterDescription(
               name: 'parent',
-              type: _i1.getType<_i8.Parent>(),
+              type: _i1.getType<_i9.Parent>(),
               nullable: false,
             )
           },
@@ -389,7 +396,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'payment': _i1.ParameterDescription(
               name: 'payment',
-              type: _i1.getType<_i9.Payment>(),
+              type: _i1.getType<_i10.Payment>(),
               nullable: false,
             )
           },
@@ -449,7 +456,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'parent': _i1.ParameterDescription(
               name: 'parent',
-              type: _i1.getType<_i8.Parent>(),
+              type: _i1.getType<_i9.Parent>(),
               nullable: false,
             ),
           },
@@ -465,6 +472,22 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['scoutGroups'] = _i1.EndpointConnector(
+      name: 'scoutGroups',
+      endpoint: endpoints['scoutGroups']!,
+      methodConnectors: {
+        'getScoutGroups': _i1.MethodConnector(
+          name: 'getScoutGroups',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['scoutGroups'] as _i6.ScoutGroupsEndpoint)
+                  .getScoutGroups(session),
+        )
+      },
+    );
     connectors['scouts'] = _i1.EndpointConnector(
       name: 'scouts',
       endpoint: endpoints['scouts']!,
@@ -476,7 +499,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['scouts'] as _i6.ScoutsEndpoint).getChildren(session),
+              (endpoints['scouts'] as _i7.ScoutsEndpoint).getChildren(session),
         ),
         'getChildrenOfParent': _i1.MethodConnector(
           name: 'getChildrenOfParent',
@@ -491,7 +514,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['scouts'] as _i6.ScoutsEndpoint).getChildrenOfParent(
+              (endpoints['scouts'] as _i7.ScoutsEndpoint).getChildrenOfParent(
             session,
             params['parentId'],
           ),
@@ -509,7 +532,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['scouts'] as _i6.ScoutsEndpoint).getChildById(
+              (endpoints['scouts'] as _i7.ScoutsEndpoint).getChildById(
             session,
             params['id'],
           ),

@@ -24,7 +24,8 @@ import 'package:scouts_finances_server/src/generated/event_registration.dart'
     as _i12;
 import 'package:scouts_finances_server/src/generated/parent.dart' as _i13;
 import 'package:scouts_finances_server/src/generated/payment.dart' as _i14;
-import 'package:scouts_finances_server/src/generated/child.dart' as _i15;
+import 'package:scouts_finances_server/src/generated/scout_group.dart' as _i15;
+import 'package:scouts_finances_server/src/generated/child.dart' as _i16;
 export 'bank_account.dart';
 export 'child.dart';
 export 'event_registration.dart';
@@ -651,8 +652,12 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i14.Payment>(e)).toList()
           as T;
     }
-    if (t == List<_i15.Child>) {
-      return (data as List).map((e) => deserialize<_i15.Child>(e)).toList()
+    if (t == List<_i15.ScoutGroup>) {
+      return (data as List).map((e) => deserialize<_i15.ScoutGroup>(e)).toList()
+          as T;
+    }
+    if (t == List<_i16.Child>) {
+      return (data as List).map((e) => deserialize<_i16.Child>(e)).toList()
           as T;
     }
     try {
