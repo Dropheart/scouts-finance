@@ -33,5 +33,13 @@ class ScoutGroupsService extends ChangeNotifier {
       // print('Failed to load scout groups: $e');
     }
   }
-}
 
+  Future<void> refreshScoutGroups() async {
+    try {
+      scoutGroups = await client.scoutGroups.getScoutGroups();
+      notifyListeners();
+    } catch (e) {
+      // print('Failed to refresh scout groups: $e');
+    }
+  }
+}
