@@ -4,7 +4,7 @@ import 'package:scouts_finances_flutter/main.dart';
 
 class ScoutGroupsService extends ChangeNotifier {
   List<ScoutGroup> scoutGroups = [];
-  ScoutGroup? currentScoutGroup;
+  late ScoutGroup currentScoutGroup;
 
   void setScoutGroups(List<ScoutGroup> groups) {
     scoutGroups = groups;

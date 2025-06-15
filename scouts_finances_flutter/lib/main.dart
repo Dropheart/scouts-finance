@@ -110,6 +110,25 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
+  final selectScoutGroup = Consumer<ScoutGroupsService>(
+      builder: (context, scoutGroupsService, child) {
+    return PopupMenuButton(
+        itemBuilder: (_) {
+          final currentGroup = scoutGroupsService.currentScoutGroup;
+          return scoutGroupsService.scoutGroups
+              .map((group) => PopupMenuItem(
+                    value: group,
+                    enabled: currentGroup.id != group.id,
+                    child: Text(group.name),
+                  ))
+              .toList();
+        },
+        onSelected: (group) {
+          scoutGroupsService.setCurrentScoutGroup(group);
+        },
+        icon: Icon(Icons.groups));
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,7 +141,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         centerTitle: false,
-        actions: [OptionsMenu(selectedIndex: currentPageIndex)],
+        actions: [
+          selectScoutGroup,
+          OptionsMenu(selectedIndex: currentPageIndex)
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,
