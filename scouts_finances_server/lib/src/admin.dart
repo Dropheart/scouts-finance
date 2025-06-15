@@ -25,7 +25,7 @@ class UserInfo {
     String? ukPhone;
     if (phone != null) {
       // Strip out brackets, dashes, and plus signs and add country code
-      ukPhone = '+44${phone.replaceAll(r'\(|\)|\-|\+', '')}';
+      ukPhone = '+44${phone.replaceAll(RegExp(r'\(|\)|\-|\+'), '')}';
     }
 
     return UserInfo(
@@ -48,7 +48,7 @@ class AdminEndpoint extends Endpoint {
     // Get random API data upfront, as to not delete data if we can't recreate
     // Initialize getting random user data
     String randomPeopleEndpoint(int numPeople, List<String> inc) =>
-        'https://randomuser.me/api/?results=$numPeople&inc=${inc.join(',')}&noinfo';
+        'https://randomuser.me/api/?results=$numPeople&inc=${inc.join(',')}&noinfo&nat=gb';
     final httpClient = http.Client();
 
     // Fetch people to be parents
@@ -68,13 +68,13 @@ class AdminEndpoint extends Endpoint {
         .toList();
 
     // First, delete all existing data
-    await ScoutGroup.db.deleteWhere(session, where: (t) => t.id > -1);
     await Payment.db.deleteWhere(session, where: (t) => t.id > -1);
     await EventRegistration.db.deleteWhere(session, where: (t) => t.id > -1);
     await Child.db.deleteWhere(session, where: (t) => t.id > -1);
     await Event.db.deleteWhere(session, where: (t) => t.id > -1);
     await Parent.db.deleteWhere(session, where: (t) => t.id > -1);
     await BankAccount.db.deleteWhere(session, where: (t) => t.id > -1);
+    await ScoutGroup.db.deleteWhere(session, where: (t) => t.id > -1);
 
     // Create scout groups
     final groups =
@@ -224,7 +224,7 @@ class AdminEndpoint extends Endpoint {
             List.generate(18, (index) => Random().nextInt(26) + 97),
           );
 
-      final payments = payInTwoInstallments
+      final newPayments = payInTwoInstallments
           ? [
               Payment(
                 reference: ref(),
@@ -251,7 +251,7 @@ class AdminEndpoint extends Endpoint {
               ),
             ];
 
-      payments.addAll(payments);
+      payments.addAll(newPayments);
     }
 
     // Insert the payments
