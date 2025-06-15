@@ -110,7 +110,10 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
       List<EventRegistration> unpaidEventsForParent = unpaidEvents
           .where((eventReg) => eventReg.child!.parentId == currParent.id)
-          .toList();
+          .toList()
+        ..sort(
+          (a, b) => a.event!.date.compareTo(b.event!.date),
+        );
 
       int bal = payment!.amount + currParent.balance;
       List<EventRegistration> toBePaidEvents = [];

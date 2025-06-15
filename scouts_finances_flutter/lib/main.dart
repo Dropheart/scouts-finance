@@ -6,6 +6,7 @@ import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/popups.dart';
 import 'package:scouts_finances_flutter/scouts/home.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -27,19 +28,32 @@ void main() async {
   final themeService = ThemeService();
   await themeService.loadTheme();
 
-  runApp(MyApp(themeService: themeService));
+  final scoutGroupsService = ScoutGroupsService();
+  await scoutGroupsService.getScoutGroups();
+
+  runApp(MyApp(
+    themeService: themeService,
+    scoutGroupsService: scoutGroupsService,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final ThemeService themeService;
+  final ScoutGroupsService scoutGroupsService;
 
-  const MyApp({super.key, required this.themeService});
+  const MyApp(
+      {super.key,
+      required this.themeService,
+      required this.scoutGroupsService});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: themeService,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: themeService),
+        ChangeNotifierProvider.value(value: scoutGroupsService)
+      ],
       child: Consumer<ThemeService>(
         builder: (context, themeService, child) {
           return MaterialApp(
@@ -96,6 +110,25 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
+  final selectScoutGroup = Consumer<ScoutGroupsService>(
+      builder: (context, scoutGroupsService, child) {
+    return PopupMenuButton(
+        itemBuilder: (_) {
+          final currentGroup = scoutGroupsService.currentScoutGroup;
+          return scoutGroupsService.scoutGroups
+              .map((group) => PopupMenuItem(
+                    value: group,
+                    enabled: currentGroup.id != group.id,
+                    child: Text(group.name),
+                  ))
+              .toList();
+        },
+        onSelected: (group) {
+          scoutGroupsService.setCurrentScoutGroup(group);
+        },
+        icon: Icon(Icons.groups));
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +141,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         centerTitle: false,
-        actions: [OptionsMenu(selectedIndex: currentPageIndex)],
+        actions: [
+          selectScoutGroup,
+          OptionsMenu(selectedIndex: currentPageIndex)
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,

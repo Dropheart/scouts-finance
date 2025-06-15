@@ -4,3 +4,4 @@ fields:
   name: String
   date: DateTime
   cost: int # Cost in pence (GBP)
+  scoutGroup: ScoutGroup?, relation(name=scout_group_events)

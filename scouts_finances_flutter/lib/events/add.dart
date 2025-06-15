@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 
 class AddEventDialog extends StatefulWidget {
   const AddEventDialog({super.key});
@@ -41,13 +43,14 @@ class _AddEventDialogState extends State<AddEventDialog> {
     }
   }
 
-  void _submit() {
+  void _submit(int groupId) {
     if (formKey.currentState?.validate() ?? false) {
       client.event.insertEvent(
           _nameController.text,
           (double.parse(_priceController.text.replaceFirst('£', '')) * 100)
               .truncate(), // Convert to pence
-          _selectedDate);
+          _selectedDate,
+          groupId);
       Navigator.of(context).pop({
         'name': _nameController.text,
         'price': _priceController.text.replaceFirst('£', ''),
@@ -104,7 +107,14 @@ class _AddEventDialogState extends State<AddEventDialog> {
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('Cancel'),
           ),
-          ElevatedButton(onPressed: _submit, child: const Text('Add'))
+          Consumer<ScoutGroupsService>(
+              builder: (context, scoutGroupsService, child) {
+            return ElevatedButton(
+              onPressed: () =>
+                  _submit(scoutGroupsService.currentScoutGroup.id!),
+              child: const Text('Add'),
+            );
+          }),
         ]);
   }
 }

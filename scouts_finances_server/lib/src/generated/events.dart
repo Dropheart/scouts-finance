@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'scout_group.dart' as _i2;
 
 abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Event._({
@@ -17,6 +20,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.name,
     required this.date,
     required this.cost,
+    required this.scoutGroupId,
+    this.scoutGroup,
   });
 
   factory Event({
@@ -24,6 +29,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String name,
     required DateTime date,
     required int cost,
+    required int scoutGroupId,
+    _i2.ScoutGroup? scoutGroup,
   }) = _EventImpl;
 
   factory Event.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -32,6 +39,11 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       name: jsonSerialization['name'] as String,
       date: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['date']),
       cost: jsonSerialization['cost'] as int,
+      scoutGroupId: jsonSerialization['scoutGroupId'] as int,
+      scoutGroup: jsonSerialization['scoutGroup'] == null
+          ? null
+          : _i2.ScoutGroup.fromJson(
+              (jsonSerialization['scoutGroup'] as Map<String, dynamic>)),
     );
   }
 
@@ -48,6 +60,10 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   int cost;
 
+  int scoutGroupId;
+
+  _i2.ScoutGroup? scoutGroup;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -59,6 +75,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? name,
     DateTime? date,
     int? cost,
+    int? scoutGroupId,
+    _i2.ScoutGroup? scoutGroup,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -67,6 +85,8 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'name': name,
       'date': date.toJson(),
       'cost': cost,
+      'scoutGroupId': scoutGroupId,
+      if (scoutGroup != null) 'scoutGroup': scoutGroup?.toJson(),
     };
   }
 
@@ -77,11 +97,13 @@ abstract class Event implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'name': name,
       'date': date.toJson(),
       'cost': cost,
+      'scoutGroupId': scoutGroupId,
+      if (scoutGroup != null) 'scoutGroup': scoutGroup?.toJsonForProtocol(),
     };
   }
 
-  static EventInclude include() {
-    return EventInclude._();
+  static EventInclude include({_i2.ScoutGroupInclude? scoutGroup}) {
+    return EventInclude._(scoutGroup: scoutGroup);
   }
 
   static EventIncludeList includeList({
@@ -118,11 +140,15 @@ class _EventImpl extends Event {
     required String name,
     required DateTime date,
     required int cost,
+    required int scoutGroupId,
+    _i2.ScoutGroup? scoutGroup,
   }) : super._(
           id: id,
           name: name,
           date: date,
           cost: cost,
+          scoutGroupId: scoutGroupId,
+          scoutGroup: scoutGroup,
         );
 
   /// Returns a shallow copy of this [Event]
@@ -134,12 +160,18 @@ class _EventImpl extends Event {
     String? name,
     DateTime? date,
     int? cost,
+    int? scoutGroupId,
+    Object? scoutGroup = _Undefined,
   }) {
     return Event(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
       date: date ?? this.date,
       cost: cost ?? this.cost,
+      scoutGroupId: scoutGroupId ?? this.scoutGroupId,
+      scoutGroup: scoutGroup is _i2.ScoutGroup?
+          ? scoutGroup
+          : this.scoutGroup?.copyWith(),
     );
   }
 }
@@ -158,6 +190,10 @@ class EventTable extends _i1.Table<int?> {
       'cost',
       this,
     );
+    scoutGroupId = _i1.ColumnInt(
+      'scoutGroupId',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -166,20 +202,50 @@ class EventTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt cost;
 
+  late final _i1.ColumnInt scoutGroupId;
+
+  _i2.ScoutGroupTable? _scoutGroup;
+
+  _i2.ScoutGroupTable get scoutGroup {
+    if (_scoutGroup != null) return _scoutGroup!;
+    _scoutGroup = _i1.createRelationTable(
+      relationFieldName: 'scoutGroup',
+      field: Event.t.scoutGroupId,
+      foreignField: _i2.ScoutGroup.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.ScoutGroupTable(tableRelation: foreignTableRelation),
+    );
+    return _scoutGroup!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         name,
         date,
         cost,
+        scoutGroupId,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'scoutGroup') {
+      return scoutGroup;
+    }
+    return null;
+  }
 }
 
 class EventInclude extends _i1.IncludeObject {
-  EventInclude._();
+  EventInclude._({_i2.ScoutGroupInclude? scoutGroup}) {
+    _scoutGroup = scoutGroup;
+  }
+
+  _i2.ScoutGroupInclude? _scoutGroup;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'scoutGroup': _scoutGroup};
 
   @override
   _i1.Table<int?> get table => Event.t;
@@ -207,6 +273,8 @@ class EventIncludeList extends _i1.IncludeList {
 
 class EventRepository {
   const EventRepository._();
+
+  final attachRow = const EventAttachRowRepository._();
 
   /// Returns a list of [Event]s matching the given query parameters.
   ///
@@ -239,6 +307,7 @@ class EventRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTable>? orderByList,
     _i1.Transaction? transaction,
+    EventInclude? include,
   }) async {
     return session.db.find<Event>(
       where: where?.call(Event.t),
@@ -248,6 +317,7 @@ class EventRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -276,6 +346,7 @@ class EventRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<EventTable>? orderByList,
     _i1.Transaction? transaction,
+    EventInclude? include,
   }) async {
     return session.db.findFirstRow<Event>(
       where: where?.call(Event.t),
@@ -284,6 +355,7 @@ class EventRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -292,10 +364,12 @@ class EventRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    EventInclude? include,
   }) async {
     return session.db.findById<Event>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -413,6 +487,33 @@ class EventRepository {
     return session.db.count<Event>(
       where: where?.call(Event.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class EventAttachRowRepository {
+  const EventAttachRowRepository._();
+
+  /// Creates a relation between the given [Event] and [ScoutGroup]
+  /// by setting the [Event]'s foreign key `scoutGroupId` to refer to the [ScoutGroup].
+  Future<void> scoutGroup(
+    _i1.Session session,
+    Event event,
+    _i2.ScoutGroup scoutGroup, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (event.id == null) {
+      throw ArgumentError.notNull('event.id');
+    }
+    if (scoutGroup.id == null) {
+      throw ArgumentError.notNull('scoutGroup.id');
+    }
+
+    var $event = event.copyWith(scoutGroupId: scoutGroup.id);
+    await session.db.updateRow<Event>(
+      $event,
+      columns: [Event.t.scoutGroupId],
       transaction: transaction,
     );
   }

@@ -25,10 +25,11 @@ class PaymentEndpoint extends Endpoint {
     return Payment.db.find(session, where: (p) => p.parentId.equals(parentId));
   }
 
-  Future<void> updatePayment(
-      Session session, int paymentId, Parent parent) async {
+  Future<void> updatePayment(Session session, int paymentId, Parent parent,
+      {Transaction? transaction}) async {
     // Find the payment by ID
-    final payment = await Payment.db.findById(session, paymentId);
+    final payment =
+        await Payment.db.findById(session, paymentId, transaction: transaction);
     if (payment == null) {
       throw ArgumentError('Payment with id $paymentId not found');
     }
@@ -43,7 +44,8 @@ class PaymentEndpoint extends Endpoint {
         orderBy: (t) => t.event.date,
         include: EventRegistration.include(
           event: Event.include(),
-        ));
+        ),
+        transaction: transaction);
 
     // Get new parent balance & see what we can pay off
     int balance = parent.balance + payment.amount;
@@ -51,6 +53,7 @@ class PaymentEndpoint extends Endpoint {
     while (balance > 0 && registrations.isNotEmpty) {
       final reg = registrations.removeAt(0);
       if (reg.event!.cost <= balance) {
+        reg.paidDate = DateTime.now();
         clearableRegistrations.add(reg);
         balance -= reg.event!.cost;
       } else {
@@ -58,19 +61,23 @@ class PaymentEndpoint extends Endpoint {
       }
     }
 
-    await session.db.transaction((transaction) async {
-      payment.parentId = parent.id;
-      payment.parent = parent;
+    payment.parentId = parent.id;
+    payment.parent = parent;
+    parent.balance = balance;
+    if (transaction == null) {
+      await session.db.transaction((transaction) async {
+        await Payment.db.updateRow(session, payment, transaction: transaction);
+        await EventRegistration.db
+            .update(session, clearableRegistrations, transaction: transaction);
+        await Parent.db.updateRow(session, parent, transaction: transaction);
+      });
+    } else {
       await Payment.db.updateRow(session, payment, transaction: transaction);
 
-      for (final reg in clearableRegistrations) {
-        reg.paidDate = DateTime.now();
-        await EventRegistration.db
-            .updateRow(session, reg, transaction: transaction);
-      }
+      await EventRegistration.db
+          .update(session, clearableRegistrations, transaction: transaction);
 
-      parent.balance = balance;
       await Parent.db.updateRow(session, parent, transaction: transaction);
-    });
+    }
   }
 }

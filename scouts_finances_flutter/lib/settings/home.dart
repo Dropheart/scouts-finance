@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:scouts_finances_flutter/widgets/snake_game.dart';
 import 'dart:async';
@@ -277,6 +278,10 @@ class _SettingsHomeState extends State<SettingsHome> {
                     trailing: const Icon(Icons.refresh),
                     onTap: () async {
                       await client.admin.resetDb();
+                      if (!context.mounted) return;
+                      await Provider.of<ScoutGroupsService>(context,
+                              listen: false)
+                          .refreshScoutGroups();
                     },
                   ),
                 ],
