@@ -158,7 +158,7 @@ class AdminEndpoint extends Endpoint {
         for (var i = 0; i < numEvents; i++) {
           final eventName = shuffledEvents[i];
           final cost =
-              5 + Random().nextInt(2000); // Cost between 5 and 25 pounds
+              500 + Random().nextInt(2000); // Cost between 5 and 25 pounds
           // Some time in the next year
           final date =
               DateTime.now().add(Duration(days: Random().nextInt(365)));
@@ -195,7 +195,8 @@ class AdminEndpoint extends Endpoint {
       // Use the endpoint in case logic changes in the future
       final endpoint = EventEndpoint();
       for (final (childId, eventId) in eventRegs) {
-        await endpoint.registerChildForEvent(session, eventId, childId, transaction: t);
+        await endpoint.registerChildForEvent(session, eventId, childId,
+            transaction: t);
       }
 
       // Get IDs of the inserted registrations
@@ -291,7 +292,8 @@ class AdminEndpoint extends Endpoint {
       // Use the API endpoint for the logic.
       final paymentEndpoint = PaymentEndpoint();
       for (final (payment, parent) in assignedPayments) {
-        await paymentEndpoint.updatePayment(session, payment.id!, parent, transaction: t);
+        await paymentEndpoint.updatePayment(session, payment.id!, parent,
+            transaction: t);
       }
     });
   }
