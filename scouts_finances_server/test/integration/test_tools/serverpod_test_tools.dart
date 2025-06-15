@@ -287,6 +287,7 @@ class _EventEndpoint {
     String name,
     int cost,
     DateTime? date,
+    int groupId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -303,6 +304,7 @@ class _EventEndpoint {
             'name': name,
             'cost': cost,
             'date': date,
+            'groupId': groupId,
           }),
           serializationManager: _serializationManager,
         );

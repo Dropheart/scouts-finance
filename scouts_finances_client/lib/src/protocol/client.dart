@@ -65,6 +65,7 @@ class EndpointEvent extends _i1.EndpointRef {
     String name,
     int cost,
     DateTime? date,
+    int groupId,
   ) =>
       caller.callServerEndpoint<List<_i3.Event>>(
         'event',
@@ -73,6 +74,7 @@ class EndpointEvent extends _i1.EndpointRef {
           'name': name,
           'cost': cost,
           'date': date,
+          'groupId': groupId,
         },
       );
 

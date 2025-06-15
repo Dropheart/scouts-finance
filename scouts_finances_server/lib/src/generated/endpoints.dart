@@ -132,6 +132,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<DateTime?>(),
               nullable: true,
             ),
+            'groupId': _i1.ParameterDescription(
+              name: 'groupId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -142,6 +147,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['name'],
             params['cost'],
             params['date'],
+            params['groupId'],
           ),
         ),
         'registerChildForEvent': _i1.MethodConnector(

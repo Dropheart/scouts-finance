@@ -4,3 +4,4 @@ fields:
   firstName: String
   lastName: String
   parent: Parent?, relation
+  scoutGroup: ScoutGroup?, relation(name=scout_group_children)

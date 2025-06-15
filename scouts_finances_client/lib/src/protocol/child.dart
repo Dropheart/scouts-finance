@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'parent.dart' as _i2;
+import 'scout_group.dart' as _i3;
 
 abstract class Child implements _i1.SerializableModel {
   Child._({
@@ -19,6 +20,8 @@ abstract class Child implements _i1.SerializableModel {
     required this.lastName,
     required this.parentId,
     this.parent,
+    required this.scoutGroupId,
+    this.scoutGroup,
   });
 
   factory Child({
@@ -27,6 +30,8 @@ abstract class Child implements _i1.SerializableModel {
     required String lastName,
     required int parentId,
     _i2.Parent? parent,
+    required int scoutGroupId,
+    _i3.ScoutGroup? scoutGroup,
   }) = _ChildImpl;
 
   factory Child.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +44,11 @@ abstract class Child implements _i1.SerializableModel {
           ? null
           : _i2.Parent.fromJson(
               (jsonSerialization['parent'] as Map<String, dynamic>)),
+      scoutGroupId: jsonSerialization['scoutGroupId'] as int,
+      scoutGroup: jsonSerialization['scoutGroup'] == null
+          ? null
+          : _i3.ScoutGroup.fromJson(
+              (jsonSerialization['scoutGroup'] as Map<String, dynamic>)),
     );
   }
 
@@ -55,6 +65,10 @@ abstract class Child implements _i1.SerializableModel {
 
   _i2.Parent? parent;
 
+  int scoutGroupId;
+
+  _i3.ScoutGroup? scoutGroup;
+
   /// Returns a shallow copy of this [Child]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -64,6 +78,8 @@ abstract class Child implements _i1.SerializableModel {
     String? lastName,
     int? parentId,
     _i2.Parent? parent,
+    int? scoutGroupId,
+    _i3.ScoutGroup? scoutGroup,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -73,6 +89,8 @@ abstract class Child implements _i1.SerializableModel {
       'lastName': lastName,
       'parentId': parentId,
       if (parent != null) 'parent': parent?.toJson(),
+      'scoutGroupId': scoutGroupId,
+      if (scoutGroup != null) 'scoutGroup': scoutGroup?.toJson(),
     };
   }
 
@@ -91,12 +109,16 @@ class _ChildImpl extends Child {
     required String lastName,
     required int parentId,
     _i2.Parent? parent,
+    required int scoutGroupId,
+    _i3.ScoutGroup? scoutGroup,
   }) : super._(
           id: id,
           firstName: firstName,
           lastName: lastName,
           parentId: parentId,
           parent: parent,
+          scoutGroupId: scoutGroupId,
+          scoutGroup: scoutGroup,
         );
 
   /// Returns a shallow copy of this [Child]
@@ -109,6 +131,8 @@ class _ChildImpl extends Child {
     String? lastName,
     int? parentId,
     Object? parent = _Undefined,
+    int? scoutGroupId,
+    Object? scoutGroup = _Undefined,
   }) {
     return Child(
       id: id is int? ? id : this.id,
@@ -116,6 +140,10 @@ class _ChildImpl extends Child {
       lastName: lastName ?? this.lastName,
       parentId: parentId ?? this.parentId,
       parent: parent is _i2.Parent? ? parent : this.parent?.copyWith(),
+      scoutGroupId: scoutGroupId ?? this.scoutGroupId,
+      scoutGroup: scoutGroup is _i3.ScoutGroup?
+          ? scoutGroup
+          : this.scoutGroup?.copyWith(),
     );
   }
 }

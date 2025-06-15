@@ -41,13 +41,13 @@ class EventEndpoint extends Endpoint {
     return (eventDetails, eventRegistration);
   }
 
-  Future<List<Event>> insertEvent(
-    Session session,
-    String name,
-    int cost,
-    DateTime? date,
-  ) async {
-    final event = Event(name: name, date: date ?? DateTime.now(), cost: cost);
+  Future<List<Event>> insertEvent(Session session, String name, int cost,
+      DateTime? date, int groupId) async {
+    final event = Event(
+        name: name,
+        date: date ?? DateTime.now(),
+        cost: cost,
+        scoutGroupId: groupId);
 
     await Event.db.insert(session, [event]);
 

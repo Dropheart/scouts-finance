@@ -13,6 +13,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'parent.dart' as _i2;
+import 'scout_group.dart' as _i3;
 
 abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Child._({
@@ -21,6 +22,8 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.lastName,
     required this.parentId,
     this.parent,
+    required this.scoutGroupId,
+    this.scoutGroup,
   });
 
   factory Child({
@@ -29,6 +32,8 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String lastName,
     required int parentId,
     _i2.Parent? parent,
+    required int scoutGroupId,
+    _i3.ScoutGroup? scoutGroup,
   }) = _ChildImpl;
 
   factory Child.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -41,6 +46,11 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           ? null
           : _i2.Parent.fromJson(
               (jsonSerialization['parent'] as Map<String, dynamic>)),
+      scoutGroupId: jsonSerialization['scoutGroupId'] as int,
+      scoutGroup: jsonSerialization['scoutGroup'] == null
+          ? null
+          : _i3.ScoutGroup.fromJson(
+              (jsonSerialization['scoutGroup'] as Map<String, dynamic>)),
     );
   }
 
@@ -59,6 +69,10 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   _i2.Parent? parent;
 
+  int scoutGroupId;
+
+  _i3.ScoutGroup? scoutGroup;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -71,6 +85,8 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? lastName,
     int? parentId,
     _i2.Parent? parent,
+    int? scoutGroupId,
+    _i3.ScoutGroup? scoutGroup,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -80,6 +96,8 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'lastName': lastName,
       'parentId': parentId,
       if (parent != null) 'parent': parent?.toJson(),
+      'scoutGroupId': scoutGroupId,
+      if (scoutGroup != null) 'scoutGroup': scoutGroup?.toJson(),
     };
   }
 
@@ -91,11 +109,19 @@ abstract class Child implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'lastName': lastName,
       'parentId': parentId,
       if (parent != null) 'parent': parent?.toJsonForProtocol(),
+      'scoutGroupId': scoutGroupId,
+      if (scoutGroup != null) 'scoutGroup': scoutGroup?.toJsonForProtocol(),
     };
   }
 
-  static ChildInclude include({_i2.ParentInclude? parent}) {
-    return ChildInclude._(parent: parent);
+  static ChildInclude include({
+    _i2.ParentInclude? parent,
+    _i3.ScoutGroupInclude? scoutGroup,
+  }) {
+    return ChildInclude._(
+      parent: parent,
+      scoutGroup: scoutGroup,
+    );
   }
 
   static ChildIncludeList includeList({
@@ -133,12 +159,16 @@ class _ChildImpl extends Child {
     required String lastName,
     required int parentId,
     _i2.Parent? parent,
+    required int scoutGroupId,
+    _i3.ScoutGroup? scoutGroup,
   }) : super._(
           id: id,
           firstName: firstName,
           lastName: lastName,
           parentId: parentId,
           parent: parent,
+          scoutGroupId: scoutGroupId,
+          scoutGroup: scoutGroup,
         );
 
   /// Returns a shallow copy of this [Child]
@@ -151,6 +181,8 @@ class _ChildImpl extends Child {
     String? lastName,
     int? parentId,
     Object? parent = _Undefined,
+    int? scoutGroupId,
+    Object? scoutGroup = _Undefined,
   }) {
     return Child(
       id: id is int? ? id : this.id,
@@ -158,6 +190,10 @@ class _ChildImpl extends Child {
       lastName: lastName ?? this.lastName,
       parentId: parentId ?? this.parentId,
       parent: parent is _i2.Parent? ? parent : this.parent?.copyWith(),
+      scoutGroupId: scoutGroupId ?? this.scoutGroupId,
+      scoutGroup: scoutGroup is _i3.ScoutGroup?
+          ? scoutGroup
+          : this.scoutGroup?.copyWith(),
     );
   }
 }
@@ -176,6 +212,10 @@ class ChildTable extends _i1.Table<int?> {
       'parentId',
       this,
     );
+    scoutGroupId = _i1.ColumnInt(
+      'scoutGroupId',
+      this,
+    );
   }
 
   late final _i1.ColumnString firstName;
@@ -185,6 +225,10 @@ class ChildTable extends _i1.Table<int?> {
   late final _i1.ColumnInt parentId;
 
   _i2.ParentTable? _parent;
+
+  late final _i1.ColumnInt scoutGroupId;
+
+  _i3.ScoutGroupTable? _scoutGroup;
 
   _i2.ParentTable get parent {
     if (_parent != null) return _parent!;
@@ -199,12 +243,26 @@ class ChildTable extends _i1.Table<int?> {
     return _parent!;
   }
 
+  _i3.ScoutGroupTable get scoutGroup {
+    if (_scoutGroup != null) return _scoutGroup!;
+    _scoutGroup = _i1.createRelationTable(
+      relationFieldName: 'scoutGroup',
+      field: Child.t.scoutGroupId,
+      foreignField: _i3.ScoutGroup.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.ScoutGroupTable(tableRelation: foreignTableRelation),
+    );
+    return _scoutGroup!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         firstName,
         lastName,
         parentId,
+        scoutGroupId,
       ];
 
   @override
@@ -212,19 +270,31 @@ class ChildTable extends _i1.Table<int?> {
     if (relationField == 'parent') {
       return parent;
     }
+    if (relationField == 'scoutGroup') {
+      return scoutGroup;
+    }
     return null;
   }
 }
 
 class ChildInclude extends _i1.IncludeObject {
-  ChildInclude._({_i2.ParentInclude? parent}) {
+  ChildInclude._({
+    _i2.ParentInclude? parent,
+    _i3.ScoutGroupInclude? scoutGroup,
+  }) {
     _parent = parent;
+    _scoutGroup = scoutGroup;
   }
 
   _i2.ParentInclude? _parent;
 
+  _i3.ScoutGroupInclude? _scoutGroup;
+
   @override
-  Map<String, _i1.Include?> get includes => {'parent': _parent};
+  Map<String, _i1.Include?> get includes => {
+        'parent': _parent,
+        'scoutGroup': _scoutGroup,
+      };
 
   @override
   _i1.Table<int?> get table => Child.t;
@@ -493,6 +563,29 @@ class ChildAttachRowRepository {
     await session.db.updateRow<Child>(
       $child,
       columns: [Child.t.parentId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [Child] and [ScoutGroup]
+  /// by setting the [Child]'s foreign key `scoutGroupId` to refer to the [ScoutGroup].
+  Future<void> scoutGroup(
+    _i1.Session session,
+    Child child,
+    _i3.ScoutGroup scoutGroup, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (child.id == null) {
+      throw ArgumentError.notNull('child.id');
+    }
+    if (scoutGroup.id == null) {
+      throw ArgumentError.notNull('scoutGroup.id');
+    }
+
+    var $child = child.copyWith(scoutGroupId: scoutGroup.id);
+    await session.db.updateRow<Child>(
+      $child,
+      columns: [Child.t.scoutGroupId],
       transaction: transaction,
     );
   }
