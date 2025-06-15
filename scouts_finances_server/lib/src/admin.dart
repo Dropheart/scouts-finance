@@ -110,9 +110,9 @@ class AdminEndpoint extends Endpoint {
       // For each scout group, create & add children
       final children = <Child>[];
       for (final group in insertedGroups) {
-        int i = 0;
-        for (; i < childrenPerGroup; i++) {
-          final info = childInfos[i];
+        for (var i = 0; i < childrenPerGroup; i++) {
+          final info =
+              childInfos[i + childrenPerGroup * insertedGroups.indexOf(group)];
           // Randomly assign a parent to the child
           final parent =
               insertedParents[Random().nextInt(insertedParents.length)];
@@ -195,7 +195,7 @@ class AdminEndpoint extends Endpoint {
       // Use the endpoint in case logic changes in the future
       final endpoint = EventEndpoint();
       for (final (childId, eventId) in eventRegs) {
-        await endpoint.registerChildForEvent(session, eventId, childId);
+        await endpoint.registerChildForEvent(session, eventId, childId, transaction: t);
       }
 
       // Get IDs of the inserted registrations
@@ -291,7 +291,7 @@ class AdminEndpoint extends Endpoint {
       // Use the API endpoint for the logic.
       final paymentEndpoint = PaymentEndpoint();
       for (final (payment, parent) in assignedPayments) {
-        await paymentEndpoint.updatePayment(session, payment.id!, parent);
+        await paymentEndpoint.updatePayment(session, payment.id!, parent, transaction: t);
       }
     });
   }

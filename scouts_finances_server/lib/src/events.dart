@@ -55,16 +55,16 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<EventRegistration> registerChildForEvent(
-    Session session,
-    int eventId,
-    int childId,
-  ) async {
-    final event = await Event.db.findById(session, eventId);
+      Session session, int eventId, int childId,
+      {Transaction? transaction}) async {
+    final event =
+        await Event.db.findById(session, eventId, transaction: transaction);
     if (event == null) {
       throw ArgumentError('Event with id $eventId not found');
     }
 
-    final child = await Child.db.findById(session, childId);
+    final child =
+        await Child.db.findById(session, childId, transaction: transaction);
     if (child == null) {
       throw ArgumentError('Child with id $childId not found');
     }
@@ -75,7 +75,8 @@ class EventEndpoint extends Endpoint {
       child: child,
     );
 
-    await EventRegistration.db.insert(session, [registration]);
+    await EventRegistration.db
+        .insert(session, [registration], transaction: transaction);
 
     return registration;
   }
