@@ -157,12 +157,14 @@ class _ParentDetailsState extends State<ParentDetails> {
           const SizedBox(height: 8),
           UnpaidEventsTable(parent: parent),
           const SizedBox(height: 8),
-          TextButton.icon(
-            icon: Icon(Icons.send),
-            label: Text('Send registered events reminder'),
-            onPressed: () {
-              client.parent.remindParent(parent.id!);
-            },
+          Card(
+            child: ListTile(
+              title: Text('Send registered events reminder'),
+              trailing: Icon(Icons.send),
+              onTap: () {
+                client.parent.remindParent(parent.id!);
+              },
+            ),
           ),
         ],
       );
