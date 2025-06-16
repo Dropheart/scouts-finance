@@ -57,6 +57,9 @@ class _ScoutDetailsViewState extends State<ScoutDetailsView> {
     }
 
     final body = ListView(children: [
+      Text('Scout Details:',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 8),
       Table(
         columnWidths: {
           0: IntrinsicColumnWidth(),
@@ -78,13 +81,21 @@ class _ScoutDetailsViewState extends State<ScoutDetailsView> {
             ),
             Text(scout.parent?.fullName ?? "N/A"),
           ]),
+          TableRow(children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text("Group",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Text(scout.scoutGroup?.name ?? "N/A"),
+          ]),
         ],
       ),
       const SizedBox(height: 16),
       Text(
-        "Subscribed Events",
+        "Subscribed Events:",
         style: TextStyle(
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),

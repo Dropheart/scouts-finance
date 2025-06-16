@@ -16,6 +16,6 @@ class ScoutsEndpoint extends Endpoint {
   Future<Child?> getChildById(Session session, int id) async {
     // Fetch a specific child by ID
     return await Child.db.findById(session, id,
-        include: Child.include(parent: Parent.include()));
+        include: Child.include(parent: Parent.include(), scoutGroup: ScoutGroup.include()));
   }
 }
