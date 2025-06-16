@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/payment_table.dart';
 import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
@@ -201,7 +202,13 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: submit,
-            child: Text('Classify Payment'),
+            child: Row(
+              children: [
+                Text('Match payment to ${currParent.fullName}'),
+                Spacer(),
+                Icon(Icons.check_rounded),
+              ],
+            ),
           ),
         ],
       );
@@ -209,7 +216,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Classify Payment'),
+        title: const Text('Match Payment'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
