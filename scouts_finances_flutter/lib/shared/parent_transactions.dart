@@ -104,7 +104,8 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
       children: [
         Container(
           constraints: const BoxConstraints(maxHeight: 200),
-          child: Scrollbar( // Vertical scrollbar
+          child: Scrollbar(
+            // Vertical scrollbar
             controller: _verticalScrollController,
             thumbVisibility: true,
             child: SingleChildScrollView(

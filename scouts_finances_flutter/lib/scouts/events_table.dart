@@ -16,7 +16,7 @@ class _ChildEventsTableState extends State<ChildEventsTable> {
   late final List<EventRegistration> registrations;
   bool loading = true;
 
-  final ScrollController _horizontalScrollController =  ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
 
   @override
@@ -100,8 +100,8 @@ class _ChildEventsTableState extends State<ChildEventsTable> {
                                   .toIso8601String()
                                   .split('T')[0])),
                               DataCell(Text(r.event!.name)),
-                              DataCell(
-                                  Text((r.event!.cost / 100).toStringAsFixed(2))),
+                              DataCell(Text(
+                                  (r.event!.cost / 100).toStringAsFixed(2))),
                             ],
                           ),
                         )
