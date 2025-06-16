@@ -26,6 +26,7 @@ payment:
   - updatePayment:
 scoutGroups:
   - getScoutGroups:
+  - createScoutGroup:
 scouts:
   - getChildren:
   - getChildrenOfParent:

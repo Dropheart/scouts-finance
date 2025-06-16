@@ -112,18 +112,36 @@ class _HomePageState extends State<HomePage> {
 
   final selectScoutGroup = Consumer<ScoutGroupsService>(
       builder: (context, scoutGroupsService, child) {
-    return PopupMenuButton(
+    final currentGroup = scoutGroupsService.currentScoutGroup;
+    return PopupMenuButton<ScoutGroup>(
         itemBuilder: (_) {
-          final currentGroup = scoutGroupsService.currentScoutGroup;
           return scoutGroupsService.scoutGroups
               .map((group) => PopupMenuItem(
                     value: group,
-                    enabled: currentGroup.id != group.id,
-                    child: Text(group.name),
+                    // enabled: group.id != currentGroup.id,
+                    child: Text(group.name,
+                        style: TextStyle(
+                          fontWeight: group.id == currentGroup.id
+                              ? FontWeight.w900
+                              : FontWeight.normal,
+                        )),
                   ))
-              .toList();
+              .toList()
+            ..add(PopupMenuItem(
+                value: ScoutGroup(name: ''), child: Text('+ Add New Group')));
         },
         onSelected: (group) {
+          if (group == currentGroup) return;
+          // Horrible, horrible workaround because if selection is null, onSelected isn't called.
+          // Instead, onCancelled is called... which is also called when the user taps outside the menu.
+          // MenuAnchor is preferred over PopupMenuButton ... but it is not animated and thus is inconsistent
+          /// with the options next to this button. There are ways to animate it, but they're more pain than
+          /// they're worth. There's a PR to animate MenuAnchor but it hasn't been merged yet.
+          /// Pain.
+          if (group.id == null) {
+            scoutGroupsService.showCreateScoutGroupPopup(context);
+            return;
+          }
           scoutGroupsService.setCurrentScoutGroup(group);
         },
         icon: Icon(Icons.groups));

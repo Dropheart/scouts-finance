@@ -17,8 +17,9 @@ import '../payments.dart' as _i5;
 import '../scout_groups.dart' as _i6;
 import '../scouts.dart' as _i7;
 import 'package:scouts_finances_server/src/generated/protocol.dart' as _i8;
-import 'package:scouts_finances_server/src/generated/parent.dart' as _i9;
-import 'package:scouts_finances_server/src/generated/payment.dart' as _i10;
+import 'package:serverpod/src/database/concepts/transaction.dart' as _i9;
+import 'package:scouts_finances_server/src/generated/parent.dart' as _i10;
+import 'package:scouts_finances_server/src/generated/payment.dart' as _i11;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -170,6 +171,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int>(),
               nullable: false,
             ),
+            'transaction': _i1.ParameterDescription(
+              name: 'transaction',
+              type: _i1.getType<_i9.Transaction?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -179,6 +185,7 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             params['eventId'],
             params['childId'],
+            transaction: params['transaction'],
           ),
         ),
         'registerChildrenForEvent': _i1.MethodConnector(
@@ -315,7 +322,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'parent': _i1.ParameterDescription(
               name: 'parent',
-              type: _i1.getType<_i9.Parent>(),
+              type: _i1.getType<_i10.Parent>(),
               nullable: false,
             )
           },
@@ -396,7 +403,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'payment': _i1.ParameterDescription(
               name: 'payment',
-              type: _i1.getType<_i10.Payment>(),
+              type: _i1.getType<_i11.Payment>(),
               nullable: false,
             )
           },
@@ -456,8 +463,13 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'parent': _i1.ParameterDescription(
               name: 'parent',
-              type: _i1.getType<_i9.Parent>(),
+              type: _i1.getType<_i10.Parent>(),
               nullable: false,
+            ),
+            'transaction': _i1.ParameterDescription(
+              name: 'transaction',
+              type: _i1.getType<_i9.Transaction?>(),
+              nullable: true,
             ),
           },
           call: (
@@ -468,6 +480,7 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             params['paymentId'],
             params['parent'],
+            transaction: params['transaction'],
           ),
         ),
       },
@@ -485,7 +498,26 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['scoutGroups'] as _i6.ScoutGroupsEndpoint)
                   .getScoutGroups(session),
-        )
+        ),
+        'createScoutGroup': _i1.MethodConnector(
+          name: 'createScoutGroup',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['scoutGroups'] as _i6.ScoutGroupsEndpoint)
+                  .createScoutGroup(
+            session,
+            params['name'],
+          ),
+        ),
       },
     );
     connectors['scouts'] = _i1.EndpointConnector(
