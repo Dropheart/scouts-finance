@@ -17,10 +17,18 @@ class _ParentHomeState extends State<ParentHome> {
   String? errorMessage;
   bool loading = true;
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _getParents();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _getParents() async {
@@ -158,6 +166,7 @@ class _ParentHomeState extends State<ParentHome> {
           .toList();
 
       body = ListView(
+        controller: _scrollController,
         children: [
           outstandingCards.isEmpty
               ? const SizedBox.shrink()
