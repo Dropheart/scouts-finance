@@ -196,7 +196,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         ));
       }
 
-      body = Column(
+      body = ListView(
         children: [
           PaymentTable(payment: payment!),
           const SizedBox(height: 16),
