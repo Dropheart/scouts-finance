@@ -16,7 +16,8 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
   late final List<Transaction> transactions;
   bool loading = true;
 
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
 
   @override
   void initState() {
@@ -26,7 +27,8 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _verticalScrollController.dispose();
+    _horizontalScrollController.dispose();
     super.dispose();
   }
 
@@ -102,36 +104,40 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
       children: [
         Container(
           constraints: const BoxConstraints(maxHeight: 200),
-          child: Scrollbar(
-            controller: _scrollController,
+          child: Scrollbar( // Vertical scrollbar
+            controller: _verticalScrollController,
             thumbVisibility: true,
             child: SingleChildScrollView(
-              controller: _scrollController,
+              controller: _verticalScrollController,
               scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(right: 16.0),
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 24.0,
-                  columns: const [
-                    DataColumn(label: Text('Date')),
-                    DataColumn(label: Text('Description')),
-                    DataColumn(label: Text('Amount (£)')),
-                  ],
-                  rows: transactions
-                      .map(
-                        (tx) => DataRow(
-                          cells: [
-                            DataCell(Text(tx.date
-                                .toLocal()
-                                .toIso8601String()
-                                .split('T')[0])),
-                            DataCell(Text(tx.description)),
-                            DataCell(Text(tx.amount.toStringAsFixed(2))),
-                          ],
-                        ),
-                      )
-                      .toList(),
+              child: Scrollbar( // Horizontal scrollbar
+                controller: _horizontalScrollController,
+                child: SingleChildScrollView(
+                  controller: _horizontalScrollController,
+                  padding: const EdgeInsets.only(right: 16.0),
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 24.0,
+                    columns: const [
+                      DataColumn(label: Text('Date')),
+                      DataColumn(label: Text('Description')),
+                      DataColumn(label: Text('Amount (£)')),
+                    ],
+                    rows: transactions
+                        .map(
+                          (tx) => DataRow(
+                            cells: [
+                              DataCell(Text(tx.date
+                                  .toLocal()
+                                  .toIso8601String()
+                                  .split('T')[0])),
+                              DataCell(Text(tx.description)),
+                              DataCell(Text(tx.amount.toStringAsFixed(2))),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
               ),
             ),

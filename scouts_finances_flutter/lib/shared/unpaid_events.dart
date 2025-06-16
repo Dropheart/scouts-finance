@@ -16,7 +16,8 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
   late final List<EventRegistration> registrations;
   bool loading = true;
 
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
 
   @override
   void initState() {
@@ -42,7 +43,8 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _verticalScrollController.dispose();
+    _horizontalScrollController.dispose();
     super.dispose();
   }
 
@@ -71,38 +73,42 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
         Container(
           constraints: const BoxConstraints(maxHeight: 200),
           child: Scrollbar(
-            controller: _scrollController,
+            controller: _verticalScrollController,
             thumbVisibility: true,
             child: SingleChildScrollView(
+              controller: _verticalScrollController,
               scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                padding: const EdgeInsets.only(right: 16.0),
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 24.0,
-                  columns: const [
-                    DataColumn(label: Text('Date')),
-                    DataColumn(label: Text('Event')),
-                    DataColumn(label: Text('Child')),
-                    DataColumn(label: Text('Amount (£)')),
-                  ],
-                  rows: registrations
-                      .map(
-                        (r) => DataRow(
-                          cells: [
-                            DataCell(Text(r.event!.date
-                                .toLocal()
-                                .toIso8601String()
-                                .split('T')[0])),
-                            DataCell(Text(r.event!.name)),
-                            DataCell(Text(r.child!.firstName)),
-                            DataCell(
-                                Text((r.event!.cost / 100).toStringAsFixed(2))),
-                          ],
-                        ),
-                      )
-                      .toList(),
+              child: Scrollbar(
+                controller: _horizontalScrollController,
+                child: SingleChildScrollView(
+                  controller: _horizontalScrollController,
+                  padding: const EdgeInsets.only(right: 16.0),
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 24.0,
+                    columns: const [
+                      DataColumn(label: Text('Date')),
+                      DataColumn(label: Text('Event')),
+                      DataColumn(label: Text('Child')),
+                      DataColumn(label: Text('Amount (£)')),
+                    ],
+                    rows: registrations
+                        .map(
+                          (r) => DataRow(
+                            cells: [
+                              DataCell(Text(r.event!.date
+                                  .toLocal()
+                                  .toIso8601String()
+                                  .split('T')[0])),
+                              DataCell(Text(r.event!.name)),
+                              DataCell(Text(r.child!.firstName)),
+                              DataCell(
+                                  Text((r.event!.cost / 100).toStringAsFixed(2))),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
               ),
             ),
