@@ -97,7 +97,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
       Row parentSelection = Row(children: [
-        Text("Assign this payment to parent: "),
+        Text("Match this payment to parent: ", style:  TextStyle(fontSize: 16)),
         ParentDropdown(
           parents: parents,
           defaultParentId: parents[parentIndex].id,
@@ -133,54 +133,59 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
       if (toBePaidEvents.isNotEmpty) {
         clearedEventsInfo.add(const Text(
           "This payment will mark the following events as paid:",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 16,),
         ));
         clearedEventsInfo.add(Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              alignment: Alignment.topCenter,
-              constraints: const BoxConstraints(maxHeight: 200),
-              child: Scrollbar(
-                thumbVisibility: true,
+            Scrollbar(
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
                 child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columnSpacing: 24.0,
-                      columns: const [
-                        DataColumn(label: Text('Date')),
-                        DataColumn(label: Text('Child')),
-                        DataColumn(label: Text('Event')),
-                        DataColumn(label: Text('Cost (£)')),
-                      ],
-                      rows: toBePaidEvents
-                          .map(
-                            (event) => DataRow(
-                              cells: [
-                                DataCell(Text(
-                                  event.event!.date
-                                      .toIso8601String()
-                                      .split('T')[0],
-                                )),
-                                DataCell(Text(
-                                    '${event.child!.firstName} ${event.child!.lastName}')),
-                                DataCell(Text(event.event!.name)),
-                                DataCell(Text(formatMoney(event.event!.cost))),
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
+                  padding: const EdgeInsets.only(right: 16.0),
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 24.0,
+                    columns: const [
+                      DataColumn(label: Text('Date')),
+                      DataColumn(label: Text('Child')),
+                      DataColumn(label: Text('Event')),
+                      DataColumn(label: Text('Cost (£)')),
+                    ],
+                    rows: toBePaidEvents
+                        .map(
+                          (event) => DataRow(
+                            cells: [
+                              DataCell(Text(
+                                event.event!.date
+                                    .toIso8601String()
+                                    .split('T')[0],
+                              )),
+                              DataCell(Text(
+                                  '${event.child!.firstName} ${event.child!.lastName}')),
+                              DataCell(Text(event.event!.name)),
+                              DataCell(Text(formatMoney(event.event!.cost), style: TextStyle(fontWeight: FontWeight.bold))),
+                            ],
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
             ),
-            Text(
-              'Leaving a balance of ${formatMoney(bal)}.',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+                children: [
+                  const TextSpan(text: 'Leaving a balance of '),
+                  TextSpan(
+                    text: formatMoney(bal),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: '.'),
+                ],
+              ),
             ),
           ],
         ));
@@ -197,9 +202,24 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           const SizedBox(height: 16),
           Column(children: [parentSelection]),
           const SizedBox(height: 32),
-          Text(
-              "This will change ${currParent.firstName}'s balance from ${formatMoney(currParent.balance)} to ${formatMoney(currParent.balance + payment!.amount)}.",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(fontSize: 16, color: Colors.black),
+              children: [
+                TextSpan(text: "This will change ${currParent.firstName}'s balance from "),
+                TextSpan(
+                  text: formatMoney(currParent.balance),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: " to "),
+                TextSpan(
+                  text: formatMoney(currParent.balance + payment!.amount),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: "."),
+              ],
+            ),
+          ),
           ...clearedEventsInfo,
           const SizedBox(height: 16),
           ElevatedButton(
