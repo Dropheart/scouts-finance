@@ -150,6 +150,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                     child: DataTable(
                       columnSpacing: 24.0,
                       columns: const [
+                        DataColumn(label: Text('Date')),
                         DataColumn(label: Text('Child')),
                         DataColumn(label: Text('Event')),
                         DataColumn(label: Text('Cost (£)')),
@@ -158,6 +159,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                           .map(
                             (event) => DataRow(
                               cells: [
+                                DataCell(Text(
+                                  event.event!.date.toIso8601String().split('T')[0],
+                                )),
                                 DataCell(Text(
                                     '${event.child!.firstName} ${event.child!.lastName}')),
                                 DataCell(Text(event.event!.name)),
