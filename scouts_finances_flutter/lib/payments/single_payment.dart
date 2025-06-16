@@ -98,7 +98,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
       Row parentSelection = Row(children: [
-        Text("Match this payment to parent: ", style:  TextStyle(fontSize: 16)),
+        Text("Match this payment to parent: ", style: TextStyle(fontSize: 16)),
         ParentDropdown(
           parents: parents,
           defaultParentId: parents[parentIndex].id,
@@ -134,7 +134,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
       if (toBePaidEvents.isNotEmpty) {
         clearedEventsInfo.add(const Text(
           "This payment will mark the following events as paid:",
-          style: TextStyle(fontSize: 16,),
+          style: TextStyle(
+            fontSize: 16,
+          ),
         ));
         clearedEventsInfo.add(Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +168,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                               DataCell(Text(
                                   '${event.child!.firstName} ${event.child!.lastName}')),
                               DataCell(Text(event.event!.name)),
-                              DataCell(Text(formatMoney(event.event!.cost), style: TextStyle(fontWeight: FontWeight.bold))),
+                              DataCell(Text(formatMoney(event.event!.cost),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
                             ],
                           ),
                         )
@@ -202,25 +206,31 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           PaymentTable(payment: payment!),
           const SizedBox(height: 16),
           Column(children: [parentSelection]),
-          ElevatedButton(child: Row(
-            children: [
-              Text('See ${parents[parentIndex].firstName}\'s details and payment history'),
-              Spacer(),
-              Icon(Icons.arrow_forward_rounded),
-            ],
-          ), onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ParentDetails(parentId: currParent.id!),
-              ),
-            );
-          },),
+          ElevatedButton(
+            child: Row(
+              children: [
+                Text(
+                    'See ${parents[parentIndex].firstName}\'s details and payment history'),
+                Spacer(),
+                Icon(Icons.arrow_forward_rounded),
+              ],
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ParentDetails(parentId: currParent.id!),
+                ),
+              );
+            },
+          ),
           const SizedBox(height: 16),
           RichText(
             text: TextSpan(
               style: const TextStyle(fontSize: 16, color: Colors.black),
               children: [
-                TextSpan(text: "This will change ${currParent.firstName}'s balance from "),
+                TextSpan(
+                    text:
+                        "This will change ${currParent.firstName}'s balance from "),
                 TextSpan(
                   text: formatMoney(currParent.balance),
                   style: const TextStyle(fontWeight: FontWeight.bold),
