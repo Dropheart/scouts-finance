@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/parents/parent_details.dart';
 import 'package:scouts_finances_flutter/payments/payment_table.dart';
 import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
 
@@ -201,7 +202,20 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           PaymentTable(payment: payment!),
           const SizedBox(height: 16),
           Column(children: [parentSelection]),
-          const SizedBox(height: 32),
+          ElevatedButton(child: Row(
+            children: [
+              Text('See ${parents[parentIndex].firstName}\'s details and payment history'),
+              Spacer(),
+              Icon(Icons.arrow_forward_rounded),
+            ],
+          ), onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ParentDetails(parentId: currParent.id!),
+              ),
+            );
+          },),
+          const SizedBox(height: 16),
           RichText(
             text: TextSpan(
               style: const TextStyle(fontSize: 16, color: Colors.black),
