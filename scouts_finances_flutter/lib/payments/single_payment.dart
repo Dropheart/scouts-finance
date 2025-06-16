@@ -161,7 +161,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                             (event) => DataRow(
                               cells: [
                                 DataCell(Text(
-                                  event.event!.date.toIso8601String().split('T')[0],
+                                  event.event!.date
+                                      .toIso8601String()
+                                      .split('T')[0],
                                 )),
                                 DataCell(Text(
                                     '${event.child!.firstName} ${event.child!.lastName}')),

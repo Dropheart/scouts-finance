@@ -27,8 +27,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       final matchedPayments = result.where((p) => p.parent != null).toList();
       matchedPayments.sort((a, b) => a.date.compareTo(b.date));
 
-      final unmatchedPayments =
-          result.where((p) => p.parent == null).toList();
+      final unmatchedPayments = result.where((p) => p.parent == null).toList();
       unmatchedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
@@ -86,8 +85,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> matchedPaymentCards =
-        filteredMatchedPayments.map((payment) {
+    List<Card> matchedPaymentCards = filteredMatchedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
@@ -110,8 +108,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
 
     if (uncmatchedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
-          title: Text(
-              'Unmatched Payments - ${uncmatchedPaymentCards.length}'),
+          title: Text('Unmatched Payments - ${uncmatchedPaymentCards.length}'),
           initiallyExpanded: true,
           controlAffinity: ListTileControlAffinity.leading,
           shape: const Border(),
