@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/scouts/scout_details.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 
 class ScoutsHome extends StatefulWidget {
   const ScoutsHome({super.key});
@@ -61,19 +63,6 @@ class _ScoutsHomeState extends State<ScoutsHome> {
           .contains(searchTerm);
     }).toList();
 
-    List<Card> childCards = filteredChildren.map((child) {
-      return Card(
-          child: ListTile(
-        title: Text('${child.firstName} ${child.lastName}'),
-        subtitle: Text('Section, finance overview here'),
-        onTap: () async {
-          await Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ScoutDetailsView(scoutId: child.id!)));
-        },
-        trailing: const Icon(Icons.arrow_forward),
-      ));
-    }).toList();
-
     SearchBar searchBar = SearchBar(
       onChanged: (value) {
         setState(() {
@@ -87,13 +76,32 @@ class _ScoutsHomeState extends State<ScoutsHome> {
       hintText: 'Search by name...',
     );
 
-    ListView body = ListView(
-      children: [
-        searchBar,
-        SizedBox(height: 16.0),
-        ...childCards,
-      ],
-    );
+    Widget body = Consumer<ScoutGroupsService>(builder: (ctx, value, child) {
+      final currentChildren = filteredChildren
+          .where((child) => child.scoutGroupId == value.currentScoutGroup.id)
+          .toList();
+
+      List<Card> childCards = currentChildren.map((child) {
+        return Card(
+            child: ListTile(
+          title: Text('${child.firstName} ${child.lastName}'),
+          subtitle: Text('Section, finance overview here'),
+          onTap: () async {
+            await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ScoutDetailsView(scoutId: child.id!)));
+          },
+          trailing: const Icon(Icons.arrow_forward),
+        ));
+      }).toList();
+
+      return ListView(
+        children: [
+          searchBar,
+          SizedBox(height: 16.0),
+          ...childCards,
+        ],
+      );
+    });
 
     return Scaffold(
       body: Center(

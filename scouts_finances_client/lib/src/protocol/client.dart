@@ -14,10 +14,12 @@ import 'dart:async' as _i2;
 import 'package:scouts_finances_client/src/protocol/events.dart' as _i3;
 import 'package:scouts_finances_client/src/protocol/event_registration.dart'
     as _i4;
-import 'package:scouts_finances_client/src/protocol/parent.dart' as _i5;
-import 'package:scouts_finances_client/src/protocol/payment.dart' as _i6;
-import 'package:scouts_finances_client/src/protocol/child.dart' as _i7;
-import 'protocol.dart' as _i8;
+import 'package:serverpod/src/database/concepts/transaction.dart' as _i5;
+import 'package:scouts_finances_client/src/protocol/parent.dart' as _i6;
+import 'package:scouts_finances_client/src/protocol/payment.dart' as _i7;
+import 'package:scouts_finances_client/src/protocol/scout_group.dart' as _i8;
+import 'package:scouts_finances_client/src/protocol/child.dart' as _i9;
+import 'protocol.dart' as _i10;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -65,6 +67,7 @@ class EndpointEvent extends _i1.EndpointRef {
     String name,
     int cost,
     DateTime? date,
+    int groupId,
   ) =>
       caller.callServerEndpoint<List<_i3.Event>>(
         'event',
@@ -73,19 +76,22 @@ class EndpointEvent extends _i1.EndpointRef {
           'name': name,
           'cost': cost,
           'date': date,
+          'groupId': groupId,
         },
       );
 
   _i2.Future<_i4.EventRegistration> registerChildForEvent(
     int eventId,
-    int childId,
-  ) =>
+    int childId, {
+    _i5.Transaction? transaction,
+  }) =>
       caller.callServerEndpoint<_i4.EventRegistration>(
         'event',
         'registerChildForEvent',
         {
           'eventId': eventId,
           'childId': childId,
+          'transaction': transaction,
         },
       );
 
@@ -133,15 +139,15 @@ class EndpointParent extends _i1.EndpointRef {
   @override
   String get name => 'parent';
 
-  _i2.Future<List<_i5.Parent>> getParents() =>
-      caller.callServerEndpoint<List<_i5.Parent>>(
+  _i2.Future<List<_i6.Parent>> getParents() =>
+      caller.callServerEndpoint<List<_i6.Parent>>(
         'parent',
         'getParents',
         {},
       );
 
-  _i2.Future<_i5.Parent?> getParentById(int id) =>
-      caller.callServerEndpoint<_i5.Parent?>(
+  _i2.Future<_i6.Parent?> getParentById(int id) =>
+      caller.callServerEndpoint<_i6.Parent?>(
         'parent',
         'getParentById',
         {'id': id},
@@ -160,7 +166,7 @@ class EndpointParent extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> addParent(_i5.Parent parent) =>
+  _i2.Future<void> addParent(_i6.Parent parent) =>
       caller.callServerEndpoint<void>(
         'parent',
         'addParent',
@@ -196,29 +202,29 @@ class EndpointPayment extends _i1.EndpointRef {
   @override
   String get name => 'payment';
 
-  _i2.Future<List<_i6.Payment>> getPayments() =>
-      caller.callServerEndpoint<List<_i6.Payment>>(
+  _i2.Future<List<_i7.Payment>> getPayments() =>
+      caller.callServerEndpoint<List<_i7.Payment>>(
         'payment',
         'getPayments',
         {},
       );
 
-  _i2.Future<List<_i6.Payment>> insertPayment(_i6.Payment payment) =>
-      caller.callServerEndpoint<List<_i6.Payment>>(
+  _i2.Future<List<_i7.Payment>> insertPayment(_i7.Payment payment) =>
+      caller.callServerEndpoint<List<_i7.Payment>>(
         'payment',
         'insertPayment',
         {'payment': payment},
       );
 
-  _i2.Future<_i6.Payment?> getPaymentById(int paymentId) =>
-      caller.callServerEndpoint<_i6.Payment?>(
+  _i2.Future<_i7.Payment?> getPaymentById(int paymentId) =>
+      caller.callServerEndpoint<_i7.Payment?>(
         'payment',
         'getPaymentById',
         {'paymentId': paymentId},
       );
 
-  _i2.Future<List<_i6.Payment>> getPaymentsByParentId(int parentId) =>
-      caller.callServerEndpoint<List<_i6.Payment>>(
+  _i2.Future<List<_i7.Payment>> getPaymentsByParentId(int parentId) =>
+      caller.callServerEndpoint<List<_i7.Payment>>(
         'payment',
         'getPaymentsByParentId',
         {'parentId': parentId},
@@ -226,15 +232,39 @@ class EndpointPayment extends _i1.EndpointRef {
 
   _i2.Future<void> updatePayment(
     int paymentId,
-    _i5.Parent parent,
-  ) =>
+    _i6.Parent parent, {
+    _i5.Transaction? transaction,
+  }) =>
       caller.callServerEndpoint<void>(
         'payment',
         'updatePayment',
         {
           'paymentId': paymentId,
           'parent': parent,
+          'transaction': transaction,
         },
+      );
+}
+
+/// {@category Endpoint}
+class EndpointScoutGroups extends _i1.EndpointRef {
+  EndpointScoutGroups(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'scoutGroups';
+
+  _i2.Future<List<_i8.ScoutGroup>> getScoutGroups() =>
+      caller.callServerEndpoint<List<_i8.ScoutGroup>>(
+        'scoutGroups',
+        'getScoutGroups',
+        {},
+      );
+
+  _i2.Future<_i8.ScoutGroup> createScoutGroup(String name) =>
+      caller.callServerEndpoint<_i8.ScoutGroup>(
+        'scoutGroups',
+        'createScoutGroup',
+        {'name': name},
       );
 }
 
@@ -245,22 +275,22 @@ class EndpointScouts extends _i1.EndpointRef {
   @override
   String get name => 'scouts';
 
-  _i2.Future<List<_i7.Child>> getChildren() =>
-      caller.callServerEndpoint<List<_i7.Child>>(
+  _i2.Future<List<_i9.Child>> getChildren() =>
+      caller.callServerEndpoint<List<_i9.Child>>(
         'scouts',
         'getChildren',
         {},
       );
 
-  _i2.Future<List<_i7.Child>> getChildrenOfParent(int parentId) =>
-      caller.callServerEndpoint<List<_i7.Child>>(
+  _i2.Future<List<_i9.Child>> getChildrenOfParent(int parentId) =>
+      caller.callServerEndpoint<List<_i9.Child>>(
         'scouts',
         'getChildrenOfParent',
         {'parentId': parentId},
       );
 
-  _i2.Future<_i7.Child?> getChildById(int id) =>
-      caller.callServerEndpoint<_i7.Child?>(
+  _i2.Future<_i9.Child?> getChildById(int id) =>
+      caller.callServerEndpoint<_i9.Child?>(
         'scouts',
         'getChildById',
         {'id': id},
@@ -283,7 +313,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i8.Protocol(),
+          _i10.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -297,6 +327,7 @@ class Client extends _i1.ServerpodClientShared {
     event = EndpointEvent(this);
     parent = EndpointParent(this);
     payment = EndpointPayment(this);
+    scoutGroups = EndpointScoutGroups(this);
     scouts = EndpointScouts(this);
   }
 
@@ -308,6 +339,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointPayment payment;
 
+  late final EndpointScoutGroups scoutGroups;
+
   late final EndpointScouts scouts;
 
   @override
@@ -316,6 +349,7 @@ class Client extends _i1.ServerpodClientShared {
         'event': event,
         'parent': parent,
         'payment': payment,
+        'scoutGroups': scoutGroups,
         'scouts': scouts,
       };
 

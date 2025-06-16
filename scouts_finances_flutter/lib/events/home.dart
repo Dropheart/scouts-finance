@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/events/add.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 
 typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
 
@@ -87,10 +89,9 @@ class _EventHomeState extends State<EventHome> {
     filteredEvents.sort((a, b) {
       switch (sortIndex) {
         case 0: // Upcoming First
-          return b.date.compareTo(a.date);
-        case 1: // Upcoming Last
           return a.date.compareTo(b.date);
-        // Paid count tbd
+        case 1: // Upcoming Last
+          return b.date.compareTo(a.date);
         case 2: // Most Paid
           final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
           final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
@@ -104,29 +105,42 @@ class _EventHomeState extends State<EventHome> {
       }
     });
 
-    List<Card> eventCards = filteredEvents.map((event) {
-      final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+    Widget eventExpansionTile =
+        Consumer<ScoutGroupsService>(builder: (context, value, child) {
+      final relevantEvents = filteredEvents
+          .where((e) => e.scoutGroupId == value.currentScoutGroup.id)
+          .toList();
 
-      return Card(
-        child: ListTile(
-          title: Text(event.name),
-          subtitle: Row(
-            children: [
-              Text('$paid/$total Paid'),
-              const Spacer(),
-              Icon(Icons.calendar_today, size: 14),
-              const SizedBox(width: 4.0),
-              Text(event.date.toLocal().toIso8601String().split('T')[0]),
-            ],
+      List<Card> eventCards = relevantEvents.map((event) {
+        final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+
+        return Card(
+          child: ListTile(
+            title: Text(event.name),
+            subtitle: Row(
+              children: [
+                Text('$paid/$total Paid'),
+                const Spacer(),
+                Icon(Icons.calendar_today, size: 14),
+                const SizedBox(width: 4.0),
+                Text(event.date.toLocal().toIso8601String().split('T')[0]),
+              ],
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SingleEvent(eventId: event.id!)));
+            },
+            trailing: const Icon(Icons.arrow_forward),
           ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SingleEvent(eventId: event.id!)));
-          },
-          trailing: const Icon(Icons.arrow_forward),
-        ),
-      );
-    }).toList();
+        );
+      }).toList();
+
+      return ExpansionTile(
+          title: const Text('Future Events'),
+          initiallyExpanded: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          children: eventCards);
+    });
 
     SearchBar searchBar = SearchBar(
       hintText: 'Search by name...',
@@ -168,11 +182,7 @@ class _EventHomeState extends State<EventHome> {
     ListView body = ListView(children: [
       searchBar,
       sortSelection,
-      ExpansionTile(
-          title: const Text('Future Events'),
-          initiallyExpanded: true,
-          controlAffinity: ListTileControlAffinity.leading,
-          children: eventCards),
+      eventExpansionTile,
       //   child: ListView(children: [
       // ...eventCards,
       ExpansionTile(

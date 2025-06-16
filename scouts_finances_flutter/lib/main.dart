@@ -6,6 +6,7 @@ import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/popups.dart';
 import 'package:scouts_finances_flutter/scouts/home.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -27,19 +28,32 @@ void main() async {
   final themeService = ThemeService();
   await themeService.loadTheme();
 
-  runApp(MyApp(themeService: themeService));
+  final scoutGroupsService = ScoutGroupsService();
+  await scoutGroupsService.getScoutGroups();
+
+  runApp(MyApp(
+    themeService: themeService,
+    scoutGroupsService: scoutGroupsService,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final ThemeService themeService;
+  final ScoutGroupsService scoutGroupsService;
 
-  const MyApp({super.key, required this.themeService});
+  const MyApp(
+      {super.key,
+      required this.themeService,
+      required this.scoutGroupsService});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: themeService,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: themeService),
+        ChangeNotifierProvider.value(value: scoutGroupsService)
+      ],
       child: Consumer<ThemeService>(
         builder: (context, themeService, child) {
           return MaterialApp(
@@ -96,6 +110,43 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
+  final selectScoutGroup = Consumer<ScoutGroupsService>(
+      builder: (context, scoutGroupsService, child) {
+    final currentGroup = scoutGroupsService.currentScoutGroup;
+    return PopupMenuButton<ScoutGroup>(
+        itemBuilder: (_) {
+          return scoutGroupsService.scoutGroups
+              .map((group) => PopupMenuItem(
+                    value: group,
+                    // enabled: group.id != currentGroup.id,
+                    child: Text(group.name,
+                        style: TextStyle(
+                          fontWeight: group.id == currentGroup.id
+                              ? FontWeight.w900
+                              : FontWeight.normal,
+                        )),
+                  ))
+              .toList()
+            ..add(PopupMenuItem(
+                value: ScoutGroup(name: ''), child: Text('+ Add New Group')));
+        },
+        onSelected: (group) {
+          if (group == currentGroup) return;
+          // Horrible, horrible workaround because if selection is null, onSelected isn't called.
+          // Instead, onCancelled is called... which is also called when the user taps outside the menu.
+          // MenuAnchor is preferred over PopupMenuButton ... but it is not animated and thus is inconsistent
+          /// with the options next to this button. There are ways to animate it, but they're more pain than
+          /// they're worth. There's a PR to animate MenuAnchor but it hasn't been merged yet.
+          /// Pain.
+          if (group.id == null) {
+            scoutGroupsService.showCreateScoutGroupPopup(context);
+            return;
+          }
+          scoutGroupsService.setCurrentScoutGroup(group);
+        },
+        icon: Icon(Icons.groups));
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +159,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         centerTitle: false,
-        actions: [OptionsMenu(selectedIndex: currentPageIndex)],
+        actions: [
+          selectScoutGroup,
+          OptionsMenu(selectedIndex: currentPageIndex)
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         destinations: destinations,
