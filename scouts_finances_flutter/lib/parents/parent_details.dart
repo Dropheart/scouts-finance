@@ -68,6 +68,8 @@ class _ParentDetailsState extends State<ParentDetails> {
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Parent Details:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
           Row(
             children: [
               Text('Email:',
@@ -114,25 +116,25 @@ class _ParentDetailsState extends State<ParentDetails> {
             ],
           ),
           const SizedBox(height: 8),
-          Row(
+            Wrap(
             children: [
               Text('Children:',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold)),
               ...children.map((child) => TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                      minimumSize: Size(0, 0),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    onPressed: () => {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return ScoutDetailsView(scoutId: child.id!);
-                      })),
-                    },
-                    child: Text(child.fullName),
-                  )),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  minimumSize: Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => {
+                  Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return ScoutDetailsView(scoutId: child.id!);
+                  })),
+                },
+                child: Text(child.fullName),
+                )),
             ],
           ),
           Row(
