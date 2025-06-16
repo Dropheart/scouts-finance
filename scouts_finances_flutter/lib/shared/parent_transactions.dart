@@ -110,34 +110,31 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
             child: SingleChildScrollView(
               controller: _verticalScrollController,
               scrollDirection: Axis.vertical,
-              child: Scrollbar( // Horizontal scrollbar
+              child: SingleChildScrollView(
                 controller: _horizontalScrollController,
-                child: SingleChildScrollView(
-                  controller: _horizontalScrollController,
-                  padding: const EdgeInsets.only(right: 16.0),
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columnSpacing: 24.0,
-                    columns: const [
-                      DataColumn(label: Text('Date')),
-                      DataColumn(label: Text('Description')),
-                      DataColumn(label: Text('Amount (£)')),
-                    ],
-                    rows: transactions
-                        .map(
-                          (tx) => DataRow(
-                            cells: [
-                              DataCell(Text(tx.date
-                                  .toLocal()
-                                  .toIso8601String()
-                                  .split('T')[0])),
-                              DataCell(Text(tx.description)),
-                              DataCell(Text(tx.amount.toStringAsFixed(2))),
-                            ],
-                          ),
-                        )
-                        .toList(),
-                  ),
+                padding: const EdgeInsets.only(right: 16.0),
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columnSpacing: 24.0,
+                  columns: const [
+                    DataColumn(label: Text('Date')),
+                    DataColumn(label: Text('Description')),
+                    DataColumn(label: Text('Amount (£)')),
+                  ],
+                  rows: transactions
+                      .map(
+                        (tx) => DataRow(
+                          cells: [
+                            DataCell(Text(tx.date
+                                .toLocal()
+                                .toIso8601String()
+                                .split('T')[0])),
+                            DataCell(Text(tx.description)),
+                            DataCell(Text(tx.amount.toStringAsFixed(2))),
+                          ],
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),

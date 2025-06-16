@@ -75,40 +75,40 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
           child: Scrollbar(
             controller: _verticalScrollController,
             thumbVisibility: true,
+            trackVisibility: true,
+            notificationPredicate: (ScrollNotification notification) {
+              return notification.depth == 1;
+            },
             child: SingleChildScrollView(
-              controller: _verticalScrollController,
-              scrollDirection: Axis.vertical,
-              child: Scrollbar(
-                controller: _horizontalScrollController,
-                child: SingleChildScrollView(
-                  controller: _horizontalScrollController,
-                  padding: const EdgeInsets.only(right: 16.0),
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columnSpacing: 24.0,
-                    columns: const [
-                      DataColumn(label: Text('Date')),
-                      DataColumn(label: Text('Event')),
-                      DataColumn(label: Text('Child')),
-                      DataColumn(label: Text('Amount (£)')),
-                    ],
-                    rows: registrations
-                        .map(
-                          (r) => DataRow(
-                            cells: [
-                              DataCell(Text(r.event!.date
-                                  .toLocal()
-                                  .toIso8601String()
-                                  .split('T')[0])),
-                              DataCell(Text(r.event!.name)),
-                              DataCell(Text(r.child!.firstName)),
-                              DataCell(
-                                  Text((r.event!.cost / 100).toStringAsFixed(2))),
-                            ],
-                          ),
-                        )
-                        .toList(),
-                  ),
+              controller: _horizontalScrollController,
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                controller: _verticalScrollController,
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  columnSpacing: 24.0,
+                  columns: const [
+                    DataColumn(label: Text('Date')),
+                    DataColumn(label: Text('Event')),
+                    DataColumn(label: Text('Child')),
+                    DataColumn(label: Text('Amount (£)')),
+                  ],
+                  rows: registrations
+                      .map(
+                        (r) => DataRow(
+                          cells: [
+                            DataCell(Text(r.event!.date
+                                .toLocal()
+                                .toIso8601String()
+                                .split('T')[0])),
+                            DataCell(Text(r.event!.name)),
+                            DataCell(Text(r.child!.firstName)),
+                            DataCell(Text(
+                                (r.event!.cost / 100).toStringAsFixed(2))),
+                          ],
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),
