@@ -4,6 +4,7 @@ import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/events/add.dart';
+import 'package:scouts_finances_flutter/services/account_type_service.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 
 typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
@@ -210,31 +211,39 @@ class _EventHomeState extends State<EventHome> {
       const SizedBox(height: 128.0),
     ]);
 
-    FloatingActionButton addEventButton = FloatingActionButton(
-      heroTag: 'addEvent',
-      child: const Icon(Icons.add),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return const AddEventDialog();
+    final addEventButton = Consumer<AccountTypeService>(
+        builder: (context, accountTypeService, child) {
+      final type = accountTypeService.accountType;
+      if (type == AccountType.treasurer) {
+        return const SizedBox.shrink();
+      } else {
+        return FloatingActionButton(
+          heroTag: 'addEvent',
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const AddEventDialog();
+              },
+            ).then((_) {
+              if (!mounted) return;
+              // Use addPostFrameCallback to ensure context is valid after async gap
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text('Event added successfully'),
+                  ),
+                );
+              });
+              // Refresh the event list after adding a new event
+              _getEvents();
+            });
           },
-        ).then((_) {
-          if (!mounted) return;
-          // Use addPostFrameCallback to ensure context is valid after async gap
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.green,
-                content: Text('Event added successfully'),
-              ),
-            );
-          });
-          // Refresh the event list after adding a new event
-          _getEvents();
-        });
-      },
-    );
+        );
+      }
+    });
 
     return Scaffold(
       body: Padding(
