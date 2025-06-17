@@ -6,7 +6,8 @@ class AddParent extends FloatingActionButton {
   final BuildContext context;
   final VoidCallback? onParentAdded;
 
-  const AddParent({super.key, required this.context, this.onParentAdded}) : super(onPressed: null);
+  const AddParent({super.key, required this.context, this.onParentAdded})
+      : super(onPressed: null);
 
   @override
   VoidCallback? get onPressed => () {

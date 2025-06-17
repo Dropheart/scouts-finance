@@ -11,7 +11,8 @@ class ParentHome extends StatefulWidget {
 }
 
 class _ParentHomeState extends State<ParentHome> {
-  final GlobalKey<AllParentsViewState> _allParentsKey = GlobalKey<AllParentsViewState>();
+  final GlobalKey<AllParentsViewState> _allParentsKey =
+      GlobalKey<AllParentsViewState>();
   final tabBar = TabBar(
     isScrollable: false,
     tabs: [
@@ -40,9 +41,12 @@ class _ParentHomeState extends State<ParentHome> {
             ],
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          floatingActionButton: AddParent(context: context, onParentAdded: () {
-            _allParentsKey.currentState?.refresh();
-          },)),
+          floatingActionButton: AddParent(
+            context: context,
+            onParentAdded: () {
+              _allParentsKey.currentState?.refresh();
+            },
+          )),
     );
   }
 }
