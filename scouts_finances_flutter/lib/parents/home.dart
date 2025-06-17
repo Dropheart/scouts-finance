@@ -195,7 +195,7 @@ class _ParentHomeState extends State<ParentHome> {
       ).toList();
 
       List<Card> outstandingCards = (outstandingParents
-            ..sort((a, b) => a.$2.compareTo(b.$2)))
+            ..sort((a, b) => b.$2.compareTo(a.$2)))
           .map(
             (e) => Card(
               child: ListTile(
