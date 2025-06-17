@@ -126,10 +126,8 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
                       .map(
                         (tx) => DataRow(
                           cells: [
-                            DataCell(Text(tx.date
-                                .toLocal()
-                                .toString()
-                                .split(' ')[0])),
+                            DataCell(Text(
+                                tx.date.toLocal().toString().split(' ')[0])),
                             DataCell(Text(tx.description)),
                             DataCell(Text(tx.amount.toStringAsFixed(2))),
                           ],
