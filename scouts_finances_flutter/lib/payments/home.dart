@@ -14,8 +14,8 @@ class PaymentsHome extends StatefulWidget {
 }
 
 class _PaymentsHomeState extends State<PaymentsHome> {
-  late List<Payment> classifiedPayments;
-  late List<Payment> unclassifiedPayments;
+  late List<Payment> matchedPayments;
+  late List<Payment> unmatchedPayments;
   String? err;
   bool loading = true;
   String query = '';
@@ -24,16 +24,15 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     try {
       final result = await client.payment.getPayments();
 
-      final classifiedPayments = result.where((p) => p.parent != null).toList();
-      classifiedPayments.sort((a, b) => a.date.compareTo(b.date));
+      final matchedPayments = result.where((p) => p.parent != null).toList();
+      matchedPayments.sort((a, b) => a.date.compareTo(b.date));
 
-      final unclassifiedPayments =
-          result.where((p) => p.parent == null).toList();
-      unclassifiedPayments.sort((a, b) => a.date.compareTo(b.date));
+      final unmatchedPayments = result.where((p) => p.parent == null).toList();
+      unmatchedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
-        this.classifiedPayments = classifiedPayments;
-        this.unclassifiedPayments = unclassifiedPayments;
+        this.matchedPayments = matchedPayments;
+        this.unmatchedPayments = unmatchedPayments;
         loading = false;
       });
     } catch (e) {
@@ -66,28 +65,27 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }
 
     // Filter payments based on the search query
-    List<Payment> filteredUnclassifiedPayments = unclassifiedPayments
+    List<Payment> filteredUnmatchedPayments = unmatchedPayments
         .where((payment) =>
             payment.payee.toLowerCase().contains(query.toLowerCase()) ||
             (payment.amount / 100).toString().contains(query) ||
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> unclassifiedPaymentCards =
-        filteredUnclassifiedPayments.map((payment) {
+    List<Card> uncmatchedPaymentCards =
+        filteredUnmatchedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
     // Filter payments based on the search query
-    List<Payment> filteredClassifiedPayments = classifiedPayments
+    List<Payment> filteredMatchedPayments = matchedPayments
         .where((payment) =>
             payment.payee.toLowerCase().contains(query.toLowerCase()) ||
             payment.amount.toString().contains(query) ||
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> classifiedPaymentCards =
-        filteredClassifiedPayments.map((payment) {
+    List<Card> matchedPaymentCards = filteredMatchedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
@@ -108,22 +106,21 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       searchBar,
     ];
 
-    if (unclassifiedPaymentCards.isNotEmpty) {
+    if (uncmatchedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
-          title: Text(
-              'Unclassified Payments - ${unclassifiedPaymentCards.length}'),
+          title: Text('Unmatched Payments - ${uncmatchedPaymentCards.length}'),
           initiallyExpanded: true,
           controlAffinity: ListTileControlAffinity.leading,
           shape: const Border(),
-          children: unclassifiedPaymentCards));
+          children: uncmatchedPaymentCards));
     }
 
-    if (classifiedPaymentCards.isNotEmpty) {
+    if (matchedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
-          title: Text('Classified Payments - ${classifiedPaymentCards.length}'),
+          title: Text('Matched Payments - ${matchedPaymentCards.length}'),
           initiallyExpanded: false,
           shape: const Border(),
-          children: classifiedPaymentCards));
+          children: matchedPaymentCards));
     }
 
     body.add(const SizedBox(height: 128.0));
@@ -169,7 +166,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             children: [
               const Icon(Icons.person, size: 14.0),
               const SizedBox(width: 4.0),
-              Text(payment.parent?.fullName ?? 'Unclassified'),
+              Text(payment.parent?.fullName ?? 'Unmatched'),
             ],
           ),
           const Spacer(),

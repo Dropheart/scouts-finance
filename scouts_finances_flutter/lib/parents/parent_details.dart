@@ -68,6 +68,9 @@ class _ParentDetailsState extends State<ParentDetails> {
       body = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Parent Details:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
           Row(
             children: [
               Text('Email:',
@@ -114,7 +117,7 @@ class _ParentDetailsState extends State<ParentDetails> {
             ],
           ),
           const SizedBox(height: 8),
-          Row(
+          Wrap(
             children: [
               Text('Children:',
                   style: const TextStyle(
@@ -137,7 +140,7 @@ class _ParentDetailsState extends State<ParentDetails> {
           ),
           Row(
             children: [
-              Text('Balance:',
+              Text('Credit:',
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(width: 8),
@@ -145,7 +148,7 @@ class _ParentDetailsState extends State<ParentDetails> {
             ],
           ),
           const SizedBox(height: 16),
-          const Text('Transaction History:',
+          const Text('Payment History:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           ParentTransactionTable(
@@ -157,12 +160,17 @@ class _ParentDetailsState extends State<ParentDetails> {
           const SizedBox(height: 8),
           UnpaidEventsTable(parent: parent),
           const SizedBox(height: 8),
-          TextButton.icon(
-            icon: Icon(Icons.send),
-            label: Text('Send registered events reminder'),
+          ElevatedButton(
             onPressed: () {
               client.parent.remindParent(parent.id!);
             },
+            child: const Row(
+              children: [
+                Text('Send registered events reminder'),
+                Spacer(),
+                Icon(Icons.send),
+              ],
+            ),
           ),
         ],
       );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/parents/parent_details.dart';
 import 'package:scouts_finances_flutter/scouts/events_table.dart';
 
 class ScoutDetailsView extends StatefulWidget {
@@ -57,34 +58,59 @@ class _ScoutDetailsViewState extends State<ScoutDetailsView> {
     }
 
     final body = ListView(children: [
-      Table(
-        columnWidths: {
-          0: IntrinsicColumnWidth(),
-        },
+      Text('Scout Details:',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TableRow(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child:
+          Expanded(
+            child: Table(
+              columnWidths: {
+                0: IntrinsicColumnWidth(),
+              },
+              children: [
+                TableRow(children: [
                   Text("Name", style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            Text(scout.fullName),
-          ]),
-          TableRow(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child:
+                  Text(scout.fullName),
+                ]),
+                TableRow(children: [
                   Text("Parent", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () => {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return ParentDetails(parentId: scout.parentId);
+                        })),
+                      },
+                      child: Text(scout.parent!.fullName),
+                    ),
+                  ),
+                ]),
+                TableRow(children: [
+                  Text("Group", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(scout.scoutGroup?.name ?? "N/A"),
+                ]),
+              ],
             ),
-            Text(scout.parent?.fullName ?? "N/A"),
-          ]),
+          ),
+          const Icon(Icons.account_circle, size: 75, color: Colors.blue),
+          const SizedBox(width: 16),
         ],
       ),
       const SizedBox(height: 16),
       Text(
-        "Subscribed Events",
+        "Subscribed Events:",
         style: TextStyle(
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),

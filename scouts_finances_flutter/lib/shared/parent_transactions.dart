@@ -16,10 +16,20 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
   late final List<Transaction> transactions;
   bool loading = true;
 
+  final ScrollController _verticalScrollController = ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _fetchTransactions();
+  }
+
+  @override
+  void dispose() {
+    _verticalScrollController.dispose();
+    _horizontalScrollController.dispose();
+    super.dispose();
   }
 
   void _fetchTransactions() async {
@@ -95,10 +105,14 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
         Container(
           constraints: const BoxConstraints(maxHeight: 200),
           child: Scrollbar(
+            // Vertical scrollbar
+            controller: _verticalScrollController,
             thumbVisibility: true,
             child: SingleChildScrollView(
+              controller: _verticalScrollController,
               scrollDirection: Axis.vertical,
               child: SingleChildScrollView(
+                controller: _horizontalScrollController,
                 padding: const EdgeInsets.only(right: 16.0),
                 scrollDirection: Axis.horizontal,
                 child: DataTable(

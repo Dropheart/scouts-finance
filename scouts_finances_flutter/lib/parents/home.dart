@@ -17,10 +17,18 @@ class _ParentHomeState extends State<ParentHome> {
   String? errorMessage;
   bool loading = true;
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _getParents();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _getParents() async {
@@ -93,19 +101,33 @@ class _ParentHomeState extends State<ParentHome> {
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.email_rounded, size: 14.0),
-                        SizedBox(width: 4.0),
-                        Text(e.email),
-                      ],
+                    Flexible(
+                      child: Row(
+                        children: [
+                          Icon(Icons.email_rounded, size: 14.0),
+                          SizedBox(width: 4.0),
+                          Expanded(
+                              child: Text(
+                            e.email,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          )),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Icon(Icons.phone, size: 14.0),
-                        SizedBox(width: 4.0),
-                        Text(e.phone),
-                      ],
+                    Flexible(
+                      child: Row(
+                        children: [
+                          Icon(Icons.phone, size: 14.0),
+                          SizedBox(width: 4.0),
+                          Expanded(
+                              child: Text(
+                            e.phone,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          )),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -144,6 +166,7 @@ class _ParentHomeState extends State<ParentHome> {
           .toList();
 
       body = ListView(
+        controller: _scrollController,
         children: [
           outstandingCards.isEmpty
               ? const SizedBox.shrink()

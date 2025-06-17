@@ -16,6 +16,9 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
   late final List<EventRegistration> registrations;
   bool loading = true;
 
+  final ScrollController _verticalScrollController = ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +39,13 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
         loading = false;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _verticalScrollController.dispose();
+    _horizontalScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,12 +73,18 @@ class _UnpaidEventsTableState extends State<UnpaidEventsTable> {
         Container(
           constraints: const BoxConstraints(maxHeight: 200),
           child: Scrollbar(
+            controller: _verticalScrollController,
             thumbVisibility: true,
+            trackVisibility: true,
+            notificationPredicate: (ScrollNotification notification) {
+              return notification.depth == 1;
+            },
             child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
+              controller: _horizontalScrollController,
+              scrollDirection: Axis.horizontal,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(right: 16.0),
-                scrollDirection: Axis.horizontal,
+                controller: _verticalScrollController,
+                scrollDirection: Axis.vertical,
                 child: DataTable(
                   columnSpacing: 24.0,
                   columns: const [
