@@ -22,7 +22,8 @@ import 'package:serverpod/src/database/concepts/transaction.dart' as _i7;
 import 'package:scouts_finances_server/src/generated/parent.dart' as _i8;
 import 'package:scouts_finances_server/src/generated/payment.dart' as _i9;
 import 'package:scouts_finances_server/src/generated/scout_group.dart' as _i10;
-import 'package:scouts_finances_server/src/generated/child.dart' as _i11;
+import 'package:scouts_finances_server/src/generated/group_colour.dart' as _i11;
+import 'package:scouts_finances_server/src/generated/child.dart' as _i12;
 import 'package:scouts_finances_server/src/generated/protocol.dart';
 import 'package:scouts_finances_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -895,6 +896,7 @@ class _ScoutGroupsEndpoint {
   _i3.Future<_i10.ScoutGroup> createScoutGroup(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
+    _i11.GroupColour colour,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -907,7 +909,10 @@ class _ScoutGroupsEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'scoutGroups',
           methodName: 'createScoutGroup',
-          parameters: _i1.testObjectToJson({'name': name}),
+          parameters: _i1.testObjectToJson({
+            'name': name,
+            'colour': colour,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
@@ -932,7 +937,7 @@ class _ScoutsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i11.Child>> getChildren(
+  _i3.Future<List<_i12.Child>> getChildren(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -951,7 +956,7 @@ class _ScoutsEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i11.Child>>);
+        ) as _i3.Future<List<_i12.Child>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -959,7 +964,7 @@ class _ScoutsEndpoint {
     });
   }
 
-  _i3.Future<List<_i11.Child>> getChildrenOfParent(
+  _i3.Future<List<_i12.Child>> getChildrenOfParent(
     _i1.TestSessionBuilder sessionBuilder,
     int parentId,
   ) async {
@@ -980,7 +985,7 @@ class _ScoutsEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i11.Child>>);
+        ) as _i3.Future<List<_i12.Child>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -988,7 +993,7 @@ class _ScoutsEndpoint {
     });
   }
 
-  _i3.Future<_i11.Child?> getChildById(
+  _i3.Future<_i12.Child?> getChildById(
     _i1.TestSessionBuilder sessionBuilder,
     int id,
   ) async {
@@ -1009,7 +1014,7 @@ class _ScoutsEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i11.Child?>);
+        ) as _i3.Future<_i12.Child?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

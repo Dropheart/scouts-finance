@@ -5,3 +5,4 @@ fields:
   description: String?
   children: List<Child>?, relation(name=scout_group_children)
   events: List<Event>?, relation(name=scout_group_events)
+  colour: GroupColour

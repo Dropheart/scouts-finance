@@ -44,7 +44,11 @@ class UserInfo {
 class AdminEndpoint extends Endpoint {
   Future<void> resetDb(Session session) async {
     // Hardcode some dummy data into the database for testing purposes.
-    final scoutGroups = ['Beavers', 'Cubs', 'Scouts'];
+    final scoutGroups = [
+      ('Beavers', GroupColour.lightblue),
+      ('Cubs', GroupColour.green),
+      ('Scouts', GroupColour.teal)
+    ];
     final childrenPerGroup = 20;
     final numParents = (childrenPerGroup * 1.5)
         .floor(); // Some parents have children in multiple groups, some don't
@@ -91,8 +95,9 @@ class AdminEndpoint extends Endpoint {
           .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
 
       // Create scout groups
-      final groups =
-          scoutGroups.map((groupName) => ScoutGroup(name: groupName)).toList();
+      final groups = scoutGroups
+          .map((group) => ScoutGroup(name: group.$1, colour: group.$2))
+          .toList();
       final insertedGroups =
           await ScoutGroup.db.insert(session, groups, transaction: t);
 

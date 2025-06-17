@@ -6,8 +6,9 @@ class ScoutGroupsEndpoint extends Endpoint {
     return ScoutGroup.db.find(session);
   }
 
-  Future<ScoutGroup> createScoutGroup(Session session, String name) async {
-    final newGroup = ScoutGroup(name: name);
+  Future<ScoutGroup> createScoutGroup(
+      Session session, String name, GroupColour colour) async {
+    final newGroup = ScoutGroup(name: name, colour: colour);
     return await ScoutGroup.db.insertRow(session, newGroup);
   }
 }

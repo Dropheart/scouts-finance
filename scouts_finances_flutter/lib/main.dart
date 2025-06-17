@@ -127,7 +127,8 @@ class _HomePageState extends State<HomePage> {
                   ))
               .toList()
             ..add(PopupMenuItem(
-                value: ScoutGroup(name: ''), child: Text('+ Add New Group')));
+                value: ScoutGroup(name: '', colour: GroupColour.black),
+                child: Text('+ Add New Group')));
         },
         onSelected: (group) {
           if (group == currentGroup) return;
@@ -141,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             scoutGroupsService.showCreateScoutGroupPopup(context);
             return;
           }
-          scoutGroupsService.setCurrentScoutGroup(group);
+          scoutGroupsService.setCurrentScoutGroup(context, group);
         },
         icon: Icon(Icons.groups));
   });

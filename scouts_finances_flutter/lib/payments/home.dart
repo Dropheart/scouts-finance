@@ -14,8 +14,8 @@ class PaymentsHome extends StatefulWidget {
 }
 
 class _PaymentsHomeState extends State<PaymentsHome> {
-  late List<Payment> matchedPayments;
-  late List<Payment> unmatchedPayments;
+  late List<Payment> attributedPayments;
+  late List<Payment> unattributedPayments;
   String? err;
   bool loading = true;
   String query = '';
@@ -24,15 +24,16 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     try {
       final result = await client.payment.getPayments();
 
-      final matchedPayments = result.where((p) => p.parent != null).toList();
-      matchedPayments.sort((a, b) => a.date.compareTo(b.date));
+      final attributedPayments = result.where((p) => p.parent != null).toList();
+      attributedPayments.sort((a, b) => a.date.compareTo(b.date));
 
-      final unmatchedPayments = result.where((p) => p.parent == null).toList();
-      unmatchedPayments.sort((a, b) => a.date.compareTo(b.date));
+      final unattributedPayments =
+          result.where((p) => p.parent == null).toList();
+      unattributedPayments.sort((a, b) => a.date.compareTo(b.date));
 
       setState(() {
-        this.matchedPayments = matchedPayments;
-        this.unmatchedPayments = unmatchedPayments;
+        this.attributedPayments = attributedPayments;
+        this.unattributedPayments = unattributedPayments;
         loading = false;
       });
     } catch (e) {
@@ -65,27 +66,28 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     }
 
     // Filter payments based on the search query
-    List<Payment> filteredUnmatchedPayments = unmatchedPayments
+    List<Payment> filteredUnattributedPayments = unattributedPayments
         .where((payment) =>
             payment.payee.toLowerCase().contains(query.toLowerCase()) ||
             (payment.amount / 100).toString().contains(query) ||
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> uncmatchedPaymentCards =
-        filteredUnmatchedPayments.map((payment) {
+    List<Card> uncattributedPaymentCards =
+        filteredUnattributedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
     // Filter payments based on the search query
-    List<Payment> filteredMatchedPayments = matchedPayments
+    List<Payment> filteredattributedPayments = attributedPayments
         .where((payment) =>
             payment.payee.toLowerCase().contains(query.toLowerCase()) ||
             payment.amount.toString().contains(query) ||
             payment.date.toLocal().toString().contains(query))
         .toList();
 
-    List<Card> matchedPaymentCards = filteredMatchedPayments.map((payment) {
+    List<Card> attributedPaymentCards =
+        filteredattributedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
@@ -106,22 +108,23 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       searchBar,
     ];
 
-    if (uncmatchedPaymentCards.isNotEmpty) {
+    if (uncattributedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
-          title: Text('Unmatched Payments - ${uncmatchedPaymentCards.length}'),
+          title: Text(
+              'Unattributed Payments - ${uncattributedPaymentCards.length}'),
           initiallyExpanded: true,
           controlAffinity: ListTileControlAffinity.leading,
           shape: const Border(),
-          children: uncmatchedPaymentCards));
+          children: uncattributedPaymentCards));
     }
 
-    if (matchedPaymentCards.isNotEmpty) {
+    if (attributedPaymentCards.isNotEmpty) {
       body.add(ExpansionTile(
-          title: Text('Matched Payments - ${matchedPaymentCards.length}'),
+          title: Text('Attributed Payments - ${attributedPaymentCards.length}'),
           initiallyExpanded: false,
           shape: const Border(),
           controlAffinity: ListTileControlAffinity.leading,
-          children: matchedPaymentCards));
+          children: attributedPaymentCards));
     }
 
     body.add(const SizedBox(height: 128.0));
@@ -167,7 +170,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             children: [
               const Icon(Icons.person, size: 14.0),
               const SizedBox(width: 4.0),
-              Text(payment.parent?.fullName ?? 'Unmatched'),
+              Text(payment.parent?.fullName ?? 'Unattributed'),
             ],
           ),
           const Spacer(),

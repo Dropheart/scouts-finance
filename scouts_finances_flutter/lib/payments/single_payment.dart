@@ -98,7 +98,8 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
       Row parentSelection = Row(children: [
-        Text("Match this payment to parent: ", style: TextStyle(fontSize: 16)),
+        Text("Attribute this payment to a parent: ",
+            style: TextStyle(fontSize: 16)),
         ParentDropdown(
           parents: parents,
           defaultParentId: parents[parentIndex].id,
@@ -250,7 +251,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
             onPressed: submit,
             child: Row(
               children: [
-                Text('Match payment to ${currParent.fullName}'),
+                Text('Attribute payment to ${currParent.fullName}'),
                 Spacer(),
                 Icon(Icons.check_rounded),
               ],
@@ -262,7 +263,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Match Payment'),
+        title: const Text('Attribute Payment'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

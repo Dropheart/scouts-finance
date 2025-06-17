@@ -18,8 +18,9 @@ import 'package:serverpod/src/database/concepts/transaction.dart' as _i5;
 import 'package:scouts_finances_client/src/protocol/parent.dart' as _i6;
 import 'package:scouts_finances_client/src/protocol/payment.dart' as _i7;
 import 'package:scouts_finances_client/src/protocol/scout_group.dart' as _i8;
-import 'package:scouts_finances_client/src/protocol/child.dart' as _i9;
-import 'protocol.dart' as _i10;
+import 'package:scouts_finances_client/src/protocol/group_colour.dart' as _i9;
+import 'package:scouts_finances_client/src/protocol/child.dart' as _i10;
+import 'protocol.dart' as _i11;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -260,11 +261,17 @@ class EndpointScoutGroups extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<_i8.ScoutGroup> createScoutGroup(String name) =>
+  _i2.Future<_i8.ScoutGroup> createScoutGroup(
+    String name,
+    _i9.GroupColour colour,
+  ) =>
       caller.callServerEndpoint<_i8.ScoutGroup>(
         'scoutGroups',
         'createScoutGroup',
-        {'name': name},
+        {
+          'name': name,
+          'colour': colour,
+        },
       );
 }
 
@@ -275,22 +282,22 @@ class EndpointScouts extends _i1.EndpointRef {
   @override
   String get name => 'scouts';
 
-  _i2.Future<List<_i9.Child>> getChildren() =>
-      caller.callServerEndpoint<List<_i9.Child>>(
+  _i2.Future<List<_i10.Child>> getChildren() =>
+      caller.callServerEndpoint<List<_i10.Child>>(
         'scouts',
         'getChildren',
         {},
       );
 
-  _i2.Future<List<_i9.Child>> getChildrenOfParent(int parentId) =>
-      caller.callServerEndpoint<List<_i9.Child>>(
+  _i2.Future<List<_i10.Child>> getChildrenOfParent(int parentId) =>
+      caller.callServerEndpoint<List<_i10.Child>>(
         'scouts',
         'getChildrenOfParent',
         {'parentId': parentId},
       );
 
-  _i2.Future<_i9.Child?> getChildById(int id) =>
-      caller.callServerEndpoint<_i9.Child?>(
+  _i2.Future<_i10.Child?> getChildById(int id) =>
+      caller.callServerEndpoint<_i10.Child?>(
         'scouts',
         'getChildById',
         {'id': id},
@@ -313,7 +320,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i10.Protocol(),
+          _i11.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

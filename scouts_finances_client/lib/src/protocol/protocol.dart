@@ -14,21 +14,23 @@ import 'bank_account.dart' as _i2;
 import 'child.dart' as _i3;
 import 'event_registration.dart' as _i4;
 import 'events.dart' as _i5;
-import 'parent.dart' as _i6;
-import 'payment.dart' as _i7;
-import 'payment_method.dart' as _i8;
-import 'scout_group.dart' as _i9;
-import 'package:scouts_finances_client/src/protocol/events.dart' as _i10;
+import 'group_colour.dart' as _i6;
+import 'parent.dart' as _i7;
+import 'payment.dart' as _i8;
+import 'payment_method.dart' as _i9;
+import 'scout_group.dart' as _i10;
+import 'package:scouts_finances_client/src/protocol/events.dart' as _i11;
 import 'package:scouts_finances_client/src/protocol/event_registration.dart'
-    as _i11;
-import 'package:scouts_finances_client/src/protocol/parent.dart' as _i12;
-import 'package:scouts_finances_client/src/protocol/payment.dart' as _i13;
-import 'package:scouts_finances_client/src/protocol/scout_group.dart' as _i14;
-import 'package:scouts_finances_client/src/protocol/child.dart' as _i15;
+    as _i12;
+import 'package:scouts_finances_client/src/protocol/parent.dart' as _i13;
+import 'package:scouts_finances_client/src/protocol/payment.dart' as _i14;
+import 'package:scouts_finances_client/src/protocol/scout_group.dart' as _i15;
+import 'package:scouts_finances_client/src/protocol/child.dart' as _i16;
 export 'bank_account.dart';
 export 'child.dart';
 export 'event_registration.dart';
 export 'events.dart';
+export 'group_colour.dart';
 export 'parent.dart';
 export 'payment.dart';
 export 'payment_method.dart';
@@ -60,17 +62,20 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i5.Event) {
       return _i5.Event.fromJson(data) as T;
     }
-    if (t == _i6.Parent) {
-      return _i6.Parent.fromJson(data) as T;
+    if (t == _i6.GroupColour) {
+      return _i6.GroupColour.fromJson(data) as T;
     }
-    if (t == _i7.Payment) {
-      return _i7.Payment.fromJson(data) as T;
+    if (t == _i7.Parent) {
+      return _i7.Parent.fromJson(data) as T;
     }
-    if (t == _i8.PaymentMethod) {
-      return _i8.PaymentMethod.fromJson(data) as T;
+    if (t == _i8.Payment) {
+      return _i8.Payment.fromJson(data) as T;
     }
-    if (t == _i9.ScoutGroup) {
-      return _i9.ScoutGroup.fromJson(data) as T;
+    if (t == _i9.PaymentMethod) {
+      return _i9.PaymentMethod.fromJson(data) as T;
+    }
+    if (t == _i10.ScoutGroup) {
+      return _i10.ScoutGroup.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.BankAccount?>()) {
       return (data != null ? _i2.BankAccount.fromJson(data) : null) as T;
@@ -84,17 +89,20 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i5.Event?>()) {
       return (data != null ? _i5.Event.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Parent?>()) {
-      return (data != null ? _i6.Parent.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.GroupColour?>()) {
+      return (data != null ? _i6.GroupColour.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.Payment?>()) {
-      return (data != null ? _i7.Payment.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.Parent?>()) {
+      return (data != null ? _i7.Parent.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.PaymentMethod?>()) {
-      return (data != null ? _i8.PaymentMethod.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.Payment?>()) {
+      return (data != null ? _i8.Payment.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.ScoutGroup?>()) {
-      return (data != null ? _i9.ScoutGroup.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.PaymentMethod?>()) {
+      return (data != null ? _i9.PaymentMethod.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i10.ScoutGroup?>()) {
+      return (data != null ? _i10.ScoutGroup.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<_i3.Child>?>()) {
       return (data != null
@@ -111,8 +119,8 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<_i5.Event>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i10.Event>) {
-      return (data as List).map((e) => deserialize<_i10.Event>(e)).toList()
+    if (t == List<_i11.Event>) {
+      return (data as List).map((e) => deserialize<_i11.Event>(e)).toList()
           as T;
     }
     if (t == Map<int, (int, int)>) {
@@ -131,34 +139,34 @@ class Protocol extends _i1.SerializationManager {
         deserialize<int>(data['p'][1]),
       ) as T;
     }
-    if (t == _i1.getType<(_i10.Event, List<_i11.EventRegistration>)>()) {
+    if (t == _i1.getType<(_i11.Event, List<_i12.EventRegistration>)>()) {
       return (
-        deserialize<_i10.Event>(((data as Map)['p'] as List)[0]),
-        deserialize<List<_i11.EventRegistration>>(data['p'][1]),
+        deserialize<_i11.Event>(((data as Map)['p'] as List)[0]),
+        deserialize<List<_i12.EventRegistration>>(data['p'][1]),
       ) as T;
     }
-    if (t == List<_i11.EventRegistration>) {
+    if (t == List<_i12.EventRegistration>) {
       return (data as List)
-          .map((e) => deserialize<_i11.EventRegistration>(e))
+          .map((e) => deserialize<_i12.EventRegistration>(e))
           .toList() as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
-    if (t == List<_i12.Parent>) {
-      return (data as List).map((e) => deserialize<_i12.Parent>(e)).toList()
+    if (t == List<_i13.Parent>) {
+      return (data as List).map((e) => deserialize<_i13.Parent>(e)).toList()
           as T;
     }
-    if (t == List<_i13.Payment>) {
-      return (data as List).map((e) => deserialize<_i13.Payment>(e)).toList()
+    if (t == List<_i14.Payment>) {
+      return (data as List).map((e) => deserialize<_i14.Payment>(e)).toList()
           as T;
     }
-    if (t == List<_i14.ScoutGroup>) {
-      return (data as List).map((e) => deserialize<_i14.ScoutGroup>(e)).toList()
+    if (t == List<_i15.ScoutGroup>) {
+      return (data as List).map((e) => deserialize<_i15.ScoutGroup>(e)).toList()
           as T;
     }
-    if (t == List<_i15.Child>) {
-      return (data as List).map((e) => deserialize<_i15.Child>(e)).toList()
+    if (t == List<_i16.Child>) {
+      return (data as List).map((e) => deserialize<_i16.Child>(e)).toList()
           as T;
     }
     return super.deserialize<T>(data, t);
@@ -180,16 +188,19 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i5.Event) {
       return 'Event';
     }
-    if (data is _i6.Parent) {
+    if (data is _i6.GroupColour) {
+      return 'GroupColour';
+    }
+    if (data is _i7.Parent) {
       return 'Parent';
     }
-    if (data is _i7.Payment) {
+    if (data is _i8.Payment) {
       return 'Payment';
     }
-    if (data is _i8.PaymentMethod) {
+    if (data is _i9.PaymentMethod) {
       return 'PaymentMethod';
     }
-    if (data is _i9.ScoutGroup) {
+    if (data is _i10.ScoutGroup) {
       return 'ScoutGroup';
     }
     return null;
@@ -213,17 +224,20 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Event') {
       return deserialize<_i5.Event>(data['data']);
     }
+    if (dataClassName == 'GroupColour') {
+      return deserialize<_i6.GroupColour>(data['data']);
+    }
     if (dataClassName == 'Parent') {
-      return deserialize<_i6.Parent>(data['data']);
+      return deserialize<_i7.Parent>(data['data']);
     }
     if (dataClassName == 'Payment') {
-      return deserialize<_i7.Payment>(data['data']);
+      return deserialize<_i8.Payment>(data['data']);
     }
     if (dataClassName == 'PaymentMethod') {
-      return deserialize<_i8.PaymentMethod>(data['data']);
+      return deserialize<_i9.PaymentMethod>(data['data']);
     }
     if (dataClassName == 'ScoutGroup') {
-      return deserialize<_i9.ScoutGroup>(data['data']);
+      return deserialize<_i10.ScoutGroup>(data['data']);
     }
     return super.deserializeByClassName(data);
   }
@@ -246,7 +260,7 @@ Map<String, dynamic>? mapRecordToJson(Record? record) {
       ],
     };
   }
-  if (record is (_i10.Event, List<_i11.EventRegistration>)) {
+  if (record is (_i11.Event, List<_i12.EventRegistration>)) {
     return {
       "p": [
         record.$1,
