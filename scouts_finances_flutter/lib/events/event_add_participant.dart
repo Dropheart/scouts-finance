@@ -18,16 +18,11 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   late List<Child> allChildren;
   int loading = 2;
   String? err;
-  late List<Child> eventChildren;
-  List<Child> selectedChildren = [];
-  List<int> selectedChildrenIndices = [];
+  late List<Child> registeredChildren;
 
   void _getChildren() async {
     try {
       allChildren = await client.scouts.getChildren();
-      setState(() {
-        selectedChildren = [];
-      });
     } catch (e) {
       setState(() {
         allChildren = [];
@@ -40,7 +35,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     final (event, registrations) =
         await client.event.getEventById(widget.eventId);
     setState(() {
-      eventChildren = registrations.map((e) => e.child!).toList();
+      registeredChildren = registrations.map((e) => e.child!).toList();
     });
     loading--;
   }
@@ -67,84 +62,102 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       );
     }
 
-    final unregisteredChildren = allChildren
-        .where((child) => !eventChildren.any((e) => e.id == child.id))
+    final registeredChildrenIndicies = registeredChildren
+        .map((child) =>
+            allChildren.indexWhere((child2) => child2.id == child.id))
+        .where((index) => index >= 0)
         .toList();
 
     final choices = SearchChoices.multiple(
-      selectedItems: selectedChildrenIndices,
-      items: unregisteredChildren
-          .map((child) => DropdownMenuItem<Child>(
-                value: child,
-                child: Text('${child.firstName} ${child.lastName}'),
-              ))
-          .toList(),
-      hint: "Select Scouts",
-      onChanged: (List selections) {
-        setState(() {
-          selectedChildrenIndices = selections.cast<int>();
-          selectedChildren = unregisteredChildren.where((child) {
-            return selections.contains(unregisteredChildren.indexOf(child));
-          }).toList();
-        });
-      },
-      closeButton: (selectedChildren) {
-        return (selectedChildren.isEmpty
-            ? "None selected"
-            : "${selectedChildren.length} selected");
-      },
-      isExpanded: true,
-      selectedAggregateWidgetFn: (List selected) => Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            selected.isEmpty
-                ? "None selected"
-                : "${selected.length} scout${selected.length > 1 ? 's' : ''} selected",
-          )),
-    );
+        selectedItems: registeredChildrenIndicies,
+        items: allChildren
+            .map((child) => DropdownMenuItem<Child>(
+                  value: child,
+                  child: Text('${child.firstName} ${child.lastName}'),
+                ))
+            .toList(),
+        hint: "Manage Participants",
+        doneButton: SizedBox.shrink(),
+        displayClearIcon: false,
+        onChanged: (List selections) async {
+          // Runs when you exit the popup.
+          final changedChildren = allChildren
+              .where((child) {
+                bool previouslySelected = registeredChildrenIndicies
+                    .contains(allChildren.indexOf(child));
+                bool currentlySelected =
+                    selections.contains(allChildren.indexOf(child));
 
-    // Confirm button, greyed out if no children selected
-    IconButton confirmButton = IconButton(
-      onPressed: selectedChildren.isEmpty
-          ? null
-          : () async {
-              try {
-                await client.event.registerChildrenForEvent(widget.eventId,
-                    selectedChildren.map((c) => c.id!).toList());
-                setState(() {
-                  selectedChildrenIndices = [];
-                  selectedChildren = [];
-                  widget.closeFn();
-                });
-              } catch (e) {
-                setState(() {
-                  err = 'Failed to add participants: $e';
-                });
-              }
-            },
-      icon: const Icon(Icons.check),
-      tooltip: 'Confirm',
-    );
+                return previouslySelected != currentlySelected;
+              })
+              .map((child) => (child, allChildren.indexOf(child)))
+              .toList();
 
-    // Cancel button
-    IconButton cancelButton = IconButton(
-      onPressed: selectedChildren.isEmpty
-          ? null
-          : () {
-              setState(() {
-                selectedChildrenIndices = [];
-                selectedChildren = [];
-                widget.closeFn();
-              });
-            },
-      icon: const Icon(Icons.cancel),
-      tooltip: 'Cancel',
-    );
+          if (changedChildren.isNotEmpty) {
+            final changedChildrenIds =
+                changedChildren.map((c) => c.$1.id!).toList();
+            await client.event
+                .updateEventRegistrations(widget.eventId, changedChildrenIds);
+          }
+          setState(() {});
+        },
+        closeButton: (List selectedChildren) {
+          final removedChildren = registeredChildrenIndicies
+              .where((index) => !selectedChildren.contains(index))
+              .toList();
+          final addedChildren = selectedChildren
+              .where((index) => !registeredChildrenIndicies.contains(index))
+              .toList();
+
+          return (addedChildren.isEmpty && removedChildren.isEmpty)
+              ? "Confirm (no changes)"
+              : "Confirm  (${addedChildren.length} added, ${removedChildren.length} removed)";
+        },
+        isExpanded: true,
+        selectedAggregateWidgetFn: (List selected) => Text('Manage Scouts'));
+
+    // // Confirm button, greyed out if no children selected
+    // IconButton confirmButton = IconButton(
+    //   onPressed: selectedChildren.isEmpty
+    //       ? null
+    //       : () async {
+    //           try {
+    //             await client.event.registerChildrenForEvent(widget.eventId,
+    //                 selectedChildren.map((c) => c.id!).toList());
+    //             setState(() {
+    //               selectedChildrenIndices = [];
+    //               selectedChildren = [];
+    //               widget.closeFn();
+    //             });
+    //           } catch (e) {
+    //             setState(() {
+    //               err = 'Failed to add participants: $e';
+    //             });
+    //           }
+    //         },
+    //   icon: const Icon(Icons.check),
+    //   tooltip: 'Confirm',
+    // );
+
+    // // Cancel button
+    // IconButton cancelButton = IconButton(
+    //   onPressed: selectedChildren.isEmpty
+    //       ? null
+    //       : () {
+    //           setState(() {
+    //             selectedChildrenIndices = [];
+    //             selectedChildren = [];
+    //             widget.closeFn();
+    //           });
+    //         },
+    //   icon: const Icon(Icons.cancel),
+    //   tooltip: 'Cancel',
+    // );
 
     return SizedBox(
         width: double.infinity,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Expanded(child: choices), confirmButton, cancelButton]));
+            children: [Expanded(child: choices)]));
   }
 }

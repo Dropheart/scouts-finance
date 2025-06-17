@@ -133,4 +133,33 @@ class EventEndpoint extends Endpoint {
           Session session, int eventId) =>
       EventRegistration.db
           .find(session, where: (t) => t.eventId.equals(eventId));
+
+  Future<void> updateEventRegistrations(
+      Session session, int eventId, List<int> childIds) async {
+    final existingRegistrations = await EventRegistration.db.find(
+      session,
+      where: (r) => r.eventId.equals(eventId),
+    );
+
+    final existingChildIds =
+        existingRegistrations.map((r) => r.childId).toSet();
+
+    final newChildIds = childIds.toSet();
+
+    final toRemove = existingRegistrations
+        .where((r) => newChildIds.contains(r.childId))
+        .toList();
+    if (toRemove.isNotEmpty) {
+      await EventRegistration.db.delete(session, toRemove);
+    }
+
+    // Add registrations for new children
+    final toAdd = newChildIds
+        .where((id) => !existingChildIds.contains(id))
+        .map((id) => EventRegistration(eventId: eventId, childId: id))
+        .toList();
+    if (toAdd.isNotEmpty) {
+      await EventRegistration.db.insert(session, toAdd);
+    }
+  }
 }

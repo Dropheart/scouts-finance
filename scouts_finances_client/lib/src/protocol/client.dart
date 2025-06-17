@@ -131,6 +131,19 @@ class EndpointEvent extends _i1.EndpointRef {
         'getRegistrationsByEventId',
         {'eventId': eventId},
       );
+
+  _i2.Future<void> updateEventRegistrations(
+    int eventId,
+    List<int> childIds,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'event',
+        'updateEventRegistrations',
+        {
+          'eventId': eventId,
+          'childIds': childIds,
+        },
+      );
 }
 
 /// {@category Endpoint}
