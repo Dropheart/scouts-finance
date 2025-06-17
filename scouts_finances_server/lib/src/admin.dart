@@ -25,7 +25,11 @@ class UserInfo {
     String? ukPhone;
     if (phone != null) {
       // Strip out brackets, dashes, and plus signs and add country code
-      ukPhone = '+44${phone.replaceAll(RegExp(r'\(|\)|\-|\+'), '')}';
+      String strippedPhone = phone.replaceAll(RegExp(r'\(|\)|\-|\+| '), '');
+      if (strippedPhone.startsWith('0')) {
+        strippedPhone = strippedPhone.substring(1);
+      }
+      ukPhone = '+44$strippedPhone';
     }
 
     return UserInfo(
@@ -221,8 +225,8 @@ class AdminEndpoint extends Endpoint {
         }
 
         // Randomly decide whether to pay in full or partially
-        // 80/20 split
-        final payInFull = Random().nextDouble() < 0.8;
+        // 95/5 split
+        final payInFull = Random().nextDouble() < 0.95;
 
         // Randomly decide the amount to pay if not paying in full
         final int amount = payInFull
@@ -277,10 +281,10 @@ class AdminEndpoint extends Endpoint {
       final insertedPayments =
           await Payment.db.insert(session, payments, transaction: t);
 
-      // Assign ~20% of payments to parents
+      // Assign ~80% of payments to parents
       final assignedPayments = <(Payment payment, Parent parent)>[];
       for (final payment in insertedPayments) {
-        if (Random().nextDouble() < 0.2) {
+        if (Random().nextDouble() < 0.8) {
           // Randomly assign a parent to the payment
           final parent = insertedParents.firstWhere(
             (p) => payment.payee == '${p.firstName} ${p.lastName}',
