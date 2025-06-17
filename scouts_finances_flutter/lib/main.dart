@@ -5,6 +5,7 @@ import 'package:scouts_finances_flutter/events/home.dart';
 import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/popups.dart';
+import 'package:scouts_finances_flutter/services/account_type_service.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
@@ -12,14 +13,6 @@ import 'package:serverpod_flutter/serverpod_flutter.dart';
 late final Client client;
 
 late String serverUrl;
-
-enum AccountType {
-  treasurer(name: 'Treasurer'),
-  leader(name: 'Leader');
-
-  final String name;
-  const AccountType({required this.name});
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,20 +30,26 @@ void main() async {
   final scoutGroupsService = ScoutGroupsService();
   await scoutGroupsService.getScoutGroups();
 
+  final accountTypeService = AccountTypeService();
+
   runApp(MyApp(
     themeService: themeService,
     scoutGroupsService: scoutGroupsService,
+    accountTypeService: accountTypeService,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final ThemeService themeService;
   final ScoutGroupsService scoutGroupsService;
+  final AccountTypeService accountTypeService;
 
-  const MyApp(
-      {super.key,
-      required this.themeService,
-      required this.scoutGroupsService});
+  const MyApp({
+    super.key,
+    required this.themeService,
+    required this.scoutGroupsService,
+    required this.accountTypeService,
+  });
 
   // This widget is the root of your application.
   @override
@@ -58,7 +57,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: themeService),
-        ChangeNotifierProvider.value(value: scoutGroupsService)
+        ChangeNotifierProvider.value(value: scoutGroupsService),
+        ChangeNotifierProvider.value(value: accountTypeService),
       ],
       child: Consumer<ThemeService>(
         builder: (context, themeService, child) {
@@ -83,7 +83,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
-  AccountType accountType = AccountType.treasurer;
 
   static final List<Widget> pages = [
     EventHome(),
@@ -134,8 +133,10 @@ class _HomePageState extends State<HomePage> {
         icon: Icon(Icons.groups));
   });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHomePage(
+      BuildContext context, AccountTypeService accountTypeService) {
+    final accountType = accountTypeService.accountType;
+
     final List<Widget> destinations = [
       GestureDetector(
         child: NavigationDestination(
@@ -147,12 +148,11 @@ class _HomePageState extends State<HomePage> {
               details.primaryVelocity!.abs() < 2000) {
             return;
           }
-
-          setState(() {
-            accountType = accountType == AccountType.treasurer
+          accountTypeService.setAccountType(
+            accountType == AccountType.treasurer
                 ? AccountType.leader
-                : AccountType.treasurer;
-          });
+                : AccountType.treasurer,
+          );
         },
       ),
       const NavigationDestination(
@@ -201,6 +201,15 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       body: filteredPages[currentPageIndex],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AccountTypeService>(
+      builder: (context, accountTypeService, child) {
+        return _buildHomePage(context, accountTypeService);
+      },
     );
   }
 }
