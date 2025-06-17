@@ -126,8 +126,10 @@ class _ParentHomeState extends State<ParentHome> {
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   minimumSize: Size(0, 0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-                  foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.onSecondaryContainer,
                 ),
                 onPressed: () => {
                   Navigator.of(context).push(
@@ -142,8 +144,8 @@ class _ParentHomeState extends State<ParentHome> {
             }).toList();
 
             children = Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 32.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: Wrap(
