@@ -98,8 +98,14 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
                 changedChildren.map((c) => c.$1.id!).toList();
             await client.event
                 .updateEventRegistrations(widget.eventId, changedChildrenIds);
+            widget.closeFn();
           }
-          setState(() {});
+          setState(() {
+            registeredChildren = allChildren
+                .where(
+                    (child) => selections.contains(allChildren.indexOf(child)))
+                .toList();
+          });
         },
         closeButton: (List selectedChildren) {
           final removedChildren = registeredChildrenIndicies
@@ -115,44 +121,6 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         },
         isExpanded: true,
         selectedAggregateWidgetFn: (List selected) => Text('Manage Scouts'));
-
-    // // Confirm button, greyed out if no children selected
-    // IconButton confirmButton = IconButton(
-    //   onPressed: selectedChildren.isEmpty
-    //       ? null
-    //       : () async {
-    //           try {
-    //             await client.event.registerChildrenForEvent(widget.eventId,
-    //                 selectedChildren.map((c) => c.id!).toList());
-    //             setState(() {
-    //               selectedChildrenIndices = [];
-    //               selectedChildren = [];
-    //               widget.closeFn();
-    //             });
-    //           } catch (e) {
-    //             setState(() {
-    //               err = 'Failed to add participants: $e';
-    //             });
-    //           }
-    //         },
-    //   icon: const Icon(Icons.check),
-    //   tooltip: 'Confirm',
-    // );
-
-    // // Cancel button
-    // IconButton cancelButton = IconButton(
-    //   onPressed: selectedChildren.isEmpty
-    //       ? null
-    //       : () {
-    //           setState(() {
-    //             selectedChildrenIndices = [];
-    //             selectedChildren = [];
-    //             widget.closeFn();
-    //           });
-    //         },
-    //   icon: const Icon(Icons.cancel),
-    //   tooltip: 'Cancel',
-    // );
 
     return SizedBox(
         width: double.infinity,
