@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/events/add.dart';
 import 'package:scouts_finances_flutter/events/event_add_participant.dart';
+import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
@@ -74,7 +77,7 @@ class _SingleEventState extends State<SingleEvent> {
 
     final children = filteredRegistrations
         .map((e) => (
-              childId: e.child!.id,
+              child: e.child!,
               name: "${e.child!.firstName} ${e.child!.lastName}",
               paidDate: e.paidDate
             ))
@@ -137,14 +140,17 @@ class _SingleEventState extends State<SingleEvent> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    ScoutDetailsView(scoutId: e.childId!),
+                                    ScoutDetailsView(scoutId: e.child.id!),
                               ),
                             );
                           }),
                     ])),
-                    DataCell(Text(e.paidDate == null
-                        ? 'Not paid'
-                        : 'Paid on ${e.paidDate!.toLocal().day}/${e.paidDate!.toLocal().month}/${e.paidDate!.toLocal().year}')),
+                    DataCell((e.paidDate == null
+                        ? TextButton(onPressed: () {
+                          _addCashPayment(context, e.child, event);
+                        }, child: Text('Add Cash Payment'))
+                        : Text(
+                            'Paid on ${e.paidDate!.toLocal().day}/${e.paidDate!.toLocal().month}/${e.paidDate!.toLocal().year}'))),
                   ],
                   color: e.paidDate == null
                       ? WidgetStateProperty.all(colourScheme.errorContainer)
@@ -266,5 +272,13 @@ class _SingleEventState extends State<SingleEvent> {
             ),
           ),
         ));
+  }
+
+  void _addCashPayment(BuildContext context, Child child, Event event) {
+    showDialog(context: context, builder: (context) => AddPaymentDialog(onSubmit: () {
+
+    },
+    initialPayment: Payment(amount: event.cost, date: DateTime.now(), reference: "Manual cash payment for ${event.name}", method: PaymentMethod.cash, payee: child.parent!.fullName),
+    ));
   }
 }

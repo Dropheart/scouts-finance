@@ -5,8 +5,9 @@ import 'package:scouts_finances_flutter/main.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
 
 class AddPaymentDialog extends StatefulWidget {
-  const AddPaymentDialog({super.key, required this.onSubmit});
+  const AddPaymentDialog({super.key, required this.onSubmit, this.initialPayment});
   final Function onSubmit;
+  final Payment? initialPayment; // Optional initial payment data to pre-fill the form
 
   @override
   State<AddPaymentDialog> createState() => _AddPaymentDialogState();
@@ -20,6 +21,23 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   DateTime? _selectedDate;
   PaymentMethod? _selectedPaymentMethod = PaymentMethod.cash;
   final TextEditingController _referenceController = TextEditingController();
+
+  void _initControllers() {
+    if (widget.initialPayment != null) {
+      final initialPayment = widget.initialPayment!;
+      _amountController.updateValue(initialPayment.amount / 100);
+      _payeeController.text = initialPayment.payee;
+      _selectedDate = initialPayment.date;
+      _selectedPaymentMethod = initialPayment.method;
+      _referenceController.text = initialPayment.reference;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initControllers();
+  }
 
   @override
   void dispose() {
