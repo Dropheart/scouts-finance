@@ -67,10 +67,10 @@ class AllParentsViewState extends State<AllParentsView> {
     }
   }
 
-  void _scrollToBottom() {
+  void _scrollToTop() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
+        _scrollController.position.minScrollExtent,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
@@ -79,7 +79,7 @@ class AllParentsViewState extends State<AllParentsView> {
 
   void refresh() {
     _getParents();
-    _scrollToBottom();
+    _scrollToTop();
   }
 
   @override

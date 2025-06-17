@@ -53,6 +53,12 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
         reference: _referenceController.text,
       );
       client.payment.insertPayment(newPayment);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Payment added successfully'),
+        ),
+      );
       Navigator.of(context).pop();
     }
   }

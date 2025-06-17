@@ -248,7 +248,20 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           ...clearedEventsInfo,
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: submit,
+            onPressed: () async {
+              _submit();
+              if (context.mounted) {
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    showCloseIcon: true,
+                    content: Text(
+                        'Payment attributed to ${currParent.fullName} successfully.'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
             child: Row(
               children: [
                 Text('Attribute payment to ${currParent.fullName}'),
@@ -272,7 +285,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
     );
   }
 
-  void submit() async {
+  void _submit() async {
     if (payment == null || parents.isEmpty) return;
 
     try {
@@ -282,6 +295,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            showCloseIcon: true,
             content: Text('Failed to classify payment: $e'),
             backgroundColor: Colors.red,
           ),

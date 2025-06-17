@@ -41,6 +41,11 @@ class ParentHome extends StatelessWidget {
             context: context,
             onParentAdded: () {
               _allParentsKey.currentState?.refresh();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('Parent added successfully')),
+              );
             },
           )),
     );
