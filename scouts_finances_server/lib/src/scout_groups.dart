@@ -3,7 +3,8 @@ import 'package:serverpod/serverpod.dart';
 
 class ScoutGroupsEndpoint extends Endpoint {
   Future<List<ScoutGroup>> getScoutGroups(Session session) async {
-    return ScoutGroup.db.find(session);
+    return ScoutGroup.db.find(session,
+        include: ScoutGroup.include(children: Child.includeList()));
   }
 
   Future<ScoutGroup> createScoutGroup(
