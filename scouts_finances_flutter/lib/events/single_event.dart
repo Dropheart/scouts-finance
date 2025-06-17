@@ -279,13 +279,17 @@ class _SingleEventState extends State<SingleEvent> {
     showDialog(
         context: context,
         builder: (context) => AddPaymentDialog(
-              onSubmit: () {},
+              onSubmit: () {
+                // Refresh the event details after adding a payment
+                _getEventDetails();
+              },
               initialPayment: Payment(
                   amount: event.cost,
                   date: DateTime.now(),
                   reference: "Manual cash payment for ${event.name}",
                   method: PaymentMethod.cash,
                   payee: child.parent!.fullName),
+              parent: child.parent!,
             ));
   }
 }

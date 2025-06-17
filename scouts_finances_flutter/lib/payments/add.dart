@@ -6,10 +6,11 @@ import 'package:flutter_masked_text3/flutter_masked_text3.dart';
 
 class AddPaymentDialog extends StatefulWidget {
   const AddPaymentDialog(
-      {super.key, required this.onSubmit, this.initialPayment});
+      {super.key, required this.onSubmit, this.initialPayment, this.parent});
   final Function onSubmit;
   final Payment?
       initialPayment; // Optional initial payment data to pre-fill the form
+  final Parent? parent; // Optional parent to associate with the payment
 
   @override
   State<AddPaymentDialog> createState() => _AddPaymentDialogState();
@@ -73,7 +74,7 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
         date: _selectedDate ?? DateTime.now(),
         reference: _referenceController.text,
       );
-      await client.payment.insertPayment(newPayment);
+      final results = await client.payment.insertPayment(newPayment);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -81,6 +82,11 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
           content: Text('Payment added successfully'),
         ),
       );
+      if (widget.parent != null) {
+        // If this is an edit, we need to update the payment
+        await client.payment.updatePayment(results[0].id!, widget.parent!);
+      }
+      if (!mounted) return;
       widget.onSubmit();
       Navigator.of(context).pop();
     }
@@ -89,7 +95,7 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Manual Payment'),
+      title: Text('Add ${(widget.parent != null) ? 'and Attribute ' : ''}Manual Payment'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
