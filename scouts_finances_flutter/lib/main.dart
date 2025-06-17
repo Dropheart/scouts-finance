@@ -5,7 +5,6 @@ import 'package:scouts_finances_flutter/events/home.dart';
 import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/popups.dart';
-import 'package:scouts_finances_flutter/scouts/home.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
@@ -80,15 +79,15 @@ class _HomePageState extends State<HomePage> {
   static final List<Widget> pages = [
     EventHome(),
     PaymentsHome(),
-    ScoutsHome(),
+    // ScoutsHome(),
     ParentHome(),
     SettingsHome()
   ];
   static final List<String> pageTitles = [
     'Events',
     'Income',
-    'Scouts',
-    'Parents',
+    // 'Scouts',
+    'People',
   ];
 
   static final List<NavigationDestination> destinations = [
@@ -100,13 +99,13 @@ class _HomePageState extends State<HomePage> {
       icon: Icon(Icons.currency_pound),
       label: 'Income',
     ),
-    const NavigationDestination(
-      icon: Icon(Icons.hiking),
-      label: 'Scouts',
-    ),
+    // const NavigationDestination(
+    //   icon: Icon(Icons.hiking),
+    //   label: 'Scouts',
+    // ),
     const NavigationDestination(
       icon: Icon(Icons.supervisor_account),
-      label: 'Parents',
+      label: 'People',
     ),
   ];
 
