@@ -204,77 +204,79 @@ class _SingleEventState extends State<SingleEvent> {
         appBar: AppBar(
           title: Text(event.name),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Table(columnWidths: {
-                0: IntrinsicColumnWidth(),
-              }, children: [
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'Date:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(
-                      "${event.date.day}/${event.date.month}/${event.date.year}"),
-                ]),
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text('Location:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  Text('TBD'),
-                ]),
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text('Price:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  Text('£${(event.cost / 100).toStringAsFixed(2)}'),
-                ]),
-              ]),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(children: [
-                    const SizedBox(height: 16),
-                    searchBar,
-                    sortSelection,
-                    const SizedBox(height: 16),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(10), // Sets rounded corners
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Table(columnWidths: {
+                  0: IntrinsicColumnWidth(),
+                }, children: [
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'Date:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      color: colourScheme.secondaryContainer,
-                      clipBehavior: Clip.antiAlias,
-                      child: childrenTable,
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     SizedBox(
-                    //       width: 200, // Fixed width
-                    //       child: EventAddParticipant(
-                    //         eventId: widget.eventId,
-                    //         closeFn: () => _getEventDetails(),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    EventAddParticipant(
-                      eventId: widget.eventId,
-                      closeFn: () => _getEventDetails(),
+                    Text(
+                        "${event.date.day}/${event.date.month}/${event.date.year}"),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Location:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                  ])),
-            ],
+                    Text('TBD'),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Price:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Text('£${(event.cost / 100).toStringAsFixed(2)}'),
+                  ]),
+                ]),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(children: [
+                      const SizedBox(height: 16),
+                      searchBar,
+                      sortSelection,
+                      const SizedBox(height: 16),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(10), // Sets rounded corners
+                        ),
+                        color: colourScheme.secondaryContainer,
+                        clipBehavior: Clip.antiAlias,
+                        child: childrenTable,
+                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     SizedBox(
+                      //       width: 200, // Fixed width
+                      //       child: EventAddParticipant(
+                      //         eventId: widget.eventId,
+                      //         closeFn: () => _getEventDetails(),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      EventAddParticipant(
+                        eventId: widget.eventId,
+                        closeFn: () => _getEventDetails(),
+                      ),
+                    ])),
+              ],
+            ),
           ),
         ));
   }
