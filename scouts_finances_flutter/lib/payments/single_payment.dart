@@ -98,22 +98,20 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
       Widget parentSelection = Wrap(
-        alignment: WrapAlignment.start,
-        crossAxisAlignment: WrapCrossAlignment.center,
-
-        children: [
-        Text("Attribute to parent: ",
-            style: TextStyle(fontSize: 16)),
-        ParentDropdown(
-          parents: parents,
-          defaultParentId: parents[parentIndex].id,
-          onChanged: (p) {
-            setState(() {
-              parentIndex = parents.indexWhere((parent) => parent.id == p);
-            });
-          },
-        )
-      ]);
+          alignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text("Attribute to parent: ", style: TextStyle(fontSize: 16)),
+            ParentDropdown(
+              parents: parents,
+              defaultParentId: parents[parentIndex].id,
+              onChanged: (p) {
+                setState(() {
+                  parentIndex = parents.indexWhere((parent) => parent.id == p);
+                });
+              },
+            )
+          ]);
 
       List<EventRegistration> unpaidEventsForParent = unpaidEvents
           .where((eventReg) => eventReg.child!.parentId == currParent.id)
