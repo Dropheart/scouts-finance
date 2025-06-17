@@ -148,7 +148,7 @@ class _ParentDetailsState extends State<ParentDetails> {
             ],
           ),
           const SizedBox(height: 16),
-          const Text('Payment History:',
+          const Text('Transaction History:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           ParentTransactionTable(

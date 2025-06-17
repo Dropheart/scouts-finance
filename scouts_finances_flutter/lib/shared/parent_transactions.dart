@@ -128,8 +128,8 @@ class _ParentTransactionTableState extends State<ParentTransactionTable> {
                           cells: [
                             DataCell(Text(tx.date
                                 .toLocal()
-                                .toIso8601String()
-                                .split('T')[0])),
+                                .toString()
+                                .split(' ')[0])),
                             DataCell(Text(tx.description)),
                             DataCell(Text(tx.amount.toStringAsFixed(2))),
                           ],

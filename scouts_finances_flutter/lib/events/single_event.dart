@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/event_add_participant.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
 
@@ -124,7 +125,22 @@ class _SingleEventState extends State<SingleEvent> {
           .map((e) => DataRow(
                   cells: [
                     DataCell(Row(children: [
-                      Text(e.name),
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 0),
+                            minimumSize: Size(0, 0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(e.name),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ScoutDetailsView(scoutId: e.childId!),
+                              ),
+                            );
+                          }),
                     ])),
                     DataCell(Text(e.paidDate == null
                         ? 'Not paid'

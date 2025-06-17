@@ -123,7 +123,7 @@ class _EventHomeState extends State<EventHome> {
                 const Spacer(),
                 Icon(Icons.calendar_today, size: 14),
                 const SizedBox(width: 4.0),
-                Text(event.date.toLocal().toIso8601String().split('T')[0]),
+                Text(event.date.toLocal().toString().split(' ')[0]),
               ],
             ),
             onTap: () {
