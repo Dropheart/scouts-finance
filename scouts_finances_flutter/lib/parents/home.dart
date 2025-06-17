@@ -82,14 +82,15 @@ class _ParentHomeState extends State<ParentHome> {
       );
     } else {
       SearchBar searchBar = SearchBar(
-          hintText: 'Search parent, scout, email, phone',
-          onChanged: (value) => setState(() {
-                query = value;
-              }),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: const Icon(Icons.search),
-          ),);
+        hintText: 'Search parent, scout, email, phone',
+        onChanged: (value) => setState(() {
+          query = value;
+        }),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: const Icon(Icons.search),
+        ),
+      );
 
       List<Widget> parentCards = allParents
           .where((e) =>
@@ -216,7 +217,7 @@ class _ParentHomeState extends State<ParentHome> {
             ),
           )
           .toList();
-      
+
       final switchWidget = SwitchListTile(
         title: const Text('Show Scouts'),
         value: showScouts,
@@ -234,7 +235,8 @@ class _ParentHomeState extends State<ParentHome> {
               ? const SizedBox.shrink()
               : ExpansionTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: Text('Payments Outstanding - ${outstandingCards.length}',
+                  title: Text(
+                      'Payments Outstanding - ${outstandingCards.length}',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   initiallyExpanded: false,
