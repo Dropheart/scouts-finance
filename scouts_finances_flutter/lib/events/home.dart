@@ -23,8 +23,8 @@ class _EventHomeState extends State<EventHome> {
   final sorts = [
     'Upcoming First',
     'Upcoming Last',
-    'Paid count',
-    'Unpaid count',
+    'Most Paid',
+    'Fewest Paid',
   ];
   int sortIndex = 0;
   String query = '';
@@ -53,7 +53,7 @@ class _EventHomeState extends State<EventHome> {
     } catch (e) {
       setState(() {
         errorMessage =
-            'Failed to load paid counts. Are you connected to the internet?';
+            'Failed to load event details (pay counts). Are you connected to the internet?';
       });
     }
     loading--;
