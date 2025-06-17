@@ -89,18 +89,7 @@ class _ParentHomeState extends State<ParentHome> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: const Icon(Icons.search),
-          ),
-          trailing: [
-            IconButton(
-              icon: Icon(showScouts ? Icons.person : Icons.person_outline),
-              onPressed: () {
-                setState(() {
-                  showScouts = !showScouts;
-                });
-              },
-              tooltip: showScouts ? 'Hide Scouts' : 'Show Scouts',
-            ),
-          ]);
+          ),);
 
       List<Widget> parentCards = allParents
           .where((e) =>
@@ -227,6 +216,16 @@ class _ParentHomeState extends State<ParentHome> {
             ),
           )
           .toList();
+      
+      final switchWidget = SwitchListTile(
+        title: const Text('Show Scouts'),
+        value: showScouts,
+        onChanged: (value) {
+          setState(() {
+            showScouts = value;
+          });
+        },
+      );
 
       body = ListView(
         controller: _scrollController,
@@ -235,15 +234,15 @@ class _ParentHomeState extends State<ParentHome> {
               ? const SizedBox.shrink()
               : ExpansionTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: const Text('Payments Outstanding',
+                  title: Text('Payments Outstanding - ${outstandingCards.length}',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  initiallyExpanded: true,
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  initiallyExpanded: false,
                   children: outstandingCards,
                 ),
           SizedBox(height: 16.0),
-          SizedBox(height: 8.0),
           searchBar,
+          switchWidget,
           SizedBox(height: 16.0),
           ...parentCards,
         ],
