@@ -95,7 +95,8 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add ${(widget.parent != null) ? 'and Attribute ' : ''}Manual Payment'),
+      title: Text(
+          'Add ${(widget.parent != null) ? 'and Attribute ' : ''}Manual Payment'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
