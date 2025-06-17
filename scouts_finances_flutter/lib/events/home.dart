@@ -220,16 +220,6 @@ class _EventHomeState extends State<EventHome> {
             return const AddEventDialog();
           },
         ).then((_) {
-          if (!mounted) return;
-          // Use addPostFrameCallback to ensure context is valid after async gap
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.green,
-                content: Text('Event added successfully'),
-              ),
-            );
-          });
           // Refresh the event list after adding a new event
           _getEvents();
         });
