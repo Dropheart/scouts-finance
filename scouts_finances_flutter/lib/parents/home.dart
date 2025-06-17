@@ -3,16 +3,12 @@ import 'package:scouts_finances_flutter/parents/add_parent.dart';
 import 'package:scouts_finances_flutter/parents/all_parents.dart';
 import 'package:scouts_finances_flutter/parents/outstanding_parents.dart';
 
-class ParentHome extends StatefulWidget {
-  const ParentHome({super.key});
+class ParentHome extends StatelessWidget {
+  ParentHome({super.key});
 
-  @override
-  State<ParentHome> createState() => _ParentHomeState();
-}
-
-class _ParentHomeState extends State<ParentHome> {
   final GlobalKey<AllParentsViewState> _allParentsKey =
       GlobalKey<AllParentsViewState>();
+
   final tabBar = TabBar(
     isScrollable: false,
     tabs: [
