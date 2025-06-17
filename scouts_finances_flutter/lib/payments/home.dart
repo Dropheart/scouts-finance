@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/extensions/name.dart';
-import 'package:scouts_finances_flutter/extensions/payment_method.dart';
-import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
-import 'package:scouts_finances_flutter/payments/single_payment.dart';
+import 'package:scouts_finances_flutter/payments/matched_view.dart';
+import 'package:scouts_finances_flutter/payments/unmatched_view.dart';
 
 class PaymentsHome extends StatefulWidget {
   const PaymentsHome({super.key});
@@ -14,84 +11,27 @@ class PaymentsHome extends StatefulWidget {
 }
 
 class _PaymentsHomeState extends State<PaymentsHome> {
-  late List<Payment> attributedPayments;
-  late List<Payment> unattributedPayments;
-  String? err;
-  bool loading = true;
   String query = '';
+  final TextEditingController _searchController = TextEditingController();
 
-  void _getPayments() async {
-    try {
-      final result = await client.payment.getPayments();
-
-      final attributedPayments = result.where((p) => p.parent != null).toList();
-      attributedPayments.sort((a, b) => a.date.compareTo(b.date));
-
-      final unattributedPayments =
-          result.where((p) => p.parent == null).toList();
-      unattributedPayments.sort((a, b) => a.date.compareTo(b.date));
-
-      setState(() {
-        this.attributedPayments = attributedPayments;
-        this.unattributedPayments = unattributedPayments;
-        loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        err =
-            'Failed to load payments. Are you connected to the internet? If this error persists, please contact the developers.';
-        loading = false;
-      });
-    }
-  }
+  final tabBar = TabBar(
+    isScrollable: false,
+    tabs: [
+      Tab(text: 'Unattributed Payments'),
+      Tab(text: 'Attributed Payments'),
+    ],
+  );
 
   @override
-  void initState() {
-    super.initState();
-    _getPayments();
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get which payments are action required
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (err != null) {
-      return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-              child: Text(err!,
-                  style: const TextStyle(color: Colors.red, fontSize: 16))));
-    }
-
-    // Filter payments based on the search query
-    List<Payment> filteredUnattributedPayments = unattributedPayments
-        .where((payment) =>
-            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
-            (payment.amount / 100).toString().contains(query) ||
-            payment.date.toLocal().toString().contains(query))
-        .toList();
-
-    List<Card> uncattributedPaymentCards =
-        filteredUnattributedPayments.map((payment) {
-      return toCard(context, payment);
-    }).toList();
-
-    // Filter payments based on the search query
-    List<Payment> filteredattributedPayments = attributedPayments
-        .where((payment) =>
-            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
-            payment.amount.toString().contains(query) ||
-            payment.date.toLocal().toString().contains(query))
-        .toList();
-
-    List<Card> attributedPaymentCards =
-        filteredattributedPayments.map((payment) {
-      return toCard(context, payment);
-    }).toList();
-
-    SearchBar searchBar = SearchBar(
+    final searchBar = SearchBar(
+      controller: _searchController,
       onChanged: (String value) {
         setState(() {
           query = value;
@@ -104,93 +44,35 @@ class _PaymentsHomeState extends State<PaymentsHome> {
       hintText: 'Search by payee, amount, date...',
     );
 
-    final List<Widget> body = [
-      searchBar,
-    ];
-
-    if (uncattributedPaymentCards.isNotEmpty) {
-      body.add(ExpansionTile(
-          title: Text(
-              'Unattributed Payments - ${uncattributedPaymentCards.length}'),
-          initiallyExpanded: true,
-          controlAffinity: ListTileControlAffinity.leading,
-          shape: const Border(),
-          children: uncattributedPaymentCards));
-    }
-
-    if (attributedPaymentCards.isNotEmpty) {
-      body.add(ExpansionTile(
-          title: Text('Attributed Payments - ${attributedPaymentCards.length}'),
-          initiallyExpanded: false,
-          shape: const Border(),
-          controlAffinity: ListTileControlAffinity.leading,
-          children: attributedPaymentCards));
-    }
-
-    body.add(const SizedBox(height: 128.0));
-
-    return Scaffold(
-      body: Padding(
-          padding: EdgeInsetsGeometry.all(8.0),
-          child: SingleChildScrollView(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: body,
-          ))),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AddPaymentDialog();
-            },
-          ).then((_) {
-            _getPayments();
-          });
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    );
-  }
-
-  Card toCard(BuildContext context, Payment payment) {
-    return Card(
-      child: ListTile(
-        title: Row(
+    return DefaultTabController(
+      length: 2,
+      initialIndex: 0,
+      child: Scaffold(
+        body: Column(
           children: [
-            Text('£${(payment.amount / 100).toStringAsFixed(2)}'),
-            const Spacer(),
-            const SizedBox(width: 4.0),
-            Text(payment.method.toDisplayString()),
+            tabBar,
+            Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TabBarView(children: [
+                    UnmatchedView(searchBar: searchBar, query: query),
+                    MatchedView(searchBar: searchBar, query: query),
+                  ])),
+            )
           ],
         ),
-        subtitle: Row(children: [
-          Row(
-            children: [
-              const Icon(Icons.person, size: 14.0),
-              const SizedBox(width: 4.0),
-              Text(payment.parent?.fullName ?? 'Unattributed'),
-            ],
-          ),
-          const Spacer(),
-          Row(
-            children: [
-              const Icon(Icons.calendar_today, size: 14.0),
-              const SizedBox(width: 4.0),
-              Text(payment.date.toLocal().toString().split(' ')[0]),
-            ],
-          ),
-        ]),
-        onTap: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => SinglePaymentView(paymentId: payment.id!),
-            ),
-          );
-          _getPayments(); // Refresh payments after viewing
-        },
-        trailing: const Icon(Icons.edit_square),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AddPaymentDialog();
+              },
+            );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }
