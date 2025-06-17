@@ -114,57 +114,11 @@ class _ParentHomeState extends State<ParentHome> {
                       c.lastName.toLowerCase().contains(query.toLowerCase()))))
           .map(
         (p) {
-          final parentCard = Card(
-            child: ListTile(
-              title: Text("${p.firstName} ${p.lastName}"),
-              subtitle: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Row(
-                      children: [
-                        Icon(Icons.email_rounded, size: 14.0),
-                        SizedBox(width: 4.0),
-                        Expanded(
-                            child: Text(
-                          p.email,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                        )),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    child: Row(
-                      children: [
-                        Icon(Icons.phone, size: 14.0),
-                        SizedBox(width: 4.0),
-                        Expanded(
-                            child: Text(
-                          p.phone,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                        )),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              trailing: Icon(Icons.info_outline),
-              onTap: () => {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ParentDetails(parentId: p.id!),
-                  ),
-                ),
-              },
-            ),
-          );
-
+          final Widget children;
           if ((query.isEmpty && !showScouts) ||
               p.children == null ||
               p.children!.isEmpty) {
-            return parentCard;
+            children = const SizedBox.shrink();
           } else {
             final childrenWidgets = p.children!.map((c) {
               return ElevatedButton.icon(
@@ -172,6 +126,8 @@ class _ParentHomeState extends State<ParentHome> {
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   minimumSize: Size(0, 0),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                  foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
                 ),
                 onPressed: () => {
                   Navigator.of(context).push(
@@ -185,22 +141,67 @@ class _ParentHomeState extends State<ParentHome> {
               );
             }).toList();
 
-            return Column(children: [
-              parentCard,
-              Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0, vertical: 8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      alignment: WrapAlignment.start,
-                      children: childrenWidgets,
-                    ),
-                  )),
-            ]);
+            children = Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 32.0, vertical: 8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    alignment: WrapAlignment.start,
+                    children: childrenWidgets,
+                  ),
+                ));
           }
+          return Card(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text("${p.firstName} ${p.lastName}"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.email_rounded, size: 14.0),
+                          SizedBox(width: 4.0),
+                          Expanded(
+                              child: Text(
+                            p.email,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          )),
+                        ],
+                      ),
+                      SizedBox(height: 4.0),
+                      Row(
+                        children: [
+                          Icon(Icons.phone, size: 14.0),
+                          SizedBox(width: 4.0),
+                          Expanded(
+                              child: Text(
+                            p.phone,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          )),
+                        ],
+                      ),
+                    ],
+                  ),
+                  trailing: Icon(Icons.info_outline),
+                  onTap: () => {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ParentDetails(parentId: p.id!),
+                      ),
+                    ),
+                  },
+                ),
+                children,
+              ],
+            ),
+          );
         },
       ).toList();
 
