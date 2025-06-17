@@ -52,6 +52,14 @@ class UnmatchedViewState extends State<UnmatchedView> {
     _getPayments();
   }
 
+  void refresh() {
+    setState(() {
+      loading = true;
+      err = null;
+    });
+    _getPayments();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get which payments are action required
