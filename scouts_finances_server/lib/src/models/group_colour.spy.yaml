@@ -1,0 +1,9 @@
+enum: GroupColour
+serialized: byName
+values:
+- green
+- lightblue
+- darkblue
+- teal
+- black
+- red
