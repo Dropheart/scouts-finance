@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/events/add.dart';
 import 'package:scouts_finances_flutter/events/event_add_participant.dart';
 import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
@@ -146,9 +145,11 @@ class _SingleEventState extends State<SingleEvent> {
                           }),
                     ])),
                     DataCell((e.paidDate == null
-                        ? TextButton(onPressed: () {
-                          _addCashPayment(context, e.child, event);
-                        }, child: Text('Add Cash Payment'))
+                        ? TextButton(
+                            onPressed: () {
+                              _addCashPayment(context, e.child, event);
+                            },
+                            child: Text('Add Cash Payment'))
                         : Text(
                             'Paid on ${e.paidDate!.toLocal().day}/${e.paidDate!.toLocal().month}/${e.paidDate!.toLocal().year}'))),
                   ],
@@ -275,10 +276,16 @@ class _SingleEventState extends State<SingleEvent> {
   }
 
   void _addCashPayment(BuildContext context, Child child, Event event) {
-    showDialog(context: context, builder: (context) => AddPaymentDialog(onSubmit: () {
-
-    },
-    initialPayment: Payment(amount: event.cost, date: DateTime.now(), reference: "Manual cash payment for ${event.name}", method: PaymentMethod.cash, payee: child.parent!.fullName),
-    ));
+    showDialog(
+        context: context,
+        builder: (context) => AddPaymentDialog(
+              onSubmit: () {},
+              initialPayment: Payment(
+                  amount: event.cost,
+                  date: DateTime.now(),
+                  reference: "Manual cash payment for ${event.name}",
+                  method: PaymentMethod.cash,
+                  payee: child.parent!.fullName),
+            ));
   }
 }

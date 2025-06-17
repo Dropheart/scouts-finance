@@ -5,9 +5,11 @@ import 'package:scouts_finances_flutter/main.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
 
 class AddPaymentDialog extends StatefulWidget {
-  const AddPaymentDialog({super.key, required this.onSubmit, this.initialPayment});
+  const AddPaymentDialog(
+      {super.key, required this.onSubmit, this.initialPayment});
   final Function onSubmit;
-  final Payment? initialPayment; // Optional initial payment data to pre-fill the form
+  final Payment?
+      initialPayment; // Optional initial payment data to pre-fill the form
 
   @override
   State<AddPaymentDialog> createState() => _AddPaymentDialogState();
