@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_flutter/extensions/datetime.dart';
+import 'package:scouts_finances_flutter/services/account_type_service.dart';
 import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -11,18 +13,19 @@ class OptionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (selectedIndex) {
-      case 0:
-        return EventOptionsMenu();
-      case 1:
-        return PaymentsOptionsMenu();
-      // case 2:
-      //   return ScoutsOptionsMenu();
-      case 2:
-        return PeopleOptionsMenu();
-      default:
+    return Consumer<AccountTypeService>(
+      builder: (context, accountTypeService, child) {
+        final accountType = accountTypeService.accountType;
+        final menuOptions = accountType == AccountType.leader
+            ? [EventOptionsMenu(), PaymentsOptionsMenu(), PeopleOptionsMenu()]
+            : [EventOptionsMenu(), PeopleOptionsMenu()];
+
+        if (selectedIndex >= 0 && selectedIndex < menuOptions.length) {
+          return menuOptions[selectedIndex];
+        }
         return const SizedBox.shrink();
-    }
+      },
+    );
   }
 }
 

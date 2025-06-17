@@ -185,10 +185,8 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: false,
         actions: [
-          if (accountType == AccountType.leader)
-            selectScoutGroup
-          else
-            OptionsMenu(selectedIndex: currentPageIndex)
+          if (accountType == AccountType.leader) selectScoutGroup,
+          OptionsMenu(selectedIndex: currentPageIndex)
         ],
       ),
       bottomNavigationBar: NavigationBar(
