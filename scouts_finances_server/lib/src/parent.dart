@@ -57,7 +57,7 @@ class ParentEndpoint extends Endpoint {
       buffer.writeln(reminder);
     }
 
-    buffer.writeln('Thank you for your attention!');
+    buffer.writeln('Thank you for your attention!\n NB: This is an automated message, please do not reply.');
 
     final message = buffer.toString();
 
