@@ -11,6 +11,9 @@ class PaymentsHome extends StatefulWidget {
 }
 
 class _PaymentsHomeState extends State<PaymentsHome> {
+  final GlobalKey<UnmatchedViewState> unmatchedViewKey =
+      GlobalKey<UnmatchedViewState>();
+
   String query = '';
   final TextEditingController _searchController = TextEditingController();
 
@@ -55,7 +58,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
               child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TabBarView(children: [
-                    UnmatchedView(searchBar: searchBar, query: query),
+                    UnmatchedView(searchBar: searchBar, query: query, key: unmatchedViewKey),
                     MatchedView(searchBar: searchBar, query: query),
                   ])),
             )
@@ -67,7 +70,9 @@ class _PaymentsHomeState extends State<PaymentsHome> {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return AddPaymentDialog();
+                return AddPaymentDialog(onSubmit: () {
+                  unmatchedViewKey.currentState?.refresh();
+                });
               },
             );
           },

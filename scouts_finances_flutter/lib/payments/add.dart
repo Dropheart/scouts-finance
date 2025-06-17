@@ -5,7 +5,8 @@ import 'package:scouts_finances_flutter/main.dart';
 import 'package:flutter_masked_text3/flutter_masked_text3.dart';
 
 class AddPaymentDialog extends StatefulWidget {
-  const AddPaymentDialog({super.key});
+  const AddPaymentDialog({super.key, required this.onSubmit});
+  final Function onSubmit;
 
   @override
   State<AddPaymentDialog> createState() => _AddPaymentDialogState();
@@ -43,7 +44,7 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
     }
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState?.validate() ?? false) {
       final newPayment = Payment(
         amount: (_amountController.numberValue! * 100).truncate(),
@@ -52,13 +53,15 @@ class _AddPaymentDialogState extends State<AddPaymentDialog> {
         date: _selectedDate ?? DateTime.now(),
         reference: _referenceController.text,
       );
-      client.payment.insertPayment(newPayment);
+      await client.payment.insertPayment(newPayment);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.green,
           content: Text('Payment added successfully'),
         ),
       );
+      widget.onSubmit();
       Navigator.of(context).pop();
     }
   }
