@@ -58,7 +58,10 @@ class _PaymentsHomeState extends State<PaymentsHome> {
               child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TabBarView(children: [
-                    UnmatchedView(searchBar: searchBar, query: query, key: unmatchedViewKey),
+                    UnmatchedView(
+                        searchBar: searchBar,
+                        query: query,
+                        key: unmatchedViewKey),
                     MatchedView(searchBar: searchBar, query: query),
                   ])),
             )
