@@ -25,6 +25,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   List<int> submitted = [];
 
   List<int> selectedIndicies = [];
+  List<int> unchangingSelectedIndicies = [];
 
   void _getChildren() async {
     try {
@@ -46,6 +47,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
           .map((child) => allChildren.indexWhere((c) => c.id == child.id))
           .where((index) => index >= 0)
           .toList();
+      unchangingSelectedIndicies = List.from(selectedIndicies);
     });
     loading--;
   }
@@ -81,14 +83,6 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       );
     }
 
-    // final selectedChildrenIndicies = registeredChildren
-    //     .map((child) => allChildren.indexWhere((c) => c.id == child.id))
-    //     .where((index) => index >= 0)
-    //     .toList();
-
-    print('rebuilding');
-    print('Selected indices: $selectedIndicies');
-
     final choices = SearchChoices.multiple(
         selectedItems: selectedIndicies,
         items: allChildren
@@ -101,27 +95,9 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         doneButton: SizedBox.shrink(),
         displayClearIcon: false,
         onChanged: (List selections) async {
-          print('executing');
           if (!changed || submitted.isEmpty) {
             return;
           }
-          print('updating with submitted: $submitted');
-          // Runs when you exit the popup.
-          // final changedChildren = allChildren
-          //     .where((child) {
-          //       final registrationIndicies = registeredChildren
-          //           .map((c) => allChildren.indexWhere((aChild) => aChild.id == c.id))
-          //           .where((index) => index >= 0)
-          //           .toList();
-          //       bool previouslySelected =
-          //           registrationIndicies.contains(allChildren.indexOf(child));
-          //       bool currentlySelected =
-          //           submitted.contains(allChildren.indexOf(child));
-
-          //       return previouslySelected != currentlySelected;
-          //     })
-          //     .map((child) => (child, allChildren.indexOf(child)))
-          //     .toList();
 
           final changedChildren = allChildren
               .where((child) {
@@ -150,8 +126,6 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
             final buttons = groups.map((group) {
               return ElevatedButton(
                 onPressed: () {
-                  // print('-----------');
-
                   final groupChildrenIndicies = group.children!
                       .map((gChild) => allChildren
                           .indexWhere((aChild) => aChild.id == gChild.id))
@@ -159,9 +133,6 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
                       .toList();
                   final currentlySelected = selectedIndicies.where((sIndex) =>
                       groupChildrenIndicies.any((gIndex) => sIndex == gIndex));
-
-                  // print('Currently selected: $currentlySelected');
-                  // print('Group children: $groupChildrenIndicies');
 
                   final toRemove = <int>[];
                   final toAdd = <int>[];
@@ -175,16 +146,13 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
                     toAdd.addAll(indiciesToAdd);
                   }
 
-                  // print('To remove: $toRemove, To add: $toAdd');
-                  // print('Selected indices before toggle: $selectedIndicies');
                   setState(() {
                     selectedChildren
                         .removeWhere((index) => toRemove.contains(index));
                     selectedChildren.addAll(toAdd);
+                    selectedIndicies = selectedChildren;
                   });
                   updateParent(selectedChildren);
-                  // print('Selected indices after toggle: $selectedIndicies');
-                  // print('-----------');
                 },
                 child: Text(group.name),
               );
@@ -196,11 +164,11 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
             );
           });
 
-          final removedChildren = selectedIndicies
+          final removedChildren = unchangingSelectedIndicies
               .where((index) => !selectedChildren.contains(index))
               .toList();
           final addedChildren = selectedChildren
-              .where((index) => !selectedIndicies.contains(index))
+              .where((index) => !unchangingSelectedIndicies.contains(index))
               .toList();
           changed = addedChildren.isNotEmpty || removedChildren.isNotEmpty;
 
