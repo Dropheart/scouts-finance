@@ -13,11 +13,13 @@ class ParentHome extends StatefulWidget {
 }
 
 class _ParentHomeState extends State<ParentHome> {
-  String query = '';
   late List<Parent> allParents;
   late List<(Parent, int)> outstandingParents;
   String? errorMessage;
   bool loading = true;
+
+  String query = '';
+  bool showScouts = true;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -80,15 +82,25 @@ class _ParentHomeState extends State<ParentHome> {
       );
     } else {
       SearchBar searchBar = SearchBar(
-        hintText: 'Search parent, scout, email, phone...',
-        onChanged: (value) => setState(() {
-          query = value;
-        }),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: const Icon(Icons.search),
-        ),
-      );
+          hintText: 'Search parent, scout, email, phone',
+          onChanged: (value) => setState(() {
+                query = value;
+              }),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: const Icon(Icons.search),
+          ),
+          trailing: [
+            IconButton(
+              icon: Icon(showScouts ? Icons.person : Icons.person_outline),
+              onPressed: () {
+                setState(() {
+                  showScouts = !showScouts;
+                });
+              },
+              tooltip: showScouts ? 'Hide Scouts' : 'Show Scouts',
+            ),
+          ]);
 
       List<Widget> parentCards = allParents
           .where((e) =>
@@ -149,31 +161,29 @@ class _ParentHomeState extends State<ParentHome> {
             ),
           );
 
-          if (query.isEmpty) {
+          if ((query.isEmpty && !showScouts) ||
+              p.children == null ||
+              p.children!.isEmpty) {
             return parentCard;
           } else {
-            final List<Widget> childrenWidgets = p.children == null
-                ? [const SizedBox.shrink()]
-                : p.children!.map((c) {
-                    return ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                        minimumSize: Size(0, 0),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      onPressed: () => {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ScoutDetailsView(scoutId: c.id!),
-                          ),
-                        ),
-                      },
-                      icon: Icon(Icons.person, size: 14.0),
-                      label: Text(c.fullName),
-                    );
-                  }).toList();
+            final childrenWidgets = p.children!.map((c) {
+              return ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  minimumSize: Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ScoutDetailsView(scoutId: c.id!),
+                    ),
+                  ),
+                },
+                icon: Icon(Icons.person, size: 14.0),
+                label: Text(c.fullName),
+              );
+            }).toList();
 
             return Column(children: [
               parentCard,
@@ -229,10 +239,6 @@ class _ParentHomeState extends State<ParentHome> {
                   children: outstandingCards,
                 ),
           SizedBox(height: 16.0),
-          Text(
-            'All Parents',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
           SizedBox(height: 8.0),
           searchBar,
           SizedBox(height: 16.0),
