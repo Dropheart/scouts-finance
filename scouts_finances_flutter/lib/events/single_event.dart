@@ -78,7 +78,8 @@ class _SingleEventState extends State<SingleEvent> {
         .map((e) => (
               child: e.child!,
               name: "${e.child!.firstName} ${e.child!.lastName}",
-              paidDate: e.paidDate
+              paidDate: e.paidDate,
+              reg: e,
             ))
         .toList();
 
@@ -147,7 +148,7 @@ class _SingleEventState extends State<SingleEvent> {
                     DataCell((e.paidDate == null
                         ? TextButton(
                             onPressed: () {
-                              _addCashPayment(context, e.child, event);
+                              _addCashPayment(context, e.reg);
                             },
                             child: Text('Add Cash Payment'))
                         : Text(
@@ -275,7 +276,7 @@ class _SingleEventState extends State<SingleEvent> {
         ));
   }
 
-  void _addCashPayment(BuildContext context, Child child, Event event) {
+  void _addCashPayment(BuildContext context, EventRegistration reg) {
     showDialog(
         context: context,
         builder: (context) => AddPaymentDialog(
@@ -288,8 +289,9 @@ class _SingleEventState extends State<SingleEvent> {
                   date: DateTime.now(),
                   reference: "Manual cash payment for ${event.name}",
                   method: PaymentMethod.cash,
-                  payee: child.parent!.fullName),
-              parent: child.parent!,
+                  payee: reg.child!.parent!.fullName),
+              parent: reg.child!.parent!,
+              eventRegistration: reg,
             ));
   }
 }

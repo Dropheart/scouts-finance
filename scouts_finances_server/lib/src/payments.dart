@@ -80,4 +80,21 @@ class PaymentEndpoint extends Endpoint {
       await Parent.db.updateRow(session, parent, transaction: transaction);
     }
   }
+
+  Future<void> insertCashPayment(
+      Session session, Payment payment, EventRegistration eventReg) async {
+    payment.parent = eventReg.child!.parent;
+    payment.parentId = eventReg.child!.parentId;
+
+    await Payment.db.insertRow(
+      session,
+      payment,
+    );
+
+    eventReg.paidDate = DateTime.now();
+    await EventRegistration.db.updateRow(
+      session,
+      eventReg,
+    );
+  }
 }

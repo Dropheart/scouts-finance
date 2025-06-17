@@ -20,7 +20,9 @@ import 'package:scouts_finances_server/src/generated/protocol.dart' as _i8;
 import 'package:serverpod/src/database/concepts/transaction.dart' as _i9;
 import 'package:scouts_finances_server/src/generated/parent.dart' as _i10;
 import 'package:scouts_finances_server/src/generated/payment.dart' as _i11;
-import 'package:scouts_finances_server/src/generated/group_colour.dart' as _i12;
+import 'package:scouts_finances_server/src/generated/event_registration.dart'
+    as _i12;
+import 'package:scouts_finances_server/src/generated/group_colour.dart' as _i13;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -261,6 +263,31 @@ class Endpoints extends _i1.EndpointDispatch {
             params['eventId'],
           ),
         ),
+        'updateEventRegistrations': _i1.MethodConnector(
+          name: 'updateEventRegistrations',
+          params: {
+            'eventId': _i1.ParameterDescription(
+              name: 'eventId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'childIds': _i1.ParameterDescription(
+              name: 'childIds',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .updateEventRegistrations(
+            session,
+            params['eventId'],
+            params['childIds'],
+          ),
+        ),
       },
     );
     connectors['parent'] = _i1.EndpointConnector(
@@ -484,6 +511,30 @@ class Endpoints extends _i1.EndpointDispatch {
             transaction: params['transaction'],
           ),
         ),
+        'insertCashPayment': _i1.MethodConnector(
+          name: 'insertCashPayment',
+          params: {
+            'payment': _i1.ParameterDescription(
+              name: 'payment',
+              type: _i1.getType<_i11.Payment>(),
+              nullable: false,
+            ),
+            'eventReg': _i1.ParameterDescription(
+              name: 'eventReg',
+              type: _i1.getType<_i12.EventRegistration>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['payment'] as _i5.PaymentEndpoint).insertCashPayment(
+            session,
+            params['payment'],
+            params['eventReg'],
+          ),
+        ),
       },
     );
     connectors['scoutGroups'] = _i1.EndpointConnector(
@@ -510,7 +561,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'colour': _i1.ParameterDescription(
               name: 'colour',
-              type: _i1.getType<_i12.GroupColour>(),
+              type: _i1.getType<_i13.GroupColour>(),
               nullable: false,
             ),
           },

@@ -131,6 +131,19 @@ class EndpointEvent extends _i1.EndpointRef {
         'getRegistrationsByEventId',
         {'eventId': eventId},
       );
+
+  _i2.Future<void> updateEventRegistrations(
+    int eventId,
+    List<int> childIds,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'event',
+        'updateEventRegistrations',
+        {
+          'eventId': eventId,
+          'childIds': childIds,
+        },
+      );
 }
 
 /// {@category Endpoint}
@@ -243,6 +256,19 @@ class EndpointPayment extends _i1.EndpointRef {
           'paymentId': paymentId,
           'parent': parent,
           'transaction': transaction,
+        },
+      );
+
+  _i2.Future<void> insertCashPayment(
+    _i7.Payment payment,
+    _i4.EventRegistration eventReg,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'payment',
+        'insertCashPayment',
+        {
+          'payment': payment,
+          'eventReg': eventReg,
         },
       );
 }
