@@ -97,8 +97,8 @@ class _ChildEventsTableState extends State<ChildEventsTable> {
                             cells: [
                               DataCell(Text(r.event!.date
                                   .toLocal()
-                                  .toIso8601String()
-                                  .split('T')[0])),
+                                  .toString()
+                                  .split(' ')[0])),
                               DataCell(Text(r.event!.name)),
                               DataCell(Text(
                                   (r.event!.cost / 100).toStringAsFixed(2))),

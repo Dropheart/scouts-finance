@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/event_add_participant.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
 
@@ -23,8 +24,8 @@ class _SingleEventState extends State<SingleEvent> {
   final sorts = [
     'First Name',
     'Last Name',
-    'Paid First',
-    'Paid Last',
+    'Paid',
+    'Unpaid',
   ];
   int sortIndex = 0;
 
@@ -124,16 +125,22 @@ class _SingleEventState extends State<SingleEvent> {
           .map((e) => DataRow(
                   cells: [
                     DataCell(Row(children: [
-                      Text(e.name),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     // Handle button press, e.g., navigate to child's profile
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     shape: const CircleBorder(),
-                      //   ),
-                      //   child: const Icon(Icons.arrow_forward, size: 16),
-                      // )
+                      TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 0),
+                            minimumSize: Size(0, 0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(e.name),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ScoutDetailsView(scoutId: e.childId!),
+                              ),
+                            );
+                          }),
                     ])),
                     DataCell(Text(e.paidDate == null
                         ? 'Not paid'
@@ -144,21 +151,12 @@ class _SingleEventState extends State<SingleEvent> {
                       : WidgetStateProperty.all(
                           const Color.fromARGB(199, 1, 230, 104))))
           .toList(),
-      // decoration: BoxDecoration(
-      //   border: Border.all(color: colourScheme.secondary, width: 2),
-      //   borderRadius: BorderRadius.circular(10),
-      //   color: colourScheme.secondaryContainer,
-      // ),
       border: TableBorder.symmetric(
           inside: BorderSide(
             color: colourScheme.onSecondaryContainer,
             width: 0.5,
           ),
           outside: BorderSide.none),
-      // border: TableBorder.all(
-      //   color: colourScheme.onSecondaryContainer,
-      //   width: 0.5,
-      // ),
     );
 
     SearchBar searchBar = SearchBar(
@@ -204,77 +202,68 @@ class _SingleEventState extends State<SingleEvent> {
         appBar: AppBar(
           title: Text(event.name),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Table(columnWidths: {
-                0: IntrinsicColumnWidth(),
-              }, children: [
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'Date:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(
-                      "${event.date.day}/${event.date.month}/${event.date.year}"),
-                ]),
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text('Location:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  Text('TBD'),
-                ]),
-                TableRow(children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text('Price:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  Text('£${(event.cost / 100).toStringAsFixed(2)}'),
-                ]),
-              ]),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(children: [
-                    const SizedBox(height: 16),
-                    searchBar,
-                    sortSelection,
-                    const SizedBox(height: 16),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(10), // Sets rounded corners
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Table(columnWidths: {
+                  0: IntrinsicColumnWidth(),
+                }, children: [
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'Date:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      color: colourScheme.secondaryContainer,
-                      clipBehavior: Clip.antiAlias,
-                      child: childrenTable,
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     SizedBox(
-                    //       width: 200, // Fixed width
-                    //       child: EventAddParticipant(
-                    //         eventId: widget.eventId,
-                    //         closeFn: () => _getEventDetails(),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    EventAddParticipant(
-                      eventId: widget.eventId,
-                      closeFn: () => _getEventDetails(),
+                    Text(
+                        "${event.date.day}/${event.date.month}/${event.date.year}"),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Location:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                  ])),
-            ],
+                    Text('TBD'),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text('Price:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Text('£${(event.cost / 100).toStringAsFixed(2)}'),
+                  ]),
+                ]),
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(children: [
+                      const SizedBox(height: 16),
+                      searchBar,
+                      sortSelection,
+                      const SizedBox(height: 16),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(10), // Sets rounded corners
+                        ),
+                        color: colourScheme.secondaryContainer,
+                        clipBehavior: Clip.antiAlias,
+                        child: childrenTable,
+                      ),
+                      EventAddParticipant(
+                        eventId: widget.eventId,
+                        closeFn: () => _getEventDetails(),
+                      ),
+                    ])),
+                const SizedBox(height: 128.0),
+              ],
+            ),
           ),
         ));
   }

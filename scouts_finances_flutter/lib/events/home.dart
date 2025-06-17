@@ -23,8 +23,8 @@ class _EventHomeState extends State<EventHome> {
   final sorts = [
     'Upcoming First',
     'Upcoming Last',
-    'Paid count',
-    'Unpaid count',
+    'Most Paid',
+    'Fewest Paid',
   ];
   int sortIndex = 0;
   String query = '';
@@ -53,7 +53,7 @@ class _EventHomeState extends State<EventHome> {
     } catch (e) {
       setState(() {
         errorMessage =
-            'Failed to load paid counts. Are you connected to the internet?';
+            'Failed to load event details (pay counts). Are you connected to the internet?';
       });
     }
     loading--;
@@ -123,7 +123,7 @@ class _EventHomeState extends State<EventHome> {
                 const Spacer(),
                 Icon(Icons.calendar_today, size: 14),
                 const SizedBox(width: 4.0),
-                Text(event.date.toLocal().toIso8601String().split('T')[0]),
+                Text(event.date.toLocal().toString().split(' ')[0]),
               ],
             ),
             onTap: () {
@@ -220,6 +220,16 @@ class _EventHomeState extends State<EventHome> {
             return const AddEventDialog();
           },
         ).then((_) {
+          if (!mounted) return;
+          // Use addPostFrameCallback to ensure context is valid after async gap
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.green,
+                content: Text('Event added successfully'),
+              ),
+            );
+          });
           // Refresh the event list after adding a new event
           _getEvents();
         });

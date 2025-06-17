@@ -97,19 +97,21 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           child: Text(
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
-      Row parentSelection = Row(children: [
-        Text("Attribute this payment to a parent: ",
-            style: TextStyle(fontSize: 16)),
-        ParentDropdown(
-          parents: parents,
-          defaultParentId: parents[parentIndex].id,
-          onChanged: (p) {
-            setState(() {
-              parentIndex = parents.indexWhere((parent) => parent.id == p);
-            });
-          },
-        )
-      ]);
+      Widget parentSelection = Wrap(
+          alignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text("Attribute to parent: ", style: TextStyle(fontSize: 16)),
+            ParentDropdown(
+              parents: parents,
+              defaultParentId: parents[parentIndex].id,
+              onChanged: (p) {
+                setState(() {
+                  parentIndex = parents.indexWhere((parent) => parent.id == p);
+                });
+              },
+            )
+          ]);
 
       List<EventRegistration> unpaidEventsForParent = unpaidEvents
           .where((eventReg) => eventReg.child!.parentId == currParent.id)
@@ -162,9 +164,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                           (event) => DataRow(
                             cells: [
                               DataCell(Text(
-                                event.event!.date
-                                    .toIso8601String()
-                                    .split('T')[0],
+                                event.event!.date.toString().split(' ')[0],
                               )),
                               DataCell(Text(
                                   '${event.child!.firstName} ${event.child!.lastName}')),
@@ -248,7 +248,20 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           ...clearedEventsInfo,
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: submit,
+            onPressed: () async {
+              _submit();
+              if (context.mounted) {
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    showCloseIcon: true,
+                    content: Text(
+                        'Payment attributed to ${currParent.fullName} successfully.'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
             child: Row(
               children: [
                 Text('Attribute payment to ${currParent.fullName}'),
@@ -272,7 +285,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
     );
   }
 
-  void submit() async {
+  void _submit() async {
     if (payment == null || parents.isEmpty) return;
 
     try {
@@ -282,6 +295,7 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            showCloseIcon: true,
             content: Text('Failed to classify payment: $e'),
             backgroundColor: Colors.red,
           ),
