@@ -4,7 +4,8 @@ import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/shared.dart';
 
 class UnmatchedView extends StatefulWidget {
-  const UnmatchedView({super.key, required this.searchBar, required this.query});
+  const UnmatchedView(
+      {super.key, required this.searchBar, required this.query});
   final SearchBar searchBar;
   final String query;
 

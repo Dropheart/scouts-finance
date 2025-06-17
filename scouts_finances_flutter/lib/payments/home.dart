@@ -27,6 +27,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
     _searchController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final searchBar = SearchBar(
