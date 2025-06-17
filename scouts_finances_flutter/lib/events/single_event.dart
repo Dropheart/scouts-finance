@@ -23,8 +23,8 @@ class _SingleEventState extends State<SingleEvent> {
   final sorts = [
     'First Name',
     'Last Name',
-    'Paid First',
-    'Paid Last',
+    'Paid',
+    'Unpaid',
   ];
   int sortIndex = 0;
 
@@ -245,6 +245,7 @@ class _SingleEventState extends State<SingleEvent> {
                         closeFn: () => _getEventDetails(),
                       ),
                     ])),
+                const SizedBox(height: 128.0),
               ],
             ),
           ),
