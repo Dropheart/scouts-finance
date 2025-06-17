@@ -43,14 +43,25 @@ class _AddEventDialogState extends State<AddEventDialog> {
     }
   }
 
-  void _submit(int groupId) {
+  void _submit(int groupId) async {
     if (formKey.currentState?.validate() ?? false) {
-      client.event.insertEvent(
+      await client.event.insertEvent(
           _nameController.text,
           (double.parse(_priceController.text.replaceFirst('£', '')) * 100)
               .truncate(), // Convert to pence
           _selectedDate,
           groupId);
+
+      if (!mounted) return;
+      // Use addPostFrameCallback to ensure context is valid after async gap
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('Event added successfully'),
+          ),
+        );
+      });
       Navigator.of(context).pop({
         'name': _nameController.text,
         'price': _priceController.text.replaceFirst('£', ''),
