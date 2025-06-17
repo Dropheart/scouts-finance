@@ -25,6 +25,7 @@ payment:
   - getPaymentById:
   - getPaymentsByParentId:
   - updatePayment:
+  - insertCashPayment:
 scoutGroups:
   - getScoutGroups:
   - createScoutGroup:
