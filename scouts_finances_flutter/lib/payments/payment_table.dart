@@ -35,7 +35,7 @@ class PaymentTable extends StatelessWidget {
         TableRow(children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text("Payee", style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text("Payee Name", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           Text(payment.payee),
         ]),
