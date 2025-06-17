@@ -101,6 +101,11 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<_i3.Child>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<_i3.Child>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i3.Child>(e)).toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i5.Event>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i5.Event>(e)).toList()

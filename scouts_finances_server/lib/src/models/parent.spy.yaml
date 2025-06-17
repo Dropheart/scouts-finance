@@ -6,3 +6,4 @@ fields:
     email: String
     phone: String
     balance: int
+    children: List<Child>?, relation(name=parent_children)
