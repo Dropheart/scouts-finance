@@ -258,6 +258,19 @@ class EndpointPayment extends _i1.EndpointRef {
           'transaction': transaction,
         },
       );
+
+  _i2.Future<void> insertCashPayment(
+    _i7.Payment payment,
+    _i4.EventRegistration eventReg,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'payment',
+        'insertCashPayment',
+        {
+          'payment': payment,
+          'eventReg': eventReg,
+        },
+      );
 }
 
 /// {@category Endpoint}
