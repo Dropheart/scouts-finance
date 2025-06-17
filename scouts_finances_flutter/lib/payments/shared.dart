@@ -20,7 +20,7 @@ Card toCard(BuildContext context, Payment payment) {
           children: [
             const Icon(Icons.person, size: 14.0),
             const SizedBox(width: 4.0),
-            Text(payment.parent?.fullName ?? 'Unmatched'),
+            Text(payment.parent?.fullName ?? 'Unattributed'),
           ],
         ),
         const Spacer(),

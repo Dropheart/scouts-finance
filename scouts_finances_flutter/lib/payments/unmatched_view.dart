@@ -91,7 +91,7 @@ class UnmatchedViewState extends State<UnmatchedView> {
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                   child: Text(
-                    'No matched payments found.',
+                    'No attributed payments found.',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),

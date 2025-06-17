@@ -1,21 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/services/theme_service.dart';
 
 class ScoutGroupsService extends ChangeNotifier {
   List<ScoutGroup> scoutGroups = [];
   late ScoutGroup currentScoutGroup;
 
-  void setScoutGroups(List<ScoutGroup> groups) {
+  void setScoutGroups(BuildContext context, List<ScoutGroup> groups) {
     scoutGroups = groups;
     if (groups.isNotEmpty) {
-      currentScoutGroup = groups.first;
+      setCurrentScoutGroup(context, groups.first);
     }
     notifyListeners();
   }
 
-  void setCurrentScoutGroup(ScoutGroup group) {
+  void setCurrentScoutGroup(BuildContext context, ScoutGroup group) {
     currentScoutGroup = group;
+    final colour = switch (group.colour) {
+      GroupColour.black => Colors.black,
+      GroupColour.darkblue => Colors.blue[900]!,
+      GroupColour.lightblue => Colors.lightBlue[300]!,
+      GroupColour.green => Colors.green,
+      GroupColour.teal => Colors.teal,
+      GroupColour.red => Colors.red
+    };
+
+    Provider.of<ThemeService>(context, listen: false).setPrimaryColor(colour);
     notifyListeners();
   }
 
@@ -35,7 +47,7 @@ class ScoutGroupsService extends ChangeNotifier {
             ),
             onSubmitted: (value) {
               if (value.isNotEmpty) {
-                createScoutGroup(value);
+                createScoutGroup(context, value, GroupColour.black);
                 Navigator.of(context).pop();
               }
             },
@@ -47,7 +59,8 @@ class ScoutGroupsService extends ChangeNotifier {
             ElevatedButton(
                 onPressed: () {
                   if (groupnameController.text.isNotEmpty) {
-                    createScoutGroup(groupnameController.text);
+                    createScoutGroup(
+                        context, groupnameController.text, GroupColour.black);
                     Navigator.of(context).pop();
                   }
                 },
@@ -58,11 +71,12 @@ class ScoutGroupsService extends ChangeNotifier {
     );
   }
 
-  Future<void> createScoutGroup(String name) async {
+  Future<void> createScoutGroup(
+      BuildContext context, String name, GroupColour colour) async {
     try {
-      final newGroup = await client.scoutGroups.createScoutGroup(name);
+      final newGroup = await client.scoutGroups.createScoutGroup(name, colour);
       scoutGroups.add(newGroup);
-      currentScoutGroup = newGroup;
+      if (context.mounted) setCurrentScoutGroup(context, newGroup);
       notifyListeners();
     } catch (e) {
       // print('Failed to create scout group: $e');

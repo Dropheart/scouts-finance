@@ -13,7 +13,7 @@ class ParentHome extends StatelessWidget {
     isScrollable: false,
     tabs: [
       Tab(text: 'All Parents'),
-      Tab(text: 'Outstanding'),
+      Tab(text: 'Payments Due'),
     ],
   );
 

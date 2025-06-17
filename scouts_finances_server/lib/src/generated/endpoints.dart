@@ -20,6 +20,7 @@ import 'package:scouts_finances_server/src/generated/protocol.dart' as _i8;
 import 'package:serverpod/src/database/concepts/transaction.dart' as _i9;
 import 'package:scouts_finances_server/src/generated/parent.dart' as _i10;
 import 'package:scouts_finances_server/src/generated/payment.dart' as _i11;
+import 'package:scouts_finances_server/src/generated/group_colour.dart' as _i12;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -506,7 +507,12 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'name',
               type: _i1.getType<String>(),
               nullable: false,
-            )
+            ),
+            'colour': _i1.ParameterDescription(
+              name: 'colour',
+              type: _i1.getType<_i12.GroupColour>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -516,6 +522,7 @@ class Endpoints extends _i1.EndpointDispatch {
                   .createScoutGroup(
             session,
             params['name'],
+            params['colour'],
           ),
         ),
       },

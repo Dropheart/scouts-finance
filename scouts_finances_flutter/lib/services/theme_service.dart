@@ -137,6 +137,7 @@ class ThemeService extends ChangeNotifier {
         seedColor: _primaryColor,
         brightness: _isLightBackground ? Brightness.light : Brightness.dark,
       );
+
       return ThemeData(
           colorScheme: scheme,
           useMaterial3: true,
@@ -147,10 +148,10 @@ class ThemeService extends ChangeNotifier {
             elevation: const WidgetStatePropertyAll(0.0),
           ),
           appBarTheme: AppBarTheme(
-            backgroundColor: scheme.primary,
-            foregroundColor: scheme.onPrimary,
+            backgroundColor: _primaryColor,
+            foregroundColor: _getContrastingTextColor(_primaryColor),
             titleTextStyle: TextStyle(
-              color: scheme.onPrimary,
+              color: _getContrastingTextColor(_primaryColor),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),

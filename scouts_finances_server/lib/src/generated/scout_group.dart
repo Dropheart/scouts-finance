@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'child.dart' as _i2;
 import 'events.dart' as _i3;
+import 'group_colour.dart' as _i4;
 
 abstract class ScoutGroup
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -23,6 +24,7 @@ abstract class ScoutGroup
     this.description,
     this.children,
     this.events,
+    required this.colour,
   });
 
   factory ScoutGroup({
@@ -31,6 +33,7 @@ abstract class ScoutGroup
     String? description,
     List<_i2.Child>? children,
     List<_i3.Event>? events,
+    required _i4.GroupColour colour,
   }) = _ScoutGroupImpl;
 
   factory ScoutGroup.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -44,6 +47,7 @@ abstract class ScoutGroup
       events: (jsonSerialization['events'] as List?)
           ?.map((e) => _i3.Event.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      colour: _i4.GroupColour.fromJson((jsonSerialization['colour'] as String)),
     );
   }
 
@@ -62,6 +66,8 @@ abstract class ScoutGroup
 
   List<_i3.Event>? events;
 
+  _i4.GroupColour colour;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -74,6 +80,7 @@ abstract class ScoutGroup
     String? description,
     List<_i2.Child>? children,
     List<_i3.Event>? events,
+    _i4.GroupColour? colour,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -85,6 +92,7 @@ abstract class ScoutGroup
         'children': children?.toJson(valueToJson: (v) => v.toJson()),
       if (events != null)
         'events': events?.toJson(valueToJson: (v) => v.toJson()),
+      'colour': colour.toJson(),
     };
   }
 
@@ -98,6 +106,7 @@ abstract class ScoutGroup
         'children': children?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (events != null)
         'events': events?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'colour': colour.toJson(),
     };
   }
 
@@ -146,12 +155,14 @@ class _ScoutGroupImpl extends ScoutGroup {
     String? description,
     List<_i2.Child>? children,
     List<_i3.Event>? events,
+    required _i4.GroupColour colour,
   }) : super._(
           id: id,
           name: name,
           description: description,
           children: children,
           events: events,
+          colour: colour,
         );
 
   /// Returns a shallow copy of this [ScoutGroup]
@@ -164,6 +175,7 @@ class _ScoutGroupImpl extends ScoutGroup {
     Object? description = _Undefined,
     Object? children = _Undefined,
     Object? events = _Undefined,
+    _i4.GroupColour? colour,
   }) {
     return ScoutGroup(
       id: id is int? ? id : this.id,
@@ -175,6 +187,7 @@ class _ScoutGroupImpl extends ScoutGroup {
       events: events is List<_i3.Event>?
           ? events
           : this.events?.map((e0) => e0.copyWith()).toList(),
+      colour: colour ?? this.colour,
     );
   }
 }
@@ -189,6 +202,11 @@ class ScoutGroupTable extends _i1.Table<int?> {
       'description',
       this,
     );
+    colour = _i1.ColumnEnum(
+      'colour',
+      this,
+      _i1.EnumSerialization.byName,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -202,6 +220,8 @@ class ScoutGroupTable extends _i1.Table<int?> {
   _i3.EventTable? ___events;
 
   _i1.ManyRelation<_i3.EventTable>? _events;
+
+  late final _i1.ColumnEnum<_i4.GroupColour> colour;
 
   _i2.ChildTable get __children {
     if (___children != null) return ___children!;
@@ -270,6 +290,7 @@ class ScoutGroupTable extends _i1.Table<int?> {
         id,
         name,
         description,
+        colour,
       ];
 
   @override

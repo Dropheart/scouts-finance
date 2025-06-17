@@ -1,0 +1,72 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "scout_groups"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "scout_groups",
+        "dartName": "ScoutGroup",
+        "module": "scouts_finances",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('scout_groups_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "colour",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:GroupColour"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "scout_groups_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"scout_groups\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "scout_groups",
+      "columns": [
+        "colour"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}
