@@ -15,7 +15,7 @@ class _ParentHomeState extends State<ParentHome> {
     isScrollable: false,
     tabs: [
       Tab(text: 'All Parents'),
-      Tab(text: 'Outstanding Payments'),
+      Tab(text: 'Outstanding'),
     ],
   );
 
