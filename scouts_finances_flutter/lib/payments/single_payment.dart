@@ -97,8 +97,12 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           child: Text(
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
-      Row parentSelection = Row(children: [
-        Text("Attribute this payment to a parent: ",
+      Widget parentSelection = Wrap(
+        alignment: WrapAlignment.start,
+        crossAxisAlignment: WrapCrossAlignment.center,
+
+        children: [
+        Text("Attribute to parent: ",
             style: TextStyle(fontSize: 16)),
         ParentDropdown(
           parents: parents,
