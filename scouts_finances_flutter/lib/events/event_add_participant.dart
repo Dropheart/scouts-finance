@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
@@ -19,6 +21,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   int loading = 2;
   String? err;
   late List<Child> registeredChildren;
+  bool changed = false;
 
   void _getChildren() async {
     try {
@@ -38,6 +41,15 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       registeredChildren = registrations.map((e) => e.child!).toList();
     });
     loading--;
+  }
+
+  void refresh() {
+    setState(() {
+      loading = 2;
+      err = null;
+    });
+    _getChildren();
+    _getEventChildren();
   }
 
   @override
@@ -62,14 +74,13 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       );
     }
 
-    final registeredChildrenIndicies = registeredChildren
-        .map((child) =>
-            allChildren.indexWhere((child2) => child2.id == child.id))
+    final selectedChildrenIndicies = registeredChildren
+        .map((child) => allChildren.indexWhere((c) => c.id == child.id))
         .where((index) => index >= 0)
         .toList();
 
     final choices = SearchChoices.multiple(
-        selectedItems: registeredChildrenIndicies,
+        selectedItems: selectedChildrenIndicies,
         items: allChildren
             .map((child) => DropdownMenuItem<Child>(
                   value: child,
@@ -80,10 +91,13 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         doneButton: SizedBox.shrink(),
         displayClearIcon: false,
         onChanged: (List selections) async {
+          if (!changed) {
+            return;
+          }
           // Runs when you exit the popup.
           final changedChildren = allChildren
               .where((child) {
-                bool previouslySelected = registeredChildrenIndicies
+                bool previouslySelected = selectedChildrenIndicies
                     .contains(allChildren.indexOf(child));
                 bool currentlySelected =
                     selections.contains(allChildren.indexOf(child));
@@ -100,24 +114,87 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
                 .updateEventRegistrations(widget.eventId, changedChildrenIds);
             widget.closeFn();
           }
-          setState(() {
-            registeredChildren = allChildren
-                .where(
-                    (child) => selections.contains(allChildren.indexOf(child)))
-                .toList();
-          });
+          refresh();
         },
-        closeButton: (List selectedChildren) {
-          final removedChildren = registeredChildrenIndicies
+        closeButton:
+            (List<int> selectedChildren, closeContext, Function updateParent) {
+          final addScoutGroups = Consumer<ScoutGroupsService>(
+              builder: (ctx, scoutGroupsService, child) {
+            final groups = scoutGroupsService.scoutGroups;
+
+            final buttons = groups.map((group) {
+              return ElevatedButton(
+                onPressed: () {
+                  final currentlySelected = selectedChildrenIndicies.where(
+                      (index) => group.children!
+                          .any((child) => allChildren[index].id == child.id));
+
+                  final toRemove = <int>[];
+                  final toAdd = <int>[];
+
+                  if (currentlySelected.length == group.children!.length) {
+                    toRemove.addAll(currentlySelected);
+                  } else {
+                    toAdd.addAll(group.children!
+                        .map((child) => allChildren.indexOf(child))
+                        .where((index) =>
+                            index >= 0 &&
+                            !selectedChildrenIndicies.contains(index))
+                        .toList());
+                  }
+                },
+                child: Text(group.name),
+              );
+            });
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttons.toList(),
+            );
+          });
+
+          final removedChildren = selectedChildrenIndicies
               .where((index) => !selectedChildren.contains(index))
               .toList();
           final addedChildren = selectedChildren
-              .where((index) => !registeredChildrenIndicies.contains(index))
+              .where((index) => !selectedChildrenIndicies.contains(index))
               .toList();
+          changed = addedChildren.isNotEmpty || removedChildren.isNotEmpty;
 
-          return (addedChildren.isEmpty && removedChildren.isEmpty)
-              ? "Confirm (no changes)"
-              : "Confirm  (${addedChildren.length} added, ${removedChildren.length} removed)";
+          final confirmText = changed
+              ? "Confirm  (${addedChildren.length} added, ${removedChildren.length} removed)"
+              : 'Confirm (no changes)';
+          final confirmButton = ElevatedButton(
+            onPressed: changed
+                ? () {
+                    Navigator.pop(closeContext);
+                    refresh();
+                  }
+                : null,
+            child: Text(confirmText),
+          );
+          final cancelButton = ElevatedButton(
+            onPressed: () {
+              Navigator.pop(closeContext);
+            },
+            child: const Text('Cancel'),
+          );
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Toggle All'),
+              addScoutGroups,
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  confirmButton,
+                  cancelButton,
+                ],
+              ),
+            ],
+          );
         },
         isExpanded: true,
         selectedAggregateWidgetFn: (List selected) => Text('Manage Scouts'));
