@@ -23,6 +23,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   late List<Child> registeredChildren;
   bool changed = false;
 
+  List<int> selectedIndicies = [];
+
   void _getChildren() async {
     try {
       allChildren = await client.scouts.getChildren();
@@ -39,6 +41,10 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
         await client.event.getEventById(widget.eventId);
     setState(() {
       registeredChildren = registrations.map((e) => e.child!).toList();
+      selectedIndicies = registeredChildren
+          .map((child) => allChildren.indexWhere((c) => c.id == child.id))
+          .where((index) => index >= 0)
+          .toList();
     });
     loading--;
   }
@@ -74,13 +80,13 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       );
     }
 
-    final selectedChildrenIndicies = registeredChildren
-        .map((child) => allChildren.indexWhere((c) => c.id == child.id))
-        .where((index) => index >= 0)
-        .toList();
+    // final selectedChildrenIndicies = registeredChildren
+    //     .map((child) => allChildren.indexWhere((c) => c.id == child.id))
+    //     .where((index) => index >= 0)
+    //     .toList();
 
     final choices = SearchChoices.multiple(
-        selectedItems: selectedChildrenIndicies,
+        selectedItems: selectedIndicies,
         items: allChildren
             .map((child) => DropdownMenuItem<Child>(
                   value: child,
@@ -97,8 +103,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
           // Runs when you exit the popup.
           final changedChildren = allChildren
               .where((child) {
-                bool previouslySelected = selectedChildrenIndicies
-                    .contains(allChildren.indexOf(child));
+                bool previouslySelected =
+                    selectedIndicies.contains(allChildren.indexOf(child));
                 bool currentlySelected =
                     selections.contains(allChildren.indexOf(child));
 
@@ -125,8 +131,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
             final buttons = groups.map((group) {
               return ElevatedButton(
                 onPressed: () {
-                  final currentlySelected = selectedChildrenIndicies.where(
-                      (index) => group.children!
+                  final currentlySelected = selectedIndicies.where((index) =>
+                      group.children!
                           .any((child) => allChildren[index].id == child.id));
 
                   final toRemove = <int>[];
@@ -138,8 +144,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
                     toAdd.addAll(group.children!
                         .map((child) => allChildren.indexOf(child))
                         .where((index) =>
-                            index >= 0 &&
-                            !selectedChildrenIndicies.contains(index))
+                            index >= 0 && !selectedIndicies.contains(index))
                         .toList());
                   }
                 },
@@ -153,11 +158,11 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
             );
           });
 
-          final removedChildren = selectedChildrenIndicies
+          final removedChildren = selectedIndicies
               .where((index) => !selectedChildren.contains(index))
               .toList();
           final addedChildren = selectedChildren
-              .where((index) => !selectedChildrenIndicies.contains(index))
+              .where((index) => !selectedIndicies.contains(index))
               .toList();
           changed = addedChildren.isNotEmpty || removedChildren.isNotEmpty;
 
@@ -175,7 +180,15 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
           );
           final cancelButton = ElevatedButton(
             onPressed: () {
+              changed = false;
               Navigator.pop(closeContext);
+              setState(() {
+                selectedIndicies = registeredChildren
+                    .map((child) =>
+                        allChildren.indexWhere((c) => c.id == child.id))
+                    .where((index) => index >= 0)
+                    .toList();
+              });
             },
             child: const Text('Cancel'),
           );
