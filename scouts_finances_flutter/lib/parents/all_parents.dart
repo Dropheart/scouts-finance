@@ -9,10 +9,10 @@ class AllParentsView extends StatefulWidget {
   const AllParentsView({super.key});
 
   @override
-  State<AllParentsView> createState() => _AllParentsViewState();
+  State<AllParentsView> createState() => AllParentsViewState();
 }
 
-class _AllParentsViewState extends State<AllParentsView> {
+class AllParentsViewState extends State<AllParentsView> {
   late List<Parent> allParents;
   late List<(Parent, int)> outstandingParents;
   String? errorMessage;
@@ -65,6 +65,21 @@ class _AllParentsViewState extends State<AllParentsView> {
         loading = false;
       });
     }
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  void refresh() {
+    _getParents();
+    _scrollToBottom();
   }
 
   @override

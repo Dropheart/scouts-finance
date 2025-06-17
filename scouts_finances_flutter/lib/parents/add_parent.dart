@@ -4,8 +4,9 @@ import 'package:scouts_finances_flutter/main.dart';
 
 class AddParent extends FloatingActionButton {
   final BuildContext context;
+  final VoidCallback? onParentAdded;
 
-  const AddParent({super.key, required this.context}) : super(onPressed: null);
+  const AddParent({super.key, required this.context, this.onParentAdded}) : super(onPressed: null);
 
   @override
   VoidCallback? get onPressed => () {
@@ -115,7 +116,9 @@ class AddParent extends FloatingActionButton {
         ).then((result) {
           if (result == true) {
             // Trigger rebuild of parent widget
-            (context as Element).markNeedsBuild();
+            if (context.mounted) {
+              onParentAdded?.call();
+            }
           }
         });
       };
