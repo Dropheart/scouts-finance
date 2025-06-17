@@ -6,13 +6,20 @@ import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/popups.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
-import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
 late final Client client;
 
 late String serverUrl;
+
+enum AccountType {
+  treasurer(name: 'Treasurer'),
+  leader(name: 'Leader');
+
+  final String name;
+  const AccountType({required this.name});
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,37 +83,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
+  AccountType accountType = AccountType.treasurer;
+
   static final List<Widget> pages = [
     EventHome(),
     PaymentsHome(),
-    // ScoutsHome(),
     ParentHome(),
-    SettingsHome()
   ];
   static final List<String> pageTitles = [
     'Events',
     'Income',
-    // 'Scouts',
     'People',
-  ];
-
-  static final List<NavigationDestination> destinations = [
-    const NavigationDestination(
-      icon: Icon(Icons.event),
-      label: 'Events',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.currency_pound),
-      label: 'Income',
-    ),
-    // const NavigationDestination(
-    //   icon: Icon(Icons.hiking),
-    //   label: 'Scouts',
-    // ),
-    const NavigationDestination(
-      icon: Icon(Icons.supervisor_account),
-      label: 'People',
-    ),
   ];
 
   final selectScoutGroup = Consumer<ScoutGroupsService>(
@@ -149,10 +136,48 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> destinations = [
+      GestureDetector(
+        child: NavigationDestination(
+          icon: Icon(Icons.event),
+          label: 'Events',
+        ),
+        onVerticalDragEnd: (details) {
+          if (details.primaryVelocity == null ||
+              details.primaryVelocity!.abs() < 2000) {
+            return;
+          }
+
+          setState(() {
+            accountType = accountType == AccountType.treasurer
+                ? AccountType.leader
+                : AccountType.treasurer;
+          });
+        },
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.currency_pound),
+        label: 'Income',
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.supervisor_account),
+        label: 'People',
+      ),
+    ];
+
+    final filteredDests = List<Widget>.from(destinations);
+    final filteredPages = List<Widget>.from(pages);
+    final filteredTitles = List<String>.from(pageTitles);
+    if (accountType == AccountType.leader) {
+      filteredDests.removeAt(1); // Remove Payments tab for leaders
+      filteredPages.removeAt(1); // Remove Payments tab for leaders
+      filteredTitles.removeAt(1); // Remove Payments title for leaders
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          pageTitles[currentPageIndex],
+          filteredTitles[currentPageIndex],
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -160,12 +185,14 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: false,
         actions: [
-          selectScoutGroup,
-          OptionsMenu(selectedIndex: currentPageIndex)
+          if (accountType == AccountType.leader)
+            selectScoutGroup
+          else
+            OptionsMenu(selectedIndex: currentPageIndex)
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        destinations: destinations,
+        destinations: filteredDests,
         selectedIndex: currentPageIndex,
         onDestinationSelected: (int index) {
           setState(() {
@@ -173,7 +200,7 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
-      body: pages[currentPageIndex],
+      body: filteredPages[currentPageIndex],
     );
   }
 }
