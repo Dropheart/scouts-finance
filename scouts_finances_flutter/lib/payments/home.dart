@@ -3,8 +3,16 @@ import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/payments/matched_view.dart';
 import 'package:scouts_finances_flutter/payments/unmatched_view.dart';
 
-class PaymentsHome extends StatelessWidget {
-  PaymentsHome({super.key});
+class PaymentsHome extends StatefulWidget {
+  const PaymentsHome({super.key});
+
+  @override
+  State<PaymentsHome> createState() => _PaymentsHomeState();
+}
+
+class _PaymentsHomeState extends State<PaymentsHome> {
+  String query = '';
+  final TextEditingController _searchController = TextEditingController();
 
   final tabBar = TabBar(
     isScrollable: false,
@@ -15,7 +23,26 @@ class PaymentsHome extends StatelessWidget {
   );
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
+    final searchBar = SearchBar(
+      controller: _searchController,
+      onChanged: (String value) {
+        setState(() {
+          query = value;
+        });
+      },
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: const Icon(Icons.search),
+      ),
+      hintText: 'Search by payee, amount, date...',
+    );
+
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
@@ -27,8 +54,8 @@ class PaymentsHome extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TabBarView(children: [
-                    UnmatchedView(),
-                    MatchedView(),
+                    UnmatchedView(searchBar: searchBar, query: query),
+                    MatchedView(searchBar: searchBar, query: query),
                   ])),
             )
           ],

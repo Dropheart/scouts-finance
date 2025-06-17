@@ -4,17 +4,18 @@ import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/shared.dart';
 
 class UnmatchedView extends StatefulWidget {
-  const UnmatchedView({super.key});
+  const UnmatchedView({super.key, required this.searchBar, required this.query});
+  final SearchBar searchBar;
+  final String query;
 
   @override
-  State<UnmatchedView> createState() => _UnmatchedViewState();
+  State<UnmatchedView> createState() => UnmatchedViewState();
 }
 
-class _UnmatchedViewState extends State<UnmatchedView> {
+class UnmatchedViewState extends State<UnmatchedView> {
   late List<Payment> unmatchedPayments;
   String? err;
   bool loading = true;
-  String query = '';
 
   final ScrollController _scrollController = ScrollController();
 
@@ -67,34 +68,21 @@ class _UnmatchedViewState extends State<UnmatchedView> {
     // Filter payments based on the search query
     List<Payment> filteredUnmatchedPayments = unmatchedPayments
         .where((payment) =>
-            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
-            (payment.amount / 100).toString().contains(query) ||
-            payment.date.toLocal().toString().contains(query))
+            payment.payee.toLowerCase().contains(widget.query.toLowerCase()) ||
+            (payment.amount / 100).toString().contains(widget.query) ||
+            payment.date.toLocal().toString().contains(widget.query))
         .toList();
 
     List<Card> unmatchedPaymentCards = filteredUnmatchedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
-    SearchBar searchBar = SearchBar(
-      onChanged: (String value) {
-        setState(() {
-          query = value;
-        });
-      },
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 8.0),
-        child: const Icon(Icons.search),
-      ),
-      hintText: 'Search by payee, amount, date...',
-    );
-
     return SingleChildScrollView(
         controller: _scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            searchBar,
+            widget.searchBar,
             const SizedBox(height: 16.0),
             ...unmatchedPaymentCards,
             if (unmatchedPaymentCards.isEmpty)

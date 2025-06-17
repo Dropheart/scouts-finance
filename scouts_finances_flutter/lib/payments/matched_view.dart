@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
-import 'package:scouts_finances_flutter/extensions/name.dart';
-import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/shared.dart';
-import 'package:scouts_finances_flutter/payments/single_payment.dart';
 
 class MatchedView extends StatefulWidget {
-  const MatchedView({super.key});
+  const MatchedView({super.key, required this.searchBar, required this.query});
+  final SearchBar searchBar;
+  final String query;
 
   @override
   State<MatchedView> createState() => _MatchedViewState();
@@ -17,7 +16,6 @@ class _MatchedViewState extends State<MatchedView> {
   late List<Payment> matchedPayments;
   String? err;
   bool loading = true;
-  String query = '';
 
   final ScrollController _scrollController = ScrollController();
 
@@ -70,34 +68,21 @@ class _MatchedViewState extends State<MatchedView> {
     // Filter payments based on the search query
     List<Payment> filteredMatchedPayments = matchedPayments
         .where((payment) =>
-            payment.payee.toLowerCase().contains(query.toLowerCase()) ||
-            payment.amount.toString().contains(query) ||
-            payment.date.toLocal().toString().contains(query))
+            payment.payee.toLowerCase().contains(widget.query.toLowerCase()) ||
+            payment.amount.toString().contains(widget.query) ||
+            payment.date.toLocal().toString().contains(widget.query))
         .toList();
 
     List<Card> matchedPaymentCards = filteredMatchedPayments.map((payment) {
       return toCard(context, payment);
     }).toList();
 
-    SearchBar searchBar = SearchBar(
-      onChanged: (String value) {
-        setState(() {
-          query = value;
-        });
-      },
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 8.0),
-        child: const Icon(Icons.search),
-      ),
-      hintText: 'Search by payee, amount, date...',
-    );
-
     return SingleChildScrollView(
         controller: _scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            searchBar,
+            widget.searchBar,
             const SizedBox(height: 16.0),
             ...matchedPaymentCards,
             if (matchedPaymentCards.isEmpty)
