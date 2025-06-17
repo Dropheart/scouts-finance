@@ -10,6 +10,7 @@ event:
   - unpaidEvents:
   - getRegistrationsByChildId:
   - getRegistrationsByEventId:
+  - updateEventRegistrations:
 parent:
   - getParents:
   - getParentById:

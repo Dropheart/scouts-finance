@@ -261,6 +261,31 @@ class Endpoints extends _i1.EndpointDispatch {
             params['eventId'],
           ),
         ),
+        'updateEventRegistrations': _i1.MethodConnector(
+          name: 'updateEventRegistrations',
+          params: {
+            'eventId': _i1.ParameterDescription(
+              name: 'eventId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'childIds': _i1.ParameterDescription(
+              name: 'childIds',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint)
+                  .updateEventRegistrations(
+            session,
+            params['eventId'],
+            params['childIds'],
+          ),
+        ),
       },
     );
     connectors['parent'] = _i1.EndpointConnector(
