@@ -101,6 +101,7 @@ class ScoutGroupsService extends ChangeNotifier {
   Future<void> refreshScoutGroups() async {
     try {
       scoutGroups = await client.scoutGroups.getScoutGroups();
+      currentScoutGroup = scoutGroups.first;
       notifyListeners();
     } catch (e) {
       // print('Failed to refresh scout groups: $e');

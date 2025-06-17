@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
@@ -18,16 +20,16 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
   late List<Child> allChildren;
   int loading = 2;
   String? err;
-  late List<Child> eventChildren;
-  List<Child> selectedChildren = [];
-  List<int> selectedChildrenIndices = [];
+  late List<Child> registeredChildren;
+  bool changed = false;
+  List<int> submitted = [];
+
+  List<int> selectedIndicies = [];
+  List<int> unchangingSelectedIndicies = [];
 
   void _getChildren() async {
     try {
       allChildren = await client.scouts.getChildren();
-      setState(() {
-        selectedChildren = [];
-      });
     } catch (e) {
       setState(() {
         allChildren = [];
@@ -40,9 +42,23 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     final (event, registrations) =
         await client.event.getEventById(widget.eventId);
     setState(() {
-      eventChildren = registrations.map((e) => e.child!).toList();
+      registeredChildren = registrations.map((e) => e.child!).toList();
+      selectedIndicies = registeredChildren
+          .map((child) => allChildren.indexWhere((c) => c.id == child.id))
+          .where((index) => index >= 0)
+          .toList();
+      unchangingSelectedIndicies = List.from(selectedIndicies);
     });
     loading--;
+  }
+
+  void refresh() {
+    setState(() {
+      loading = 2;
+      err = null;
+    });
+    _getChildren();
+    _getEventChildren();
   }
 
   @override
@@ -67,84 +83,147 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
       );
     }
 
-    final unregisteredChildren = allChildren
-        .where((child) => !eventChildren.any((e) => e.id == child.id))
-        .toList();
-
     final choices = SearchChoices.multiple(
-      selectedItems: selectedChildrenIndices,
-      items: unregisteredChildren
-          .map((child) => DropdownMenuItem<Child>(
-                value: child,
-                child: Text('${child.firstName} ${child.lastName}'),
-              ))
-          .toList(),
-      hint: "Select Scouts",
-      onChanged: (List selections) {
-        setState(() {
-          selectedChildrenIndices = selections.cast<int>();
-          selectedChildren = unregisteredChildren.where((child) {
-            return selections.contains(unregisteredChildren.indexOf(child));
-          }).toList();
-        });
-      },
-      closeButton: (selectedChildren) {
-        return (selectedChildren.isEmpty
-            ? "None selected"
-            : "${selectedChildren.length} selected");
-      },
-      isExpanded: true,
-      selectedAggregateWidgetFn: (List selected) => Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            selected.isEmpty
-                ? "None selected"
-                : "${selected.length} scout${selected.length > 1 ? 's' : ''} selected",
-          )),
-    );
+        selectedItems: selectedIndicies,
+        items: allChildren
+            .map((child) => DropdownMenuItem<Child>(
+                  value: child,
+                  child: Text('${child.firstName} ${child.lastName}'),
+                ))
+            .toList(),
+        hint: "Manage Participants",
+        doneButton: SizedBox.shrink(),
+        displayClearIcon: false,
+        onChanged: (List selections) async {
+          if (!changed || submitted.isEmpty) {
+            return;
+          }
 
-    // Confirm button, greyed out if no children selected
-    IconButton confirmButton = IconButton(
-      onPressed: selectedChildren.isEmpty
-          ? null
-          : () async {
-              try {
-                await client.event.registerChildrenForEvent(widget.eventId,
-                    selectedChildren.map((c) => c.id!).toList());
-                setState(() {
-                  selectedChildrenIndices = [];
-                  selectedChildren = [];
-                  widget.closeFn();
-                });
-              } catch (e) {
-                setState(() {
-                  err = 'Failed to add participants: $e';
-                });
-              }
-            },
-      icon: const Icon(Icons.check),
-      tooltip: 'Confirm',
-    );
+          final changedChildren = allChildren
+              .where((child) {
+                final index = allChildren.indexOf(child);
+                return submitted.contains(index);
+              })
+              .map((child) => (child))
+              .toList();
 
-    // Cancel button
-    IconButton cancelButton = IconButton(
-      onPressed: selectedChildren.isEmpty
-          ? null
-          : () {
+          if (changedChildren.isNotEmpty) {
+            final changedChildrenIds =
+                changedChildren.map((c) => c.id!).toList();
+            await client.event
+                .updateEventRegistrations(widget.eventId, changedChildrenIds);
+            widget.closeFn();
+          }
+          submitted.clear();
+          refresh();
+        },
+        closeButton:
+            (List<int> selectedChildren, closeContext, Function updateParent) {
+          final addScoutGroups = Consumer<ScoutGroupsService>(
+              builder: (ctx, scoutGroupsService, child) {
+            final groups = scoutGroupsService.scoutGroups;
+
+            final buttons = groups.map((group) {
+              return ElevatedButton(
+                onPressed: () {
+                  final groupChildrenIndicies = group.children!
+                      .map((gChild) => allChildren
+                          .indexWhere((aChild) => aChild.id == gChild.id))
+                      .where((index) => index >= 0)
+                      .toList();
+                  final currentlySelected = selectedIndicies.where((sIndex) =>
+                      groupChildrenIndicies.any((gIndex) => sIndex == gIndex));
+
+                  final toRemove = <int>[];
+                  final toAdd = <int>[];
+
+                  if (currentlySelected.length == group.children!.length) {
+                    toRemove.addAll(currentlySelected);
+                  } else {
+                    final indiciesToAdd = groupChildrenIndicies
+                        .where((index) => !currentlySelected.contains(index));
+
+                    toAdd.addAll(indiciesToAdd);
+                  }
+
+                  setState(() {
+                    selectedChildren
+                        .removeWhere((index) => toRemove.contains(index));
+                    selectedChildren.addAll(toAdd);
+                    selectedIndicies = selectedChildren;
+                  });
+                  updateParent(selectedChildren);
+                },
+                child: Text(group.name),
+              );
+            });
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttons.toList(),
+            );
+          });
+
+          final removedChildren = unchangingSelectedIndicies
+              .where((index) => !selectedChildren.contains(index))
+              .toList();
+          final addedChildren = selectedChildren
+              .where((index) => !unchangingSelectedIndicies.contains(index))
+              .toList();
+          changed = addedChildren.isNotEmpty || removedChildren.isNotEmpty;
+
+          final confirmText = changed
+              ? "Confirm  (${addedChildren.length} added, ${removedChildren.length} removed)"
+              : 'Confirm (no changes)';
+          final confirmButton = ElevatedButton(
+            onPressed: changed
+                ? () {
+                    submitted.addAll(removedChildren);
+                    submitted.addAll(addedChildren);
+                    Navigator.pop(closeContext);
+                    refresh();
+                  }
+                : null,
+            child: Text(confirmText),
+          );
+          final cancelButton = ElevatedButton(
+            onPressed: () {
+              changed = false;
+              Navigator.pop(closeContext);
               setState(() {
-                selectedChildrenIndices = [];
-                selectedChildren = [];
-                widget.closeFn();
+                selectedIndicies = registeredChildren
+                    .map((child) =>
+                        allChildren.indexWhere((c) => c.id == child.id))
+                    .where((index) => index >= 0)
+                    .toList();
               });
             },
-      icon: const Icon(Icons.cancel),
-      tooltip: 'Cancel',
-    );
+            child: const Text('Cancel'),
+          );
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Toggle All'),
+              addScoutGroups,
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  confirmButton,
+                  cancelButton,
+                ],
+              ),
+            ],
+          );
+        },
+        isExpanded: true,
+        selectedAggregateWidgetFn: (List selected) => Text('Manage Scouts'));
 
     return SizedBox(
         width: double.infinity,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Expanded(child: choices), confirmButton, cancelButton]));
+            children: [Expanded(child: choices)]));
   }
 }
