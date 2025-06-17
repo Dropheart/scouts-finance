@@ -125,15 +125,6 @@ class _SingleEventState extends State<SingleEvent> {
                   cells: [
                     DataCell(Row(children: [
                       Text(e.name),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     // Handle button press, e.g., navigate to child's profile
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     shape: const CircleBorder(),
-                      //   ),
-                      //   child: const Icon(Icons.arrow_forward, size: 16),
-                      // )
                     ])),
                     DataCell(Text(e.paidDate == null
                         ? 'Not paid'
@@ -144,21 +135,12 @@ class _SingleEventState extends State<SingleEvent> {
                       : WidgetStateProperty.all(
                           const Color.fromARGB(199, 1, 230, 104))))
           .toList(),
-      // decoration: BoxDecoration(
-      //   border: Border.all(color: colourScheme.secondary, width: 2),
-      //   borderRadius: BorderRadius.circular(10),
-      //   color: colourScheme.secondaryContainer,
-      // ),
       border: TableBorder.symmetric(
           inside: BorderSide(
             color: colourScheme.onSecondaryContainer,
             width: 0.5,
           ),
           outside: BorderSide.none),
-      // border: TableBorder.all(
-      //   color: colourScheme.onSecondaryContainer,
-      //   width: 0.5,
-      // ),
     );
 
     SearchBar searchBar = SearchBar(
@@ -258,18 +240,6 @@ class _SingleEventState extends State<SingleEvent> {
                         clipBehavior: Clip.antiAlias,
                         child: childrenTable,
                       ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     SizedBox(
-                      //       width: 200, // Fixed width
-                      //       child: EventAddParticipant(
-                      //         eventId: widget.eventId,
-                      //         closeFn: () => _getEventDetails(),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                       EventAddParticipant(
                         eventId: widget.eventId,
                         closeFn: () => _getEventDetails(),
