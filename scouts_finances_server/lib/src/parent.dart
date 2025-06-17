@@ -5,11 +5,13 @@ import 'package:serverpod/serverpod.dart';
 
 class ParentEndpoint extends Endpoint {
   Future<List<Parent>> getParents(Session session) async {
-    return Parent.db.find(session);
+    return Parent.db
+        .find(session, include: Parent.include(children: Child.includeList()));
   }
 
   Future<Parent?> getParentById(Session session, int id) async {
-    return Parent.db.findById(session, id);
+    return Parent.db.findById(session, id,
+        include: Parent.include(children: Child.includeList()));
   }
 
   Future<void> addBalance(Session session, int parentId, int amount) async {

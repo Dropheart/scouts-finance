@@ -3,5 +3,5 @@ table: children
 fields:
   firstName: String
   lastName: String
-  parent: Parent?, relation
+  parent: Parent?, relation(name=parent_children)
   scoutGroup: ScoutGroup?, relation(name=scout_group_children)

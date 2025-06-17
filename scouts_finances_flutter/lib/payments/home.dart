@@ -120,6 +120,7 @@ class _PaymentsHomeState extends State<PaymentsHome> {
           title: Text('Matched Payments - ${matchedPaymentCards.length}'),
           initiallyExpanded: false,
           shape: const Border(),
+          controlAffinity: ListTileControlAffinity.leading,
           children: matchedPaymentCards));
     }
 

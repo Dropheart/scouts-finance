@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
+import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/parents/parent_details.dart';
+import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 
 class ParentHome extends StatefulWidget {
   const ParentHome({super.key});
@@ -11,11 +13,13 @@ class ParentHome extends StatefulWidget {
 }
 
 class _ParentHomeState extends State<ParentHome> {
-  String query = '';
   late List<Parent> allParents;
   late List<(Parent, int)> outstandingParents;
   String? errorMessage;
   bool loading = true;
+
+  String query = '';
+  bool showScouts = true;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -78,7 +82,7 @@ class _ParentHomeState extends State<ParentHome> {
       );
     } else {
       SearchBar searchBar = SearchBar(
-        hintText: 'Search parent, email, phone...',
+        hintText: 'Search parent, scout, email, phone',
         onChanged: (value) => setState(() {
           query = value;
         }),
@@ -88,64 +92,113 @@ class _ParentHomeState extends State<ParentHome> {
         ),
       );
 
-      List<Card> parentCards = allParents
+      List<Widget> parentCards = allParents
           .where((e) =>
               e.firstName.toLowerCase().contains(query.toLowerCase()) ||
               e.lastName.toLowerCase().contains(query.toLowerCase()) ||
               e.email.toLowerCase().contains(query.toLowerCase()) ||
-              e.phone.contains(query))
+              e.phone.contains(query) ||
+              (e.children != null &&
+                  e.children!.any((c) =>
+                      c.firstName.toLowerCase().contains(query.toLowerCase()) ||
+                      c.lastName.toLowerCase().contains(query.toLowerCase()))))
           .map(
-            (e) => Card(
-              child: ListTile(
-                title: Text("${e.firstName} ${e.lastName}"),
-                subtitle: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Row(
+        (p) {
+          final Widget children;
+          if ((query.isEmpty && !showScouts) ||
+              p.children == null ||
+              p.children!.isEmpty) {
+            children = const SizedBox.shrink();
+          } else {
+            final childrenWidgets = p.children!.map((c) {
+              return ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  minimumSize: Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
+                onPressed: () => {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ScoutDetailsView(scoutId: c.id!),
+                    ),
+                  ),
+                },
+                icon: Icon(Icons.person, size: 14.0),
+                label: Text(c.fullName),
+              );
+            }).toList();
+
+            children = Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    alignment: WrapAlignment.start,
+                    children: childrenWidgets,
+                  ),
+                ));
+          }
+          return Card(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text("${p.firstName} ${p.lastName}"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
                           Icon(Icons.email_rounded, size: 14.0),
                           SizedBox(width: 4.0),
                           Expanded(
                               child: Text(
-                            e.email,
+                            p.email,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
                           )),
                         ],
                       ),
-                    ),
-                    Flexible(
-                      child: Row(
+                      SizedBox(height: 4.0),
+                      Row(
                         children: [
                           Icon(Icons.phone, size: 14.0),
                           SizedBox(width: 4.0),
                           Expanded(
                               child: Text(
-                            e.phone,
+                            p.phone,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
                           )),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                trailing: Icon(Icons.info_outline),
-                onTap: () => {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ParentDetails(parentId: e.id!),
-                    ),
+                    ],
                   ),
-                },
-              ),
+                  trailing: Icon(Icons.info_outline),
+                  onTap: () => {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ParentDetails(parentId: p.id!),
+                      ),
+                    ),
+                  },
+                ),
+                children,
+              ],
             ),
-          )
-          .toList();
+          );
+        },
+      ).toList();
 
       List<Card> outstandingCards = (outstandingParents
-            ..sort((a, b) => a.$2.compareTo(b.$2)))
+            ..sort((a, b) => b.$2.compareTo(a.$2)))
           .map(
             (e) => Card(
               child: ListTile(
@@ -165,6 +218,16 @@ class _ParentHomeState extends State<ParentHome> {
           )
           .toList();
 
+      final switchWidget = SwitchListTile(
+        title: const Text('Show Scouts'),
+        value: showScouts,
+        onChanged: (value) {
+          setState(() {
+            showScouts = value;
+          });
+        },
+      );
+
       body = ListView(
         controller: _scrollController,
         children: [
@@ -172,20 +235,16 @@ class _ParentHomeState extends State<ParentHome> {
               ? const SizedBox.shrink()
               : ExpansionTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: const Text('Payments Outstanding',
+                  title: Text(
+                      'Payments Outstanding - ${outstandingCards.length}',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  tilePadding: EdgeInsets.zero,
-                  initiallyExpanded: true,
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  initiallyExpanded: false,
                   children: outstandingCards,
                 ),
           SizedBox(height: 16.0),
-          Text(
-            'All Parents',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8.0),
           searchBar,
+          switchWidget,
           SizedBox(height: 16.0),
           ...parentCards,
         ],

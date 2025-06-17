@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'child.dart' as _i2;
 
 abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Parent._({
@@ -19,6 +22,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.email,
     required this.phone,
     required this.balance,
+    this.children,
   });
 
   factory Parent({
@@ -28,6 +32,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String email,
     required String phone,
     required int balance,
+    List<_i2.Child>? children,
   }) = _ParentImpl;
 
   factory Parent.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +43,9 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       email: jsonSerialization['email'] as String,
       phone: jsonSerialization['phone'] as String,
       balance: jsonSerialization['balance'] as int,
+      children: (jsonSerialization['children'] as List?)
+          ?.map((e) => _i2.Child.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -58,6 +66,8 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   int balance;
 
+  List<_i2.Child>? children;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -71,6 +81,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? email,
     String? phone,
     int? balance,
+    List<_i2.Child>? children,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -81,6 +92,8 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'email': email,
       'phone': phone,
       'balance': balance,
+      if (children != null)
+        'children': children?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -93,11 +106,13 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'email': email,
       'phone': phone,
       'balance': balance,
+      if (children != null)
+        'children': children?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static ParentInclude include() {
-    return ParentInclude._();
+  static ParentInclude include({_i2.ChildIncludeList? children}) {
+    return ParentInclude._(children: children);
   }
 
   static ParentIncludeList includeList({
@@ -136,6 +151,7 @@ class _ParentImpl extends Parent {
     required String email,
     required String phone,
     required int balance,
+    List<_i2.Child>? children,
   }) : super._(
           id: id,
           firstName: firstName,
@@ -143,6 +159,7 @@ class _ParentImpl extends Parent {
           email: email,
           phone: phone,
           balance: balance,
+          children: children,
         );
 
   /// Returns a shallow copy of this [Parent]
@@ -156,6 +173,7 @@ class _ParentImpl extends Parent {
     String? email,
     String? phone,
     int? balance,
+    Object? children = _Undefined,
   }) {
     return Parent(
       id: id is int? ? id : this.id,
@@ -164,6 +182,9 @@ class _ParentImpl extends Parent {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       balance: balance ?? this.balance,
+      children: children is List<_i2.Child>?
+          ? children
+          : this.children?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -202,6 +223,41 @@ class ParentTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt balance;
 
+  _i2.ChildTable? ___children;
+
+  _i1.ManyRelation<_i2.ChildTable>? _children;
+
+  _i2.ChildTable get __children {
+    if (___children != null) return ___children!;
+    ___children = _i1.createRelationTable(
+      relationFieldName: '__children',
+      field: Parent.t.id,
+      foreignField: _i2.Child.t.parentId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.ChildTable(tableRelation: foreignTableRelation),
+    );
+    return ___children!;
+  }
+
+  _i1.ManyRelation<_i2.ChildTable> get children {
+    if (_children != null) return _children!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'children',
+      field: Parent.t.id,
+      foreignField: _i2.Child.t.parentId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.ChildTable(tableRelation: foreignTableRelation),
+    );
+    _children = _i1.ManyRelation<_i2.ChildTable>(
+      tableWithRelations: relationTable,
+      table: _i2.ChildTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _children!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -211,13 +267,25 @@ class ParentTable extends _i1.Table<int?> {
         phone,
         balance,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'children') {
+      return __children;
+    }
+    return null;
+  }
 }
 
 class ParentInclude extends _i1.IncludeObject {
-  ParentInclude._();
+  ParentInclude._({_i2.ChildIncludeList? children}) {
+    _children = children;
+  }
+
+  _i2.ChildIncludeList? _children;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'children': _children};
 
   @override
   _i1.Table<int?> get table => Parent.t;
@@ -245,6 +313,10 @@ class ParentIncludeList extends _i1.IncludeList {
 
 class ParentRepository {
   const ParentRepository._();
+
+  final attach = const ParentAttachRepository._();
+
+  final attachRow = const ParentAttachRowRepository._();
 
   /// Returns a list of [Parent]s matching the given query parameters.
   ///
@@ -277,6 +349,7 @@ class ParentRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<ParentTable>? orderByList,
     _i1.Transaction? transaction,
+    ParentInclude? include,
   }) async {
     return session.db.find<Parent>(
       where: where?.call(Parent.t),
@@ -286,6 +359,7 @@ class ParentRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -314,6 +388,7 @@ class ParentRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<ParentTable>? orderByList,
     _i1.Transaction? transaction,
+    ParentInclude? include,
   }) async {
     return session.db.findFirstRow<Parent>(
       where: where?.call(Parent.t),
@@ -322,6 +397,7 @@ class ParentRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -330,10 +406,12 @@ class ParentRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    ParentInclude? include,
   }) async {
     return session.db.findById<Parent>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -451,6 +529,60 @@ class ParentRepository {
     return session.db.count<Parent>(
       where: where?.call(Parent.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class ParentAttachRepository {
+  const ParentAttachRepository._();
+
+  /// Creates a relation between this [Parent] and the given [Child]s
+  /// by setting each [Child]'s foreign key `parentId` to refer to this [Parent].
+  Future<void> children(
+    _i1.Session session,
+    Parent parent,
+    List<_i2.Child> child, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (child.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('child.id');
+    }
+    if (parent.id == null) {
+      throw ArgumentError.notNull('parent.id');
+    }
+
+    var $child = child.map((e) => e.copyWith(parentId: parent.id)).toList();
+    await session.db.update<_i2.Child>(
+      $child,
+      columns: [_i2.Child.t.parentId],
+      transaction: transaction,
+    );
+  }
+}
+
+class ParentAttachRowRepository {
+  const ParentAttachRowRepository._();
+
+  /// Creates a relation between this [Parent] and the given [Child]
+  /// by setting the [Child]'s foreign key `parentId` to refer to this [Parent].
+  Future<void> children(
+    _i1.Session session,
+    Parent parent,
+    _i2.Child child, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (child.id == null) {
+      throw ArgumentError.notNull('child.id');
+    }
+    if (parent.id == null) {
+      throw ArgumentError.notNull('parent.id');
+    }
+
+    var $child = child.copyWith(parentId: parent.id);
+    await session.db.updateRow<_i2.Child>(
+      $child,
+      columns: [_i2.Child.t.parentId],
       transaction: transaction,
     );
   }
