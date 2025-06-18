@@ -243,10 +243,9 @@ class _EventHomeState extends State<EventHome> {
       const SizedBox(height: 128.0),
     ]);
 
-    final addEventButton = Consumer<AccountTypeService>(
-        builder: (context, accountTypeService, child) {
-      final type = accountTypeService.accountType;
-      if (type == AccountType.treasurer) {
+    final addEventButton =
+        Consumer<AccountTypeService>(builder: (ctx, accountTypeService, child) {
+      if (accountTypeService.accountType == AccountType.treasurer) {
         return const SizedBox.shrink();
       } else {
         return FloatingActionButton(
@@ -259,16 +258,6 @@ class _EventHomeState extends State<EventHome> {
                 return const AddEventDialog();
               },
             ).then((_) {
-              if (!mounted) return;
-              // Use addPostFrameCallback to ensure context is valid after async gap
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('Event added successfully'),
-                  ),
-                );
-              });
               // Refresh the event list after adding a new event
               _getEvents();
             });
