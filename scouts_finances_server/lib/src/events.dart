@@ -6,7 +6,8 @@ typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
 
 class EventEndpoint extends Endpoint {
   Future<List<Event>> getEvents(Session session) async {
-    return Event.db.find(session);
+    return Event.db.find(session,
+        include: Event.include(scoutGroup: ScoutGroup.include()));
   }
 
   Future<Map<int, (int, int)>> getPaidCounts(Session session) async {
@@ -28,7 +29,8 @@ class EventEndpoint extends Endpoint {
   }
 
   Future<EventDetails> getEventById(Session session, int id) async {
-    final eventDetails = await Event.db.findById(session, id);
+    final eventDetails = await Event.db.findById(session, id,
+        include: Event.include(scoutGroup: ScoutGroup.include()));
 
     if (eventDetails == null) {
       throw ArgumentError('Event with id $id not found');

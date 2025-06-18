@@ -4,6 +4,7 @@ import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/single_event.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/events/add.dart';
+import 'package:scouts_finances_flutter/services/account_type_service.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 
 typedef EventPaidCounts = Map<int, (int paidCount, int totalCount)>;
@@ -106,17 +107,25 @@ class _EventHomeState extends State<EventHome> {
     });
 
     Widget eventExpansionTile =
-        Consumer<ScoutGroupsService>(builder: (context, value, child) {
+        Consumer2<ScoutGroupsService, AccountTypeService>(
+            builder: (context, scoutGroupService, accountTypeService, child) {
+      final accountType = accountTypeService.accountType;
+
       final relevantEvents = filteredEvents
-          .where((e) => e.scoutGroupId == value.currentScoutGroup.id)
+          .where((e) =>
+              (e.scoutGroupId == scoutGroupService.currentScoutGroup.id) ||
+              accountType == AccountType.treasurer)
           .toList();
 
       List<Card> eventCards = relevantEvents.map((event) {
         final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+        String trailing = accountType == AccountType.treasurer
+            ? '- ${event.scoutGroup!.name}'
+            : '';
 
         return Card(
           child: ListTile(
-            title: Text(event.name),
+            title: Text('${event.name} $trailing'),
             subtitle: Row(
               children: [
                 Text('$paid/$total Paid'),
@@ -210,21 +219,28 @@ class _EventHomeState extends State<EventHome> {
       const SizedBox(height: 128.0),
     ]);
 
-    FloatingActionButton addEventButton = FloatingActionButton(
-      heroTag: 'addEvent',
-      child: const Icon(Icons.add),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return const AddEventDialog();
+    final addEventButton =
+        Consumer<AccountTypeService>(builder: (ctx, accountTypeService, child) {
+      if (accountTypeService.accountType == AccountType.treasurer) {
+        return const SizedBox.shrink();
+      } else {
+        return FloatingActionButton(
+          heroTag: 'addEvent',
+          child: const Icon(Icons.add),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return const AddEventDialog();
+              },
+            ).then((_) {
+              // Refresh the event list after adding a new event
+              _getEvents();
+            });
           },
-        ).then((_) {
-          // Refresh the event list after adding a new event
-          _getEvents();
-        });
-      },
-    );
+        );
+      }
+    });
 
     return Scaffold(
       body: Padding(

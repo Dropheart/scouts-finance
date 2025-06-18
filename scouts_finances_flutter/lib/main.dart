@@ -5,8 +5,8 @@ import 'package:scouts_finances_flutter/events/home.dart';
 import 'package:scouts_finances_flutter/parents/home.dart';
 import 'package:scouts_finances_flutter/payments/home.dart';
 import 'package:scouts_finances_flutter/popups.dart';
+import 'package:scouts_finances_flutter/services/account_type_service.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
-import 'package:scouts_finances_flutter/settings/home.dart';
 import 'package:scouts_finances_flutter/services/theme_service.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
@@ -30,20 +30,26 @@ void main() async {
   final scoutGroupsService = ScoutGroupsService();
   await scoutGroupsService.getScoutGroups();
 
+  final accountTypeService = AccountTypeService();
+
   runApp(MyApp(
     themeService: themeService,
     scoutGroupsService: scoutGroupsService,
+    accountTypeService: accountTypeService,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final ThemeService themeService;
   final ScoutGroupsService scoutGroupsService;
+  final AccountTypeService accountTypeService;
 
-  const MyApp(
-      {super.key,
-      required this.themeService,
-      required this.scoutGroupsService});
+  const MyApp({
+    super.key,
+    required this.themeService,
+    required this.scoutGroupsService,
+    required this.accountTypeService,
+  });
 
   // This widget is the root of your application.
   @override
@@ -51,7 +57,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: themeService),
-        ChangeNotifierProvider.value(value: scoutGroupsService)
+        ChangeNotifierProvider.value(value: scoutGroupsService),
+        ChangeNotifierProvider.value(value: accountTypeService),
       ],
       child: Consumer<ThemeService>(
         builder: (context, themeService, child) {
@@ -76,37 +83,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
+
   static final List<Widget> pages = [
     EventHome(),
     PaymentsHome(),
-    // ScoutsHome(),
     ParentHome(),
-    SettingsHome()
   ];
   static final List<String> pageTitles = [
     'Events',
     'Income',
-    // 'Scouts',
     'People',
-  ];
-
-  static final List<NavigationDestination> destinations = [
-    const NavigationDestination(
-      icon: Icon(Icons.event),
-      label: 'Events',
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.currency_pound),
-      label: 'Income',
-    ),
-    // const NavigationDestination(
-    //   icon: Icon(Icons.hiking),
-    //   label: 'Scouts',
-    // ),
-    const NavigationDestination(
-      icon: Icon(Icons.supervisor_account),
-      label: 'People',
-    ),
   ];
 
   final selectScoutGroup = Consumer<ScoutGroupsService>(
@@ -147,12 +133,51 @@ class _HomePageState extends State<HomePage> {
         icon: Icon(Icons.groups));
   });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHomePage(
+      BuildContext context, AccountTypeService accountTypeService) {
+    final accountType = accountTypeService.accountType;
+
+    final List<Widget> destinations = [
+      GestureDetector(
+        child: NavigationDestination(
+          icon: Icon(Icons.event),
+          label: 'Events',
+        ),
+        onVerticalDragEnd: (details) {
+          if (details.primaryVelocity == null ||
+              details.primaryVelocity!.abs() < 2000) {
+            return;
+          }
+          accountTypeService.setAccountType(
+            accountType == AccountType.treasurer
+                ? AccountType.leader
+                : AccountType.treasurer,
+          );
+        },
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.currency_pound),
+        label: 'Income',
+      ),
+      const NavigationDestination(
+        icon: Icon(Icons.supervisor_account),
+        label: 'People',
+      ),
+    ];
+
+    final filteredDests = List<Widget>.from(destinations);
+    final filteredPages = List<Widget>.from(pages);
+    final filteredTitles = List<String>.from(pageTitles);
+    if (accountType == AccountType.leader) {
+      filteredDests.removeAt(1); // Remove Payments tab for leaders
+      filteredPages.removeAt(1); // Remove Payments tab for leaders
+      filteredTitles.removeAt(1); // Remove Payments title for leaders
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          pageTitles[currentPageIndex],
+          filteredTitles[currentPageIndex],
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -160,12 +185,12 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: false,
         actions: [
-          selectScoutGroup,
+          if (accountType == AccountType.leader) selectScoutGroup,
           OptionsMenu(selectedIndex: currentPageIndex)
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        destinations: destinations,
+        destinations: filteredDests,
         selectedIndex: currentPageIndex,
         onDestinationSelected: (int index) {
           setState(() {
@@ -173,7 +198,16 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
-      body: pages[currentPageIndex],
+      body: filteredPages[currentPageIndex],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AccountTypeService>(
+      builder: (context, accountTypeService, child) {
+        return _buildHomePage(context, accountTypeService);
+      },
     );
   }
 }
