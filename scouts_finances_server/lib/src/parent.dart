@@ -23,8 +23,8 @@ class ParentEndpoint extends Endpoint {
     await Parent.db.update(session, [parent]);
   }
 
-  Future<void> addParent(Session session, Parent parent) async {
-    await Parent.db.insert(session, [parent]);
+  Future<Parent> addParent(Session session, Parent parent) async {
+    return await Parent.db.insertRow(session, parent);
   }
 
   Future<List<EventRegistration>> getUnpaidEventRegistrations(

@@ -672,7 +672,7 @@ class _ParentEndpoint {
     });
   }
 
-  _i3.Future<void> addParent(
+  _i3.Future<_i8.Parent> addParent(
     _i1.TestSessionBuilder sessionBuilder,
     _i8.Parent parent,
   ) async {
@@ -693,7 +693,7 @@ class _ParentEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<void>);
+        ) as _i3.Future<_i8.Parent>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/parents/parent_details.dart';
 
 class AddParent extends FloatingActionButton {
   final BuildContext context;
@@ -81,7 +82,7 @@ class AddParent extends FloatingActionButton {
                                 error = null;
                               });
                               try {
-                                await client.parent.addParent(
+                                final parent = await client.parent.addParent(
                                   Parent(
                                     firstName: firstName,
                                     lastName: lastName,
@@ -93,6 +94,12 @@ class AddParent extends FloatingActionButton {
                                 if (context.mounted) {
                                   // ignore: use_build_context_synchronously
                                   Navigator.of(context).pop(true);
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ParentDetails(parentId: parent.id!),
+                                    ),
+                                  );
                                 }
                               } catch (e) {
                                 setState(() {

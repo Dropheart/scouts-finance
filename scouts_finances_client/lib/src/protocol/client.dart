@@ -195,8 +195,8 @@ class EndpointParent extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> addParent(_i6.Parent parent) =>
-      caller.callServerEndpoint<void>(
+  _i2.Future<_i6.Parent> addParent(_i6.Parent parent) =>
+      caller.callServerEndpoint<_i6.Parent>(
         'parent',
         'addParent',
         {'parent': parent},
