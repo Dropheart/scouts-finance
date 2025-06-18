@@ -79,6 +79,8 @@ class PaymentEndpoint extends Endpoint {
 
       await Parent.db.updateRow(session, parent, transaction: transaction);
     }
+    // To reload the 'events' tab
+    session.messages.postMessage('update_events', payment);
   }
 
   Future<void> insertCashPayment(
@@ -96,5 +98,8 @@ class PaymentEndpoint extends Endpoint {
       session,
       eventReg,
     );
+
+    // To reload the 'events' tab
+    session.messages.postMessage('update_events', payment);
   }
 }

@@ -145,8 +145,8 @@ class EndpointEvent extends _i1.EndpointRef {
         },
       );
 
-  _i2.Stream<_i3.Event> eventStream() =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i3.Event>, _i3.Event>(
+  _i2.Stream<dynamic> eventStream() =>
+      caller.callStreamingServerEndpoint<_i2.Stream<dynamic>, dynamic>(
         'event',
         'eventStream',
         {},

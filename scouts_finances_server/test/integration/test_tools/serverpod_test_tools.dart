@@ -514,8 +514,8 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Stream<_i4.Event> eventStream(_i1.TestSessionBuilder sessionBuilder) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i4.Event>();
+  _i3.Stream<dynamic> eventStream(_i1.TestSessionBuilder sessionBuilder) {
+    var _localTestStreamManager = _i1.TestStreamManager<dynamic>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =

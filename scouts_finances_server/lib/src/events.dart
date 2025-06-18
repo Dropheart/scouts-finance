@@ -181,7 +181,7 @@ class EventEndpoint extends Endpoint {
     }
   }
 
-  Stream<Event> eventStream(Session session) async* {
+  Stream eventStream(Session session) async* {
     await for (final msg in session.messages.createStream('update_events')) {
       yield msg;
     }
