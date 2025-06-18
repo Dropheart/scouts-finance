@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/events/event_add_participant.dart';
 import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
 import 'package:scouts_finances_flutter/payments/add.dart';
 import 'package:scouts_finances_flutter/scouts/scout_details.dart';
+import 'package:scouts_finances_flutter/services/account_type_service.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
 
@@ -208,7 +210,10 @@ class _SingleEventState extends State<SingleEvent> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(event.name),
+          title:
+              Provider.of<AccountTypeService>(context, listen: false).isLeader
+                  ? Text(event.name)
+                  : Text("${event.name} - ${event.scoutGroup!.name}"),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -224,6 +229,17 @@ class _SingleEventState extends State<SingleEvent> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
+                        'Details',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox.shrink(),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
                         'Date:',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -231,14 +247,14 @@ class _SingleEventState extends State<SingleEvent> {
                     Text(
                         "${event.date.day}/${event.date.month}/${event.date.year}"),
                   ]),
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('Location:',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Text('TBD'),
-                  ]),
+                  // TableRow(children: [
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  //     child: Text('Location:',
+                  //         style: TextStyle(fontWeight: FontWeight.bold)),
+                  //   ),
+                  //   Text('TBD'),
+                  // ]),
                   TableRow(children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),

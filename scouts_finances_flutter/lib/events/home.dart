@@ -107,17 +107,25 @@ class _EventHomeState extends State<EventHome> {
     });
 
     Widget eventExpansionTile =
-        Consumer<ScoutGroupsService>(builder: (context, value, child) {
+        Consumer2<ScoutGroupsService, AccountTypeService>(
+            builder: (context, scoutGroupService, accountTypeService, child) {
+      final accountType = accountTypeService.accountType;
+
       final relevantEvents = filteredEvents
-          .where((e) => e.scoutGroupId == value.currentScoutGroup.id)
+          .where((e) =>
+              (e.scoutGroupId == scoutGroupService.currentScoutGroup.id) ||
+              accountType == AccountType.treasurer)
           .toList();
 
       List<Card> eventCards = relevantEvents.map((event) {
         final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+        String trailing = accountType == AccountType.treasurer
+            ? '- ${event.scoutGroup!.name}'
+            : '';
 
         return Card(
           child: ListTile(
-            title: Text(event.name),
+            title: Text('${event.name} $trailing'),
             subtitle: Row(
               children: [
                 Text('$paid/$total Paid'),
