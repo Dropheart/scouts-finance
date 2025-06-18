@@ -9,11 +9,16 @@ class PaymentEndpoint extends Endpoint {
     // This will also fetch the parent information for each payment (if it exists)
   }
 
-  Future<List<Payment>> insertPayment(Session session, Payment payment) async =>
-      Payment.db.insert(
-        session,
-        [payment],
-      );
+  Future<Payment> insertPayment(Session session, Payment payment) async {
+    final res = await Payment.db.insertRow(
+      session,
+      payment,
+    );
+
+    // Notify of update payments
+    session.messages.postMessage('update_payments', res);
+    return res;
+  }
 
   Future<Payment?> getPaymentById(Session session, int paymentId) async {
     // Find the payment by ID
@@ -120,6 +125,8 @@ class PaymentEndpoint extends Endpoint {
     }
     // To reload the 'events' tab
     session.messages.postMessage('update_events', payment);
+    // Notify of update payments
+    session.messages.postMessage('update_payments', payment);
   }
 
   Future<void> insertCashPayment(
@@ -140,5 +147,15 @@ class PaymentEndpoint extends Endpoint {
 
     // To reload the 'events' tab
     session.messages.postMessage('update_events', payment);
+    // Notify of update payments
+    session.messages.postMessage('update_payments', payment);
+  }
+
+  Stream paymentStream(Session session) async* {
+    // This stream will yield new payments as they are inserted
+    await for (final message
+        in session.messages.createStream('update_payments')) {
+      yield message;
+    }
   }
 }

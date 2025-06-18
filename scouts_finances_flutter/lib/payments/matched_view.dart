@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
@@ -19,10 +21,13 @@ class _MatchedViewState extends State<MatchedView> {
 
   final ScrollController _scrollController = ScrollController();
 
+  late StreamSubscription stream;
+
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
+    _scrollController.dispose();
+    stream.cancel();
   }
 
   void _getPayments() async {
@@ -57,6 +62,9 @@ class _MatchedViewState extends State<MatchedView> {
   void initState() {
     super.initState();
     _getPayments();
+    stream = client.payment.paymentStream().listen((_) {
+      refresh();
+    });
   }
 
   @override

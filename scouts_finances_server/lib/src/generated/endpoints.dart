@@ -547,6 +547,19 @@ class Endpoints extends _i1.EndpointDispatch {
             params['eventReg'],
           ),
         ),
+        'paymentStream': _i1.MethodStreamConnector(
+          name: 'paymentStream',
+          params: {},
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+            Map<String, Stream> streamParams,
+          ) =>
+              (endpoints['payment'] as _i5.PaymentEndpoint)
+                  .paymentStream(session),
+        ),
       },
     );
     connectors['scoutGroups'] = _i1.EndpointConnector(
