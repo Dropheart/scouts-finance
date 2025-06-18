@@ -260,6 +260,24 @@ class _SingleEventState extends State<SingleEvent> {
       ),
     );
 
+    final reminderButton = ElevatedButton(
+        onPressed: () async {
+          await client.event.sendReminders(event.id!);
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Notification sent to parents.'),
+            ),
+          );
+        },
+        child: const Row(
+          children: [
+            Text('Notify Parents'),
+            Spacer(),
+            Icon(Icons.send),
+          ],
+        ));
+
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.all(8.0),
@@ -305,6 +323,7 @@ class _SingleEventState extends State<SingleEvent> {
                 Text('£${(event.cost / 100).toStringAsFixed(2)}'),
               ]),
             ]),
+            SizedBox(height: 32),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(children: [
@@ -326,7 +345,7 @@ class _SingleEventState extends State<SingleEvent> {
                     closeFn: () => _getEventDetails(),
                   ),
                 ])),
-            const SizedBox(height: 128.0),
+            if (children.isNotEmpty) reminderButton
           ],
         ),
       ),

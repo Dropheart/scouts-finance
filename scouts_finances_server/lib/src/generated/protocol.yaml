@@ -12,6 +12,7 @@ event:
   - getRegistrationsByEventId:
   - updateEventRegistrations:
   - eventStream:
+  - sendReminders:
 parent:
   - getParents:
   - getParentById:
@@ -35,3 +36,4 @@ scouts:
   - getChildren:
   - getChildrenOfParent:
   - getChildById:
+  - addChild:

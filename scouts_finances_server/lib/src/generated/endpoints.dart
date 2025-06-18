@@ -23,6 +23,7 @@ import 'package:scouts_finances_server/src/generated/payment.dart' as _i11;
 import 'package:scouts_finances_server/src/generated/event_registration.dart'
     as _i12;
 import 'package:scouts_finances_server/src/generated/group_colour.dart' as _i13;
+import 'package:scouts_finances_server/src/generated/child.dart' as _i14;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -286,6 +287,24 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             params['eventId'],
             params['childIds'],
+          ),
+        ),
+        'sendReminders': _i1.MethodConnector(
+          name: 'sendReminders',
+          params: {
+            'eventId': _i1.ParameterDescription(
+              name: 'eventId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['event'] as _i3.EventEndpoint).sendReminders(
+            session,
+            params['eventId'],
           ),
         ),
         'eventStream': _i1.MethodStreamConnector(
@@ -650,6 +669,24 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['scouts'] as _i7.ScoutsEndpoint).getChildById(
             session,
             params['id'],
+          ),
+        ),
+        'addChild': _i1.MethodConnector(
+          name: 'addChild',
+          params: {
+            'child': _i1.ParameterDescription(
+              name: 'child',
+              type: _i1.getType<_i14.Child>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['scouts'] as _i7.ScoutsEndpoint).addChild(
+            session,
+            params['child'],
           ),
         ),
       },

@@ -23,8 +23,8 @@ class ParentEndpoint extends Endpoint {
     await Parent.db.update(session, [parent]);
   }
 
-  Future<void> addParent(Session session, Parent parent) async {
-    await Parent.db.insert(session, [parent]);
+  Future<Parent> addParent(Session session, Parent parent) async {
+    return await Parent.db.insertRow(session, parent);
   }
 
   Future<List<EventRegistration>> getUnpaidEventRegistrations(
@@ -58,7 +58,7 @@ class ParentEndpoint extends Endpoint {
     }
 
     buffer.writeln(
-        'Thank you for your attention!\n NB: This is an automated message, please do not reply.');
+        'Thank you for your attention!\n NB: This is an automated message, please do not reply.\nFor any questions, please contact your relevant scout leader.');
 
     final message = buffer.toString();
 

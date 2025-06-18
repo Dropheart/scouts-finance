@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/main.dart';
+import 'package:scouts_finances_flutter/parents/add_scout.dart';
 import 'package:scouts_finances_flutter/scouts/scout_details.dart';
 import 'package:scouts_finances_flutter/shared/parent_transactions.dart';
 import 'package:scouts_finances_flutter/shared/unpaid_events.dart';
@@ -47,6 +48,14 @@ class _ParentDetailsState extends State<ParentDetails> {
         loading = false;
       });
     }
+  }
+
+  void refresh() {
+    setState(() {
+      loading = true;
+      errorMessage = null;
+    });
+    _getParentDetails();
   }
 
   @override
@@ -136,6 +145,24 @@ class _ParentDetailsState extends State<ParentDetails> {
                     },
                     child: Text(child.fullName),
                   )),
+              IconButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                    minimumSize: Size(0, 0),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: AddScout(
+                      context: context,
+                      parent: parent,
+                      onScoutAdded: () {
+                        refresh();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              backgroundColor: Colors.green,
+                              content: Text('Young person added successfully')),
+                        );
+                      }).onPressed,
+                  icon: Icon(Icons.add_circle_outline))
             ],
           ),
           Row(
@@ -161,8 +188,14 @@ class _ParentDetailsState extends State<ParentDetails> {
           UnpaidEventsTable(parent: parent),
           const SizedBox(height: 8),
           ElevatedButton(
-            onPressed: () {
-              client.parent.remindParent(parent.id!);
+            onPressed: () async {
+              await client.parent.remindParent(parent.id!);
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Reminder sent to parent.'),
+                ),
+              );
             },
             child: const Row(
               children: [

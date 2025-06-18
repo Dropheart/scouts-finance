@@ -152,6 +152,13 @@ class EndpointEvent extends _i1.EndpointRef {
         {},
         {},
       );
+
+  _i2.Future<void> sendReminders(int eventId) =>
+      caller.callServerEndpoint<void>(
+        'event',
+        'sendReminders',
+        {'eventId': eventId},
+      );
 }
 
 /// {@category Endpoint}
@@ -188,8 +195,8 @@ class EndpointParent extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> addParent(_i6.Parent parent) =>
-      caller.callServerEndpoint<void>(
+  _i2.Future<_i6.Parent> addParent(_i6.Parent parent) =>
+      caller.callServerEndpoint<_i6.Parent>(
         'parent',
         'addParent',
         {'parent': parent},
@@ -343,6 +350,13 @@ class EndpointScouts extends _i1.EndpointRef {
         'scouts',
         'getChildById',
         {'id': id},
+      );
+
+  _i2.Future<_i10.Child?> addChild(_i10.Child child) =>
+      caller.callServerEndpoint<_i10.Child?>(
+        'scouts',
+        'addChild',
+        {'child': child},
       );
 }
 

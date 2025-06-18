@@ -19,4 +19,8 @@ class ScoutsEndpoint extends Endpoint {
         include: Child.include(
             parent: Parent.include(), scoutGroup: ScoutGroup.include()));
   }
+
+  Future<Child?> addChild(Session session, Child child) {
+    return Child.db.insertRow(session, child);
+  }
 }

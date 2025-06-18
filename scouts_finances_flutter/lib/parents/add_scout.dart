@@ -1,31 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
-import 'package:scouts_finances_flutter/parents/parent_details.dart';
+import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
 
-class AddParent extends FloatingActionButton {
+class AddScout extends FloatingActionButton {
   final BuildContext context;
-  final VoidCallback? onParentAdded;
+  final VoidCallback? onScoutAdded;
+  final Parent parent;
 
-  const AddParent({super.key, required this.context, this.onParentAdded})
-      : super(onPressed: null);
+  const AddScout({
+    super.key,
+    required this.context,
+    this.onScoutAdded,
+    required this.parent,
+  }) : super(onPressed: null);
 
   @override
   VoidCallback? get onPressed => () {
+        final scoutGroups =
+            Provider.of<ScoutGroupsService>(context, listen: false).scoutGroups;
+
         showDialog(
           context: context,
           builder: (context) {
             final formKey = GlobalKey<FormState>();
             String firstName = '';
             String lastName = '';
-            String email = '';
-            String phone = '';
+            int scoutGroupId =
+                scoutGroups.isNotEmpty ? scoutGroups.first.id! : 0;
             bool submitting = false;
             String? error;
 
             return StatefulBuilder(
               builder: (context, setState) => AlertDialog(
-                title: const Text('Add Parent'),
+                title: const Text('Add Young Person'),
                 content: Form(
                   key: formKey,
                   child: Column(
@@ -45,17 +54,20 @@ class AddParent extends FloatingActionButton {
                         validator: (v) =>
                             v == null || v.isEmpty ? 'Required' : null,
                       ),
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'Email'),
-                        onChanged: (v) => email = v,
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'Required' : null,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'Phone'),
-                        onChanged: (v) => phone = v,
-                        validator: (v) =>
-                            v == null || v.isEmpty ? 'Required' : null,
+                      DropdownButtonFormField<int>(
+                        value: scoutGroupId,
+                        decoration: const InputDecoration(
+                          labelText: 'Scout Group',
+                        ),
+                        items: scoutGroups.map((group) {
+                          return DropdownMenuItem<int>(
+                            value: group.id,
+                            child: Text(group.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          scoutGroupId = value ?? scoutGroupId;
+                        },
                       ),
                       if (error != null)
                         Padding(
@@ -82,28 +94,22 @@ class AddParent extends FloatingActionButton {
                                 error = null;
                               });
                               try {
-                                final parent = await client.parent.addParent(
-                                  Parent(
-                                    firstName: firstName,
-                                    lastName: lastName,
-                                    email: email,
-                                    phone: phone,
-                                    balance: 0,
-                                  ),
+                                final child = Child(
+                                  firstName: firstName,
+                                  lastName: lastName,
+                                  parentId: parent.id!,
+                                  parent: parent,
+                                  scoutGroupId: scoutGroupId,
+                                  scoutGroup: scoutGroups
+                                      .firstWhere((g) => g.id == scoutGroupId),
                                 );
+                                await client.scouts.addChild(child);
                                 if (context.mounted) {
-                                  // ignore: use_build_context_synchronously
                                   Navigator.of(context).pop(true);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ParentDetails(parentId: parent.id!),
-                                    ),
-                                  );
                                 }
                               } catch (e) {
                                 setState(() {
-                                  error = 'Failed to add parent';
+                                  error = 'Failed to add young person';
                                   submitting = false;
                                 });
                               }
@@ -125,7 +131,7 @@ class AddParent extends FloatingActionButton {
           if (result == true) {
             // Trigger rebuild of parent widget
             if (context.mounted) {
-              onParentAdded?.call();
+              onScoutAdded?.call();
             }
           }
         });
