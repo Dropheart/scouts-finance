@@ -208,6 +208,54 @@ class _SingleEventState extends State<SingleEvent> {
       ),
     );
 
+    final detailsHeading =
+        Consumer<AccountTypeService>(builder: (ctx, accountTypeService, child) {
+      final isLeader = accountTypeService.isLeader;
+      final detailsText = Text(
+        'Details',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      );
+
+      return isLeader
+          ? detailsText
+          : GestureDetector(
+              onDoubleTap: () async {
+                final List<
+                    ({
+                      Child child,
+                      String name,
+                      DateTime? paidDate,
+                      EventRegistration reg
+                    })?> nullableRegs = List.from(children);
+                final scoutReg = nullableRegs.firstWhere(
+                  (e) => e!.paidDate == null,
+                  orElse: () => null,
+                );
+                if (scoutReg == null) return;
+
+                final parent = scoutReg.child.parent!;
+                final bankAcc = parent.bankAccount?.firstOrNull ??
+                    BankAccount(
+                      name: parent.fullName,
+                      sortCode: '12-34-56',
+                      accountNumber: '98765432',
+                    );
+
+                final payment = Payment(
+                  amount: event.cost,
+                  date: DateTime.now(),
+                  reference: "Scouting",
+                  method: PaymentMethod.bank_transfer,
+                  bankAccount: bankAcc,
+                  payee: scoutReg.child.parent!.fullName,
+                );
+
+                await client.payment.insertPayment(payment);
+              },
+              child: detailsText,
+            );
+    });
+
     return Scaffold(
         appBar: AppBar(
           title:
@@ -228,11 +276,7 @@ class _SingleEventState extends State<SingleEvent> {
                   TableRow(children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Details',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
+                      child: detailsHeading,
                     ),
                     const SizedBox.shrink(),
                   ]),

@@ -614,6 +614,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i11.ScoutGroup?>()) {
       return (data != null ? _i11.ScoutGroup.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<List<_i3.BankAccount>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i3.BankAccount>(e)).toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i4.Child>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i4.Child>(e)).toList()

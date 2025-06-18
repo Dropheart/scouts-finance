@@ -1,0 +1,131 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "bank_accounts",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "parentId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [
+          "bank_accounts_fk_0"
+        ],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"parentId\" of table \"bank_accounts\" will be dropped.",
+            "table": "bank_accounts",
+            "columns": [
+              "parentId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"parent_bank_unique_idx\" is added to table \"parents\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "parents",
+            "columns": [
+              "bankAccountId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "parents",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "bankAccountId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "parent_bank_unique_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "bankAccountId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "parents_fk_0",
+            "columns": [
+              "bankAccountId"
+            ],
+            "referenceTable": "bank_accounts",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"parentId\" of table \"bank_accounts\" will be dropped.",
+            "table": "bank_accounts",
+            "columns": [
+              "parentId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"parent_bank_unique_idx\" is added to table \"parents\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "parents",
+            "columns": [
+              "bankAccountId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"parentId\" of table \"bank_accounts\" will be dropped.",
+      "table": "bank_accounts",
+      "columns": [
+        "parentId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"parent_bank_unique_idx\" is added to table \"parents\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "parents",
+      "columns": [
+        "bankAccountId"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

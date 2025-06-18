@@ -1,0 +1,93 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "bank_accounts",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "parentId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "bank_accounts_fk_0",
+            "columns": [
+              "parentId"
+            ],
+            "referenceTable": "parents",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"bankAccountId\" of table \"parents\" will be dropped.",
+            "table": "parents",
+            "columns": [
+              "bankAccountId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "parents",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "bankAccountId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [
+          "parent_bank_unique_idx"
+        ],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [
+          "parents_fk_0"
+        ],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"bankAccountId\" of table \"parents\" will be dropped.",
+            "table": "parents",
+            "columns": [
+              "bankAccountId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"bankAccountId\" of table \"parents\" will be dropped.",
+      "table": "parents",
+      "columns": [
+        "bankAccountId"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}
