@@ -54,6 +54,9 @@ class EventEndpoint extends Endpoint {
 
     await Event.db.insert(session, [event]);
 
+    // Notify all clients about the new event
+    await session.messages.postMessage('update_events', event);
+
     return Event.db.find(session);
   }
 
@@ -80,6 +83,9 @@ class EventEndpoint extends Endpoint {
 
     await EventRegistration.db
         .insert(session, [registration], transaction: transaction);
+
+    // Notify all clients about the new registration
+    await session.messages.postMessage('update_events', event);
 
     return registration;
   }
@@ -114,6 +120,9 @@ class EventEndpoint extends Endpoint {
     print(existingRegs);
 
     print("-");
+
+    // notify clients about the change in registrations
+    await session.messages.postMessage('update_events', event);
 
     await EventRegistration.db.insert(session, registrations);
   }
@@ -163,6 +172,18 @@ class EventEndpoint extends Endpoint {
         .toList();
     if (toAdd.isNotEmpty) {
       await EventRegistration.db.insert(session, toAdd);
+    }
+
+    // Notify all clients about the updated registrations
+    final event = await Event.db.findById(session, eventId);
+    if (event != null) {
+      await session.messages.postMessage('update_events', event);
+    }
+  }
+
+  Stream eventStream(Session session) async* {
+    await for (final msg in session.messages.createStream('update_events')) {
+      yield msg;
     }
   }
 }

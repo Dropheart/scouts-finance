@@ -11,6 +11,7 @@ event:
   - getRegistrationsByChildId:
   - getRegistrationsByEventId:
   - updateEventRegistrations:
+  - eventStream:
 parent:
   - getParents:
   - getParentById:
