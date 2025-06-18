@@ -383,7 +383,8 @@ class AdminEndpoint extends Endpoint {
       final bankAccountIdMap = <int, int>{};
       final childIdMap = <int, int>{};
       final eventIdMap = <int, int>{};
-      final scoutGroupIdMap = <int, int>{};      // --- 4. IMPORT DATA IN ORDER OF DEPENDENCY ---
+      final scoutGroupIdMap =
+          <int, int>{}; // --- 4. IMPORT DATA IN ORDER OF DEPENDENCY ---
 
       // Import Scout Groups (no dependencies) - using consistent groups like resetDB
       print('Importing scout groups...');
@@ -392,12 +393,12 @@ class AdminEndpoint extends Endpoint {
         ('Cubs', GroupColour.green),
         ('Scouts', GroupColour.teal)
       ];
-      
+
       final groups = scoutGroups
           .map((group) => ScoutGroup(name: group.$1, colour: group.$2))
           .toList();
       final insertedGroups = await ScoutGroup.db.insert(session, groups);
-      
+
       // Map the inserted groups to maintain YAML ID compatibility
       for (int i = 0; i < insertedGroups.length; i++) {
         // Assuming YAML scout groups have IDs 1, 2, 3 for consistency
