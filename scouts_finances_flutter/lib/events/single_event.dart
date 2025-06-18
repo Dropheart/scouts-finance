@@ -243,8 +243,11 @@ class _SingleEventState extends State<SingleEvent> {
               accountNumber: '98765432',
             );
 
-        final payment = Payment(
-          amount: event.cost,
+        final firstPaymentAmount = event.cost - 1;
+        final secondPaymentAmount = 1;
+
+        final payment1 = Payment(
+          amount: firstPaymentAmount,
           date: DateTime.now(),
           reference: "Scouting",
           method: PaymentMethod.bank_transfer,
@@ -252,7 +255,18 @@ class _SingleEventState extends State<SingleEvent> {
           payee: scoutReg.child.parent!.fullName,
         );
 
-        await client.payment.insertPayment(payment);
+        final paymentRes = await client.payment.insertPayment(payment1);
+
+        final payment2 = Payment(
+          amount: secondPaymentAmount,
+          date: DateTime.now(),
+          reference: "Scouting",
+          method: PaymentMethod.bank_transfer,
+          bankAccount: paymentRes.bankAccount,
+          payee: scoutReg.child.parent!.fullName,
+        );
+
+        await client.payment.insertPayment(payment2);
       },
       child: Text(
         'Details',
