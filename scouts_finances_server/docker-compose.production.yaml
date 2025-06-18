@@ -70,6 +70,10 @@ services:
       - SERVERPOD_WEB_SERVER_PORT
       - SERVERPOD_SERVICE_SECRET
       - SERVERPOD_MAX_REQUEST_SIZE
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN
+      - TWILIO_FROM
+      - TWILIO_TO
     command:
       [
         "--mode",
