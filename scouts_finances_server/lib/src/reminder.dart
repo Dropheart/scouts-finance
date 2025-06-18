@@ -109,13 +109,17 @@ Future<String> eventRemindersForParent(Session session, Parent parent) async {
   if (outstandingBalance > 0) {
     buffer.writeln(
         'To pay your outstanding balance, please transfer to the BACS details below:');
-    buffer.writeln('Account Name: Scouts Finances');
-    buffer.writeln('Account Number: 12345678');
-    buffer.writeln('Sort Code: 12-34-56');
-    buffer.writeln('Reference: SCOUT${parent.id}');
+    addPaymentInstructions(buffer, parent);
   } else {
     buffer.writeln('Thank you for keeping your account up to date!\n');
   }
 
   return buffer.toString();
+}
+
+void addPaymentInstructions(StringBuffer buffer, Parent parent) {
+  buffer.writeln('Account Name: Scouts Finances');
+  buffer.writeln('Account Number: 12345678');
+  buffer.writeln('Sort Code: 12-34-56');
+  buffer.writeln('Reference: SCOUT${parent.id}');
 }

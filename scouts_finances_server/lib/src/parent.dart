@@ -58,7 +58,7 @@ class ParentEndpoint extends Endpoint {
     }
 
     buffer.writeln(
-        'Thank you for your attention!\n NB: This is an automated message, please do not reply.');
+        'Thank you for your attention!\n NB: This is an automated message, please do not reply.\nFor any questions, please contact your relevant scout leader.');
 
     final message = buffer.toString();
 

@@ -1,4 +1,7 @@
+import 'package:scouts_finances_server/src/extensions.dart';
 import 'package:scouts_finances_server/src/generated/protocol.dart';
+import 'package:scouts_finances_server/src/reminder.dart';
+import 'package:scouts_finances_server/src/twlilio.dart';
 import 'package:serverpod/serverpod.dart';
 
 typedef EventDetails = (Event, List<EventRegistration>);
@@ -194,5 +197,38 @@ class EventEndpoint extends Endpoint {
     await for (final msg in session.messages.createStream('update_events')) {
       yield msg;
     }
+  }
+
+  Future<void> sendReminders(Session session, int eventId) async {
+    final event = (await Event.db.findById(session, eventId))!;
+    final eventRegs = await EventRegistration.db.find(
+      session,
+      where: (r) => r.eventId.equals(eventId),
+      include: EventRegistration.include(
+          child: Child.include(parent: Parent.include())),
+    );
+
+    final buffer = StringBuffer();
+
+    final target = eventRegs.first.child!.parent!;
+
+    buffer.writeln('Dear ${target.firstName},\n');
+    buffer.writeln(
+        'Your child(ren) ${eventRegs.first.child!.firstName} has been invited to the following event:');
+
+    buffer.writeln('Event: ${event.name}');
+    buffer.writeln('Date: ${event.date.formattedDate}');
+    buffer.writeln('Cost: ${event.cost.formatMoney}\n');
+
+    buffer.writeln(
+        'Please pay for the event at your earliest convenience. Payment can be done either via bank transfer or cash at the event.\n');
+    addPaymentInstructions(buffer, target);
+
+    buffer.writeln(
+        'Thank you for your attention!\n NB: This is an automated message, please do not reply.\nFor any questions, please contact your relevant scout leader.');
+
+    final message = buffer.toString();
+
+    TwilioClient().sendMessage(body: message);
   }
 }

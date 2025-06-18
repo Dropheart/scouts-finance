@@ -161,8 +161,14 @@ class _ParentDetailsState extends State<ParentDetails> {
           UnpaidEventsTable(parent: parent),
           const SizedBox(height: 8),
           ElevatedButton(
-            onPressed: () {
-              client.parent.remindParent(parent.id!);
+            onPressed: () async {
+              await client.parent.remindParent(parent.id!);
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Reminder sent to parent.'),
+                ),
+              );
             },
             child: const Row(
               children: [

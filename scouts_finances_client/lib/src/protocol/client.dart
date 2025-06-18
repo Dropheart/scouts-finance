@@ -152,6 +152,13 @@ class EndpointEvent extends _i1.EndpointRef {
         {},
         {},
       );
+
+  _i2.Future<void> sendReminders(int eventId) =>
+      caller.callServerEndpoint<void>(
+        'event',
+        'sendReminders',
+        {'eventId': eventId},
+      );
 }
 
 /// {@category Endpoint}
