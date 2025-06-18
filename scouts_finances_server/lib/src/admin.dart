@@ -368,9 +368,9 @@ class AdminEndpoint extends Endpoint {
 
       // --- 3. READ AND PARSE YAML DATA ---
       print('--- Reading and parsing YAML file... ---');
-      final file = File('lib/src/data/dummy_data.yaml');
+      final file = File('lib/src/data/demo.yaml');
       if (!await file.exists()) {
-        final errorMessage = 'Error: dummy_data.yaml not found at ${file.path}';
+        final errorMessage = 'Error: demo.yaml not found at ${file.path}';
         print(errorMessage);
         return errorMessage;
       }
@@ -383,21 +383,25 @@ class AdminEndpoint extends Endpoint {
       final bankAccountIdMap = <int, int>{};
       final childIdMap = <int, int>{};
       final eventIdMap = <int, int>{};
-      final scoutGroupIdMap = <int, int>{};
+      final scoutGroupIdMap = <int, int>{};      // --- 4. IMPORT DATA IN ORDER OF DEPENDENCY ---
 
-      // --- 4. IMPORT DATA IN ORDER OF DEPENDENCY ---
-
-      // Import Scout Groups (no dependencies)
+      // Import Scout Groups (no dependencies) - using consistent groups like resetDB
       print('Importing scout groups...');
-      for (var item in (yaml['scout_group'] as YamlList)) {
-        final oldId = item['id'] as int;
-        final group = ScoutGroup(
-          name: item['name'],
-          description: item['description'],
-          colour: GroupColour.values.byName(item['colour']),
-        );
-        final newGroup = await ScoutGroup.db.insertRow(session, group);
-        scoutGroupIdMap[oldId] = newGroup.id!;
+      final scoutGroups = [
+        ('Beavers', GroupColour.lightblue),
+        ('Cubs', GroupColour.green),
+        ('Scouts', GroupColour.teal)
+      ];
+      
+      final groups = scoutGroups
+          .map((group) => ScoutGroup(name: group.$1, colour: group.$2))
+          .toList();
+      final insertedGroups = await ScoutGroup.db.insert(session, groups);
+      
+      // Map the inserted groups to maintain YAML ID compatibility
+      for (int i = 0; i < insertedGroups.length; i++) {
+        // Assuming YAML scout groups have IDs 1, 2, 3 for consistency
+        scoutGroupIdMap[i + 1] = insertedGroups[i].id!;
       }
 
       // Import Parents (no dependencies)

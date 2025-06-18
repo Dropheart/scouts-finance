@@ -274,10 +274,29 @@ class _SettingsHomeState extends State<SettingsHome> {
                   ListTile(
                     title: const Text('Reset Database'),
                     subtitle:
-                        const Text('Reseed the database with default data'),
+                        const Text('Reseed the database with dynamically generated data'),
                     trailing: const Icon(Icons.refresh),
                     onTap: () async {
                       await client.admin.resetDb();
+                      if (!context.mounted) return;
+                      await Provider.of<ScoutGroupsService>(context,
+                              listen: false)
+                          .refreshScoutGroups();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Dummy Data'),
+                    subtitle:
+                        const Text('Replace the database with static dummy data for demo purposes'),
+                    trailing: const Icon(Icons.refresh),
+                    onTap: () async {
+                      await client.admin.dummyData();
                       if (!context.mounted) return;
                       await Provider.of<ScoutGroupsService>(context,
                               listen: false)

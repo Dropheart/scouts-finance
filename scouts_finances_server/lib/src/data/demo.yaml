@@ -15,7 +15,7 @@ scout_group:
   - id: 3
     name: "Scouts"
     description: "Scout troop for ages 10.5-14. Focused on outdoor adventure."
-    colour: darkblue
+    colour: teal
 
 # --- Parents ---
 parent:
@@ -49,6 +49,72 @@ parent:
     email: "emily.white@example.com"
     phone: "07700900222"
     balance: -2500 # Owes for Isla's Go-Karting
+  - id: 6
+    firstName: "Peter"
+    lastName: "Williams"
+    email: "p.williams@example.com"
+    phone: "07700900333"
+    balance: 0
+  - id: 7
+    firstName: "Jessica"
+    lastName: "Taylor"
+    email: "jess.taylor@example.com"
+    phone: "07700900444"
+    balance: 0
+  - id: 8
+    firstName: "Michael"
+    lastName: "Davies"
+    email: "m.davies@example.com"
+    phone: "07700900555"
+    balance: 0
+  - id: 9
+    firstName: "Laura"
+    lastName: "Evans"
+    email: "laura.evans@example.com"
+    phone: "07700900666"
+    balance: 0
+  - id: 10
+    firstName: "Daniel"
+    lastName: "Roberts"
+    email: "dan.roberts@example.com"
+    phone: "07700900777"
+    balance: 0
+  - id: 11
+    firstName: "Sophie"
+    lastName: "Johnson"
+    email: "s.johnson@example.com"
+    phone: "07700900888"
+    balance: 0
+  - id: 12
+    firstName: "James"
+    lastName: "Wilson"
+    email: "james.wilson@example.com"
+    phone: "07700900999"
+    balance: 0
+  - id: 13
+    firstName: "Charlotte"
+    lastName: "Green"
+    email: "charlotte.g@example.com"
+    phone: "07700900101"
+    balance: 0
+  - id: 14
+    firstName: "Matthew"
+    lastName: "Hall"
+    email: "m.hall@example.com"
+    phone: "07700900121"
+    balance: 0
+  - id: 15
+    firstName: "Hannah"
+    lastName: "Walker"
+    email: "h.walker@example.com"
+    phone: "07700900131"
+    balance: 0
+  - id: 16
+    firstName: "Chris"
+    lastName: "Harris"
+    email: "c.harris@example.com"
+    phone: "07700900141"
+    balance: 0
 
 # --- Children ---
 child:
@@ -87,6 +153,201 @@ child:
     lastName: "White"
     parentId: 5
     scoutGroupId: 3 # Scouts
+  - id: 8
+    firstName: "Harry"
+    lastName: "Williams"
+    parentId: 6
+    scoutGroupId: 1
+  - id: 9
+    firstName: "Amelia"
+    lastName: "Williams"
+    parentId: 6
+    scoutGroupId: 1
+  - id: 10
+    firstName: "George"
+    lastName: "Taylor"
+    parentId: 7
+    scoutGroupId: 1
+  - id: 11
+    firstName: "Ava"
+    lastName: "Davies"
+    parentId: 8
+    scoutGroupId: 1
+  - id: 12
+    firstName: "Oliver"
+    lastName: "Evans"
+    parentId: 9
+    scoutGroupId: 1
+  - id: 13
+    firstName: "Sophia"
+    lastName: "Roberts"
+    parentId: 10
+    scoutGroupId: 1
+  - id: 14
+    firstName: "Freddie"
+    lastName: "Johnson"
+    parentId: 11
+    scoutGroupId: 1
+  - id: 15
+    firstName: "Grace"
+    lastName: "Wilson"
+    parentId: 12
+    scoutGroupId: 1
+  - id: 16
+    firstName: "Arthur"
+    lastName: "Green"
+    parentId: 13
+    scoutGroupId: 1
+  - id: 17
+    firstName: "Ruby"
+    lastName: "Hall"
+    parentId: 14
+    scoutGroupId: 1
+  - id: 18
+    firstName: "Henry"
+    lastName: "Walker"
+    parentId: 15
+    scoutGroupId: 1
+  - id: 19
+    firstName: "Poppy"
+    lastName: "Harris"
+    parentId: 16
+    scoutGroupId: 1
+  - id: 20
+    firstName: "Max"
+    lastName: "Harris"
+    parentId: 16
+    scoutGroupId: 1
+  - id: 21
+    firstName: "Jacob"
+    lastName: "Williams"
+    parentId: 6
+    scoutGroupId: 2
+  - id: 22
+    firstName: "Isabella"
+    lastName: "Taylor"
+    parentId: 7
+    scoutGroupId: 2
+  - id: 23
+    firstName: "Thomas"
+    lastName: "Davies"
+    parentId: 8
+    scoutGroupId: 2
+  - id: 24
+    firstName: "Rosie"
+    lastName: "Evans"
+    parentId: 9
+    scoutGroupId: 2
+  - id: 25
+    firstName: "Oscar"
+    lastName: "Roberts"
+    parentId: 10
+    scoutGroupId: 2
+  - id: 26
+    firstName: "Lily"
+    lastName: "Johnson"
+    parentId: 11
+    scoutGroupId: 2
+  - id: 27
+    firstName: "William"
+    lastName: "Wilson"
+    parentId: 12
+    scoutGroupId: 2
+  - id: 28
+    firstName: "Evie"
+    lastName: "Green"
+    parentId: 13
+    scoutGroupId: 2
+  - id: 29
+    firstName: "Alfie"
+    lastName: "Hall"
+    parentId: 14
+    scoutGroupId: 2
+  - id: 30
+    firstName: "Florence"
+    lastName: "Walker"
+    parentId: 15
+    scoutGroupId: 2
+  - id: 31
+    firstName: "Theo"
+    lastName: "Harris"
+    parentId: 16
+    scoutGroupId: 2
+  - id: 32
+    firstName: "Mohammed"
+    lastName: "Roberts"
+    parentId: 10
+    scoutGroupId: 2
+  - id: 33
+    firstName: "Jessica"
+    lastName: "Green"
+    parentId: 13
+    scoutGroupId: 2
+  - id: 34
+    firstName: "Joshua"
+    lastName: "Williams"
+    parentId: 6
+    scoutGroupId: 3
+  - id: 35
+    firstName: "Emily"
+    lastName: "Taylor"
+    parentId: 7
+    scoutGroupId: 3
+  - id: 36
+    firstName: "James"
+    lastName: "Davies"
+    parentId: 8
+    scoutGroupId: 3
+  - id: 37
+    firstName: "Megan"
+    lastName: "Evans"
+    parentId: 9
+    scoutGroupId: 3
+  - id: 38
+    firstName: "Daniel"
+    lastName: "Roberts"
+    parentId: 10
+    scoutGroupId: 3
+  - id: 39
+    firstName: "Chloe"
+    lastName: "Johnson"
+    parentId: 11
+    scoutGroupId: 3
+  - id: 40
+    firstName: "Samuel"
+    lastName: "Wilson"
+    parentId: 12
+    scoutGroupId: 3
+  - id: 41
+    firstName: "Phoebe"
+    lastName: "Green"
+    parentId: 13
+    scoutGroupId: 3
+  - id: 42
+    firstName: "Benjamin"
+    lastName: "Hall"
+    parentId: 14
+    scoutGroupId: 3
+  - id: 43
+    firstName: "Alice"
+    lastName: "Walker"
+    parentId: 15
+    scoutGroupId: 3
+  - id: 44
+    firstName: "Joseph"
+    lastName: "Harris"
+    parentId: 16
+    scoutGroupId: 3
+  - id: 45
+    firstName: "Ethan"
+    lastName: "Evans"
+    parentId: 9
+    scoutGroupId: 3
+  - id: 46
+    firstName: "Logan"
+    lastName: "Hall"
+    parentId: 14
+    scoutGroupId: 3
 
 # --- Bank Accounts (Linked to Parents) ---
 bank_account:
@@ -115,6 +376,62 @@ bank_account:
     sortCode: "50-60-70"
     name: "E White"
     parentId: 5
+  - id: 6
+    accountNumber: "23456789"
+    sortCode: "60-70-80"
+    name: "P Williams"
+    parentId: 6
+  - id: 7
+    accountNumber: "34567890"
+    sortCode: "70-80-90"
+    name: "J Taylor"
+    parentId: 7
+  - id: 8
+    accountNumber: "45678901"
+    sortCode: "80-90-00"
+    name: "M Davies"
+    parentId: 8
+  - id: 9
+    accountNumber: "56789012"
+    sortCode: "90-00-10"
+    name: "L Evans"
+    parentId: 9
+  - id: 10
+    accountNumber: "67890123"
+    sortCode: "00-10-20"
+    name: "D Roberts"
+    parentId: 10
+  - id: 11
+    accountNumber: "78901234"
+    sortCode: "11-22-33"
+    name: "S Johnson"
+    parentId: 11
+  - id: 12
+    accountNumber: "89012345"
+    sortCode: "22-33-44"
+    name: "J Wilson"
+    parentId: 12
+  - id: 13
+    accountNumber: "90123456"
+    sortCode: "33-44-55"
+    name: "C Green"
+    parentId: 13
+  - id: 14
+    accountNumber: "01234567"
+    sortCode: "44-55-66"
+    name: "M Hall"
+    parentId: 14
+  - id: 15
+    accountNumber: "12345098"
+    sortCode: "55-66-77"
+    name: "H Walker"
+    parentId: 15
+  - id: 16
+    accountNumber: "23456109"
+    sortCode: "66-77-88"
+    name: "C Harris"
+    parentId: 16
+
 
 # --- Events (Past and Future) ---
 event:
@@ -134,22 +451,22 @@ event:
     cost: 15000 # £150.00
     scoutGroupId: 3 # Scouts
   - id: 4
-    name: "Beaver Fun Day"
+    name: "Fun Day"
     date: "2025-07-12T11:00:00Z"
     cost: 750 # £7.50
     scoutGroupId: 1 # Beavers
   - id: 5
-    name: "Cubs Go-Karting Trip"
+    name: "Go-Karting Trip"
     date: "2025-09-20T09:30:00Z"
     cost: 2500 # £25.00
     scoutGroupId: 2 # Cubs
   - id: 6
-    name: "Jamboree on the Trail"
+    name: "Climbing Session"
     date: "2025-05-11T09:00:00Z"
     cost: 1000 # £10.00
     scoutGroupId: 3 # Scouts
   - id: 7
-    name: "Beaver's Teddy Bear Picnic"
+    name: "Teddy Bear Picnic"
     date: "2025-06-14T12:00:00Z"
     cost: 300 # £3.00
     scoutGroupId: 1 # Beavers
@@ -187,7 +504,7 @@ event_registration:
     paidDate: null
   - id: 7
     eventId: 6
-    childId: 7 # Jack White, Jamboree, Paid
+    childId: 7 # Jack White, Climbing, Paid
     paidDate: "2025-05-01T10:00:00Z"
   - id: 8
     eventId: 7
@@ -212,6 +529,435 @@ event_registration:
   - id: 13
     eventId: 8
     childId: 6 # Isla White, Panto, Unpaid
+    paidDate: null
+  # --- NEW REGISTRATIONS START HERE ---
+  - id: 14
+    eventId: 1 # Spring Sleepover (Cubs)
+    childId: 21
+    paidDate: null
+  - id: 15
+    eventId: 1
+    childId: 22
+    paidDate: null
+  - id: 16
+    eventId: 1
+    childId: 23
+    paidDate: null
+  - id: 17
+    eventId: 1
+    childId: 24
+    paidDate: null
+  - id: 18
+    eventId: 1
+    childId: 25
+    paidDate: null
+  - id: 19
+    eventId: 1
+    childId: 26
+    paidDate: null
+  - id: 20
+    eventId: 1
+    childId: 27
+    paidDate: null
+  - id: 21
+    eventId: 1
+    childId: 28
+    paidDate: null
+  - id: 22
+    eventId: 1
+    childId: 29
+    paidDate: null
+  - id: 23
+    eventId: 1
+    childId: 30
+    paidDate: null
+  - id: 24
+    eventId: 1
+    childId: 31
+    paidDate: null
+  - id: 25
+    eventId: 1
+    childId: 32
+    paidDate: null
+  - id: 26
+    eventId: 1
+    childId: 33
+    paidDate: null
+  - id: 27
+    eventId: 2 # Archery (Scouts)
+    childId: 7
+    paidDate: null
+  - id: 28
+    eventId: 2
+    childId: 34
+    paidDate: null
+  - id: 29
+    eventId: 2
+    childId: 35
+    paidDate: null
+  - id: 30
+    eventId: 2
+    childId: 36
+    paidDate: null
+  - id: 31
+    eventId: 2
+    childId: 37
+    paidDate: null
+  - id: 32
+    eventId: 2
+    childId: 38
+    paidDate: null
+  - id: 33
+    eventId: 2
+    childId: 39
+    paidDate: null
+  - id: 34
+    eventId: 2
+    childId: 40
+    paidDate: null
+  - id: 35
+    eventId: 2
+    childId: 41
+    paidDate: null
+  - id: 36
+    eventId: 2
+    childId: 42
+    paidDate: null
+  - id: 37
+    eventId: 2
+    childId: 43
+    paidDate: null
+  - id: 38
+    eventId: 2
+    childId: 44
+    paidDate: null
+  - id: 39
+    eventId: 2
+    childId: 45
+    paidDate: null
+  - id: 40
+    eventId: 2
+    childId: 46
+    paidDate: null
+  - id: 41
+    eventId: 3 # Summer Camp (Scouts)
+    childId: 34
+    paidDate: null
+  - id: 42
+    eventId: 3
+    childId: 35
+    paidDate: null
+  - id: 43
+    eventId: 3
+    childId: 36
+    paidDate: null
+  - id: 44
+    eventId: 3
+    childId: 37
+    paidDate: null
+  - id: 45
+    eventId: 3
+    childId: 38
+    paidDate: null
+  - id: 46
+    eventId: 3
+    childId: 39
+    paidDate: null
+  - id: 47
+    eventId: 3
+    childId: 40
+    paidDate: null
+  - id: 48
+    eventId: 3
+    childId: 41
+    paidDate: null
+  - id: 49
+    eventId: 3
+    childId: 42
+    paidDate: null
+  - id: 50
+    eventId: 3
+    childId: 43
+    paidDate: null
+  - id: 51
+    eventId: 3
+    childId: 44
+    paidDate: null
+  - id: 52
+    eventId: 3
+    childId: 45
+    paidDate: null
+  - id: 53
+    eventId: 3
+    childId: 46
+    paidDate: null
+  - id: 54
+    eventId: 4 # Fun Day (Beavers)
+    childId: 8
+    paidDate: null
+  - id: 55
+    eventId: 4
+    childId: 9
+    paidDate: null
+  - id: 56
+    eventId: 4
+    childId: 10
+    paidDate: null
+  - id: 57
+    eventId: 4
+    childId: 11
+    paidDate: null
+  - id: 58
+    eventId: 4
+    childId: 12
+    paidDate: null
+  - id: 59
+    eventId: 4
+    childId: 13
+    paidDate: null
+  - id: 60
+    eventId: 4
+    childId: 14
+    paidDate: null
+  - id: 61
+    eventId: 4
+    childId: 15
+    paidDate: null
+  - id: 62
+    eventId: 4
+    childId: 16
+    paidDate: null
+  - id: 63
+    eventId: 4
+    childId: 17
+    paidDate: null
+  - id: 64
+    eventId: 4
+    childId: 18
+    paidDate: null
+  - id: 65
+    eventId: 4
+    childId: 19
+    paidDate: null
+  - id: 66
+    eventId: 4
+    childId: 20
+    paidDate: null
+  - id: 67
+    eventId: 5 # Go-Karting (Cubs)
+    childId: 21
+    paidDate: null
+  - id: 68
+    eventId: 5
+    childId: 22
+    paidDate: null
+  - id: 69
+    eventId: 5
+    childId: 23
+    paidDate: null
+  - id: 70
+    eventId: 5
+    childId: 24
+    paidDate: null
+  - id: 71
+    eventId: 5
+    childId: 25
+    paidDate: null
+  - id: 72
+    eventId: 5
+    childId: 26
+    paidDate: null
+  - id: 73
+    eventId: 5
+    childId: 27
+    paidDate: null
+  - id: 74
+    eventId: 5
+    childId: 28
+    paidDate: null
+  - id: 75
+    eventId: 5
+    childId: 29
+    paidDate: null
+  - id: 76
+    eventId: 5
+    childId: 30
+    paidDate: null
+  - id: 77
+    eventId: 5
+    childId: 31
+    paidDate: null
+  - id: 78
+    eventId: 5
+    childId: 32
+    paidDate: null
+  - id: 79
+    eventId: 5
+    childId: 33
+    paidDate: null
+  - id: 80
+    eventId: 6 # Climbing (Scouts)
+    childId: 4
+    paidDate: null
+  - id: 81
+    eventId: 6
+    childId: 34
+    paidDate: null
+  - id: 82
+    eventId: 6
+    childId: 35
+    paidDate: null
+  - id: 83
+    eventId: 6
+    childId: 36
+    paidDate: null
+  - id: 84
+    eventId: 6
+    childId: 37
+    paidDate: null
+  - id: 85
+    eventId: 6
+    childId: 38
+    paidDate: null
+  - id: 86
+    eventId: 6
+    childId: 39
+    paidDate: null
+  - id: 87
+    eventId: 6
+    childId: 40
+    paidDate: null
+  - id: 88
+    eventId: 6
+    childId: 41
+    paidDate: null
+  - id: 89
+    eventId: 6
+    childId: 42
+    paidDate: null
+  - id: 90
+    eventId: 6
+    childId: 43
+    paidDate: null
+  - id: 91
+    eventId: 6
+    childId: 44
+    paidDate: null
+  - id: 92
+    eventId: 6
+    childId: 45
+    paidDate: null
+  - id: 93
+    eventId: 6
+    childId: 46
+    paidDate: null
+  - id: 94
+    eventId: 7 # Teddy Bear Picnic (Beavers)
+    childId: 1
+    paidDate: null
+  - id: 95
+    eventId: 7
+    childId: 8
+    paidDate: null
+  - id: 96
+    eventId: 7
+    childId: 9
+    paidDate: null
+  - id: 97
+    eventId: 7
+    childId: 10
+    paidDate: null
+  - id: 98
+    eventId: 7
+    childId: 11
+    paidDate: null
+  - id: 99
+    eventId: 7
+    childId: 12
+    paidDate: null
+  - id: 100
+    eventId: 7
+    childId: 13
+    paidDate: null
+  - id: 101
+    eventId: 7
+    childId: 14
+    paidDate: null
+  - id: 102
+    eventId: 7
+    childId: 15
+    paidDate: null
+  - id: 103
+    eventId: 7
+    childId: 16
+    paidDate: null
+  - id: 104
+    eventId: 7
+    childId: 17
+    paidDate: null
+  - id: 105
+    eventId: 7
+    childId: 18
+    paidDate: null
+  - id: 106
+    eventId: 7
+    childId: 19
+    paidDate: null
+  - id: 107
+    eventId: 7
+    childId: 20
+    paidDate: null
+  - id: 108
+    eventId: 8 # Panto (All)
+    childId: 3 # Noah
+    paidDate: null
+  - id: 109
+    eventId: 8
+    childId: 4 # Olivia
+    paidDate: null
+  - id: 110
+    eventId: 8
+    childId: 7 # Jack
+    paidDate: null
+  - id: 111
+    eventId: 8
+    childId: 8 # Harry
+    paidDate: null
+  - id: 112
+    eventId: 8
+    childId: 10 # George
+    paidDate: null
+  - id: 113
+    eventId: 8
+    childId: 14 # Freddie
+    paidDate: null
+  - id: 114
+    eventId: 8
+    childId: 22 # Isabella
+    paidDate: null
+  - id: 115
+    eventId: 8
+    childId: 25 # Oscar
+    paidDate: null
+  - id: 116
+    eventId: 8
+    childId: 28 # Evie
+    paidDate: null
+  - id: 117
+    eventId: 8
+    childId: 30 # Florence
+    paidDate: null
+  - id: 118
+    eventId: 8
+    childId: 35 # Emily
+    paidDate: null
+  - id: 119
+    eventId: 8
+    childId: 38 # Daniel
+    paidDate: null
+  - id: 120
+    eventId: 8
+    childId: 41 # Phoebe
     paidDate: null
 
 
@@ -274,9 +1020,9 @@ payment:
     bankAccountId: 4
     parentId: 4
   - id: 8
-    amount: 1000 # Jamboree
+    amount: 1000 # Climbing
     date: "2025-05-01T10:00:00Z"
-    reference: "J White JOTT"
+    reference: "J White Climb"
     method: bank_transfer
     payee: "Scouts"
     bankAccountId: 5
