@@ -1174,4 +1174,33 @@ class _ScoutsEndpoint {
       }
     });
   }
+
+  _i3.Future<_i12.Child?> addChild(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i12.Child child,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'scouts',
+        method: 'addChild',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'scouts',
+          methodName: 'addChild',
+          parameters: _i1.testObjectToJson({'child': child}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i12.Child?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }

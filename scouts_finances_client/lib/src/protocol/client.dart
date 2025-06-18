@@ -351,6 +351,13 @@ class EndpointScouts extends _i1.EndpointRef {
         'getChildById',
         {'id': id},
       );
+
+  _i2.Future<_i10.Child?> addChild(_i10.Child child) =>
+      caller.callServerEndpoint<_i10.Child?>(
+        'scouts',
+        'addChild',
+        {'child': child},
+      );
 }
 
 class Client extends _i1.ServerpodClientShared {

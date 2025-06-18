@@ -36,3 +36,4 @@ scouts:
   - getChildren:
   - getChildrenOfParent:
   - getChildById:
+  - addChild:
