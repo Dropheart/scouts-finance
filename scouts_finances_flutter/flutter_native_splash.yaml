@@ -1,0 +1,6 @@
+flutter_native_splash:
+  color: "#ac8989"
+  image: assets/scouttrack.png
+
+  android_12:
+    color: "#ac8989"
