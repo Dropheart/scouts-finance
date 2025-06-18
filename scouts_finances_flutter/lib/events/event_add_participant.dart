@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scouts_finances_flutter/services/scout_groups_service.dart';
@@ -26,6 +28,8 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
 
   List<int> selectedIndicies = [];
   List<int> unchangingSelectedIndicies = [];
+
+  late StreamSubscription stream;
 
   void _getChildren() async {
     try {
@@ -66,6 +70,15 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     super.initState();
     _getChildren();
     _getEventChildren();
+    stream = client.event.eventStream().listen((_) {
+      refresh();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    stream.cancel();
   }
 
   @override

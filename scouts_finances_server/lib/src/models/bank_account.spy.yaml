@@ -4,4 +4,4 @@ fields:
   accountNumber: String
   sortCode: String
   name: String # Name of the account holder
-  parent: Parent?, relation(optional) # Association with a parent
+  parent: Parent?, relation(optional, name=parent_bank_acc) # Association with a parent

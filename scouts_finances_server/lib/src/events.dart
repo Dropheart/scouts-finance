@@ -44,7 +44,7 @@ class EventEndpoint extends Endpoint {
     return (eventDetails, eventRegistration);
   }
 
-  Future<List<Event>> insertEvent(Session session, String name, int cost,
+  Future<Event> insertEvent(Session session, String name, int cost,
       DateTime? date, int groupId) async {
     final event = Event(
         name: name,
@@ -52,12 +52,12 @@ class EventEndpoint extends Endpoint {
         cost: cost,
         scoutGroupId: groupId);
 
-    await Event.db.insert(session, [event]);
+    final retEvent = await Event.db.insertRow(session, event);
 
     // Notify all clients about the new event
     await session.messages.postMessage('update_events', event);
 
-    return Event.db.find(session);
+    return retEvent;
   }
 
   Future<EventRegistration> registerChildForEvent(
@@ -151,6 +151,9 @@ class EventEndpoint extends Endpoint {
     final existingRegistrations = await EventRegistration.db.find(
       session,
       where: (r) => r.eventId.equals(eventId),
+      include: EventRegistration.include(
+          child: Child.include(parent: Parent.include()),
+          event: Event.include()),
     );
 
     final existingChildIds =
@@ -162,6 +165,12 @@ class EventEndpoint extends Endpoint {
         .where((r) => newChildIds.contains(r.childId))
         .toList();
     if (toRemove.isNotEmpty) {
+      for (var reg in toRemove.where((r) => r.paidDate != null)) {
+        // Gotta update parent balance.
+        final child = reg.child!;
+        child.parent!.balance += reg.event!.cost;
+        await Parent.db.updateRow(session, child.parent!);
+      }
       await EventRegistration.db.delete(session, toRemove);
     }
 

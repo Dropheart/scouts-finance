@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
@@ -20,10 +22,13 @@ class UnmatchedViewState extends State<UnmatchedView> {
 
   final ScrollController _scrollController = ScrollController();
 
+  late StreamSubscription stream;
+
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
+    _scrollController.dispose();
+    stream.cancel();
   }
 
   void _getPayments() async {
@@ -50,6 +55,9 @@ class UnmatchedViewState extends State<UnmatchedView> {
   void initState() {
     super.initState();
     _getPayments();
+    stream = client.payment.paymentStream().listen((_) {
+      refresh();
+    });
   }
 
   void refresh() {
@@ -83,7 +91,7 @@ class UnmatchedViewState extends State<UnmatchedView> {
         .toList();
 
     List<Card> unmatchedPaymentCards = filteredUnmatchedPayments.map((payment) {
-      return toCard(context, payment);
+      return toCard(context, payment, refresh);
     }).toList();
 
     return SingleChildScrollView(
@@ -99,7 +107,7 @@ class UnmatchedViewState extends State<UnmatchedView> {
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                   child: Text(
-                    'No attributed payments found.',
+                    'No unattributed payments found.',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),

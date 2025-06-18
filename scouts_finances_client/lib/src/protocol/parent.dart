@@ -10,7 +10,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'child.dart' as _i2;
+import 'bank_account.dart' as _i2;
+import 'child.dart' as _i3;
 
 abstract class Parent implements _i1.SerializableModel {
   Parent._({
@@ -20,6 +21,7 @@ abstract class Parent implements _i1.SerializableModel {
     required this.email,
     required this.phone,
     required this.balance,
+    this.bankAccount,
     this.children,
   });
 
@@ -30,7 +32,8 @@ abstract class Parent implements _i1.SerializableModel {
     required String email,
     required String phone,
     required int balance,
-    List<_i2.Child>? children,
+    List<_i2.BankAccount>? bankAccount,
+    List<_i3.Child>? children,
   }) = _ParentImpl;
 
   factory Parent.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -41,8 +44,11 @@ abstract class Parent implements _i1.SerializableModel {
       email: jsonSerialization['email'] as String,
       phone: jsonSerialization['phone'] as String,
       balance: jsonSerialization['balance'] as int,
+      bankAccount: (jsonSerialization['bankAccount'] as List?)
+          ?.map((e) => _i2.BankAccount.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       children: (jsonSerialization['children'] as List?)
-          ?.map((e) => _i2.Child.fromJson((e as Map<String, dynamic>)))
+          ?.map((e) => _i3.Child.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -62,7 +68,9 @@ abstract class Parent implements _i1.SerializableModel {
 
   int balance;
 
-  List<_i2.Child>? children;
+  List<_i2.BankAccount>? bankAccount;
+
+  List<_i3.Child>? children;
 
   /// Returns a shallow copy of this [Parent]
   /// with some or all fields replaced by the given arguments.
@@ -74,7 +82,8 @@ abstract class Parent implements _i1.SerializableModel {
     String? email,
     String? phone,
     int? balance,
-    List<_i2.Child>? children,
+    List<_i2.BankAccount>? bankAccount,
+    List<_i3.Child>? children,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -85,6 +94,8 @@ abstract class Parent implements _i1.SerializableModel {
       'email': email,
       'phone': phone,
       'balance': balance,
+      if (bankAccount != null)
+        'bankAccount': bankAccount?.toJson(valueToJson: (v) => v.toJson()),
       if (children != null)
         'children': children?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -106,7 +117,8 @@ class _ParentImpl extends Parent {
     required String email,
     required String phone,
     required int balance,
-    List<_i2.Child>? children,
+    List<_i2.BankAccount>? bankAccount,
+    List<_i3.Child>? children,
   }) : super._(
           id: id,
           firstName: firstName,
@@ -114,6 +126,7 @@ class _ParentImpl extends Parent {
           email: email,
           phone: phone,
           balance: balance,
+          bankAccount: bankAccount,
           children: children,
         );
 
@@ -128,6 +141,7 @@ class _ParentImpl extends Parent {
     String? email,
     String? phone,
     int? balance,
+    Object? bankAccount = _Undefined,
     Object? children = _Undefined,
   }) {
     return Parent(
@@ -137,7 +151,10 @@ class _ParentImpl extends Parent {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       balance: balance ?? this.balance,
-      children: children is List<_i2.Child>?
+      bankAccount: bankAccount is List<_i2.BankAccount>?
+          ? bankAccount
+          : this.bankAccount?.map((e0) => e0.copyWith()).toList(),
+      children: children is List<_i3.Child>?
           ? children
           : this.children?.map((e0) => e0.copyWith()).toList(),
     );

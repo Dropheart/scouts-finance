@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
@@ -32,6 +34,7 @@ class _SingleEventState extends State<SingleEvent> {
     'Unpaid',
   ];
   int sortIndex = 0;
+  late StreamSubscription stream;
 
   void _getEventDetails() async {
     try {
@@ -55,20 +58,29 @@ class _SingleEventState extends State<SingleEvent> {
   void initState() {
     super.initState();
     _getEventDetails();
+    stream = client.event.eventStream().listen((_) {
+      refresh();
+    });
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    super.dispose();
+    stream.cancel();
+  }
+
+  void refresh() {
+    setState(() {
+      loading = true;
+      errorMessage = null;
+    });
+    _getEventDetails();
+  }
+
+  Widget eventView(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
     final colStyle = TextStyle(
         color: colourScheme.onPrimaryContainer, fontWeight: FontWeight.bold);
-
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (errorMessage != null) {
-      return Center(child: Text(errorMessage!));
-    }
 
     final filteredRegistrations = registrations.where((e) {
       String fullName =
@@ -208,88 +220,135 @@ class _SingleEventState extends State<SingleEvent> {
       ),
     );
 
+    final detailsHeading = GestureDetector(
+      onDoubleTap: () async {
+        final List<
+            ({
+              Child child,
+              String name,
+              DateTime? paidDate,
+              EventRegistration reg
+            })?> nullableRegs = List.from(children);
+        final scoutReg = nullableRegs.firstWhere(
+          (e) => e!.paidDate == null,
+          orElse: () => null,
+        );
+        if (scoutReg == null) return;
+
+        final parent = scoutReg.child.parent!;
+        final bankAcc = parent.bankAccount?.firstOrNull ??
+            BankAccount(
+              name: parent.fullName,
+              sortCode: '12-34-56',
+              accountNumber: '98765432',
+            );
+
+        final payment = Payment(
+          amount: event.cost,
+          date: DateTime.now(),
+          reference: "Scouting",
+          method: PaymentMethod.bank_transfer,
+          bankAccount: bankAcc,
+          payee: scoutReg.child.parent!.fullName,
+        );
+
+        await client.payment.insertPayment(payment);
+      },
+      child: Text(
+        'Details',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    );
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Table(columnWidths: {
+              0: IntrinsicColumnWidth(),
+            }, children: [
+              TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: detailsHeading,
+                ),
+                const SizedBox.shrink(),
+              ]),
+              TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    'Date:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text(
+                    "${event.date.day}/${event.date.month}/${event.date.year}"),
+              ]),
+              // TableRow(children: [
+              //   Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //     child: Text('Location:',
+              //         style: TextStyle(fontWeight: FontWeight.bold)),
+              //   ),
+              //   Text('TBD'),
+              // ]),
+              TableRow(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text('Price:',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                Text('£${(event.cost / 100).toStringAsFixed(2)}'),
+              ]),
+            ]),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(children: [
+                  const SizedBox(height: 16),
+                  searchBar,
+                  sortSelection,
+                  const SizedBox(height: 16),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(10), // Sets rounded corners
+                    ),
+                    color: colourScheme.secondaryContainer,
+                    clipBehavior: Clip.antiAlias,
+                    child: childrenTable,
+                  ),
+                  EventAddParticipant(
+                    eventId: widget.eventId,
+                    closeFn: () => _getEventDetails(),
+                  ),
+                ])),
+            const SizedBox(height: 128.0),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title:
               Provider.of<AccountTypeService>(context, listen: false).isLeader
-                  ? Text(event.name)
-                  : Text("${event.name} - ${event.scoutGroup!.name}"),
+                  ? Text(loading ? 'Loading...' : event.name)
+                  : Text(loading
+                      ? 'Loading...'
+                      : "${event.name} - ${event.scoutGroup!.name}"),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Table(columnWidths: {
-                  0: IntrinsicColumnWidth(),
-                }, children: [
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Details',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox.shrink(),
-                  ]),
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        'Date:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Text(
-                        "${event.date.day}/${event.date.month}/${event.date.year}"),
-                  ]),
-                  // TableRow(children: [
-                  //   Padding(
-                  //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  //     child: Text('Location:',
-                  //         style: TextStyle(fontWeight: FontWeight.bold)),
-                  //   ),
-                  //   Text('TBD'),
-                  // ]),
-                  TableRow(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text('Price:',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Text('£${(event.cost / 100).toStringAsFixed(2)}'),
-                  ]),
-                ]),
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(children: [
-                      const SizedBox(height: 16),
-                      searchBar,
-                      sortSelection,
-                      const SizedBox(height: 16),
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(10), // Sets rounded corners
-                        ),
-                        color: colourScheme.secondaryContainer,
-                        clipBehavior: Clip.antiAlias,
-                        child: childrenTable,
-                      ),
-                      EventAddParticipant(
-                        eventId: widget.eventId,
-                        closeFn: () => _getEventDetails(),
-                      ),
-                    ])),
-                const SizedBox(height: 128.0),
-              ],
-            ),
-          ),
-        ));
+        body: loading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage != null
+                ? Center(child: Text(errorMessage!))
+                : eventView(context));
   }
 
   void _addCashPayment(BuildContext context, EventRegistration reg) {

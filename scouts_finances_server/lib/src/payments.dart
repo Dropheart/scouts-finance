@@ -3,20 +3,27 @@ import 'package:serverpod/serverpod.dart';
 
 class PaymentEndpoint extends Endpoint {
   Future<List<Payment>> getPayments(Session session) async {
-    return Payment.db
-        .find(session, include: Payment.include(parent: Parent.include()));
+    return Payment.db.find(session,
+        include: Payment.include(
+            parent: Parent.include(), bankAccount: BankAccount.include()));
     // This will also fetch the parent information for each payment (if it exists)
   }
 
-  Future<List<Payment>> insertPayment(Session session, Payment payment) async =>
-      Payment.db.insert(
-        session,
-        [payment],
-      );
+  Future<Payment> insertPayment(Session session, Payment payment) async {
+    final res = await Payment.db.insertRow(
+      session,
+      payment,
+    );
+
+    // Notify of update payments
+    session.messages.postMessage('update_payments', res);
+    return res;
+  }
 
   Future<Payment?> getPaymentById(Session session, int paymentId) async {
     // Find the payment by ID
-    return Payment.db.findById(session, paymentId);
+    return Payment.db.findById(session, paymentId,
+        include: Payment.include(bankAccount: BankAccount.include()));
   }
 
   Future<List<Payment>> getPaymentsByParentId(
@@ -28,13 +35,43 @@ class PaymentEndpoint extends Endpoint {
   Future<void> updatePayment(Session session, int paymentId, Parent parent,
       {Transaction? transaction}) async {
     // Find the payment by ID
-    final payment =
-        await Payment.db.findById(session, paymentId, transaction: transaction);
+    final payment = await Payment.db.findById(session, paymentId,
+        transaction: transaction,
+        include: Payment.include(bankAccount: BankAccount.include()));
     if (payment == null) {
       throw ArgumentError('Payment with id $paymentId not found');
     }
-    // Update the payment with the new parent information
     print('Updating payment with ID: $paymentId for parent: ${parent.id}');
+
+    // If new bank account, assign to parent
+    final paymentBankAcc = payment.bankAccount;
+    final assignablePayments = [payment];
+    if (paymentBankAcc != null && paymentBankAcc.parentId == null) {
+      // This is a new bank account, so assign it to parent
+      // and see if we can clear more payments
+      paymentBankAcc.parent = parent;
+      paymentBankAcc.parentId = parent.id;
+      final res = await BankAccount.db
+          .updateRow(session, paymentBankAcc, transaction: transaction);
+
+      print(
+          'Inserted new bank account: ${res.id} (${res.name}) to parent: ${parent.id} (${parent.firstName} ${parent.lastName})');
+
+      // Get all other unassigned payments from this bank account
+      final otherPayments = await Payment.db.find(
+        session,
+        where: (p) =>
+            p.bankAccount.sortCode.equals(paymentBankAcc.sortCode) &
+            p.bankAccount.accountNumber.equals(paymentBankAcc.accountNumber) &
+            p.parentId.equals(null),
+        transaction: transaction,
+      );
+
+      print(
+          'Found ${otherPayments.length} other payments for bank account: ${paymentBankAcc.id} (${paymentBankAcc.name})');
+
+      assignablePayments.addAll(otherPayments);
+    }
 
     // Find all event registrations that can be paid
     // sorted by date
@@ -48,7 +85,8 @@ class PaymentEndpoint extends Endpoint {
         transaction: transaction);
 
     // Get new parent balance & see what we can pay off
-    int balance = parent.balance + payment.amount;
+    int balance =
+        parent.balance + assignablePayments.fold(0, (sum, p) => sum + p.amount);
     final clearableRegistrations = <EventRegistration>[];
     while (balance > 0 && registrations.isNotEmpty) {
       final reg = registrations.removeAt(0);
@@ -61,18 +99,24 @@ class PaymentEndpoint extends Endpoint {
       }
     }
 
-    payment.parentId = parent.id;
-    payment.parent = parent;
+    // Update the payments with the new parent information
+    for (var p in assignablePayments) {
+      p.parentId = parent.id;
+      p.parent = parent;
+    }
+
     parent.balance = balance;
     if (transaction == null) {
       await session.db.transaction((transaction) async {
-        await Payment.db.updateRow(session, payment, transaction: transaction);
+        await Payment.db
+            .update(session, assignablePayments, transaction: transaction);
         await EventRegistration.db
             .update(session, clearableRegistrations, transaction: transaction);
         await Parent.db.updateRow(session, parent, transaction: transaction);
       });
     } else {
-      await Payment.db.updateRow(session, payment, transaction: transaction);
+      await Payment.db
+          .update(session, assignablePayments, transaction: transaction);
 
       await EventRegistration.db
           .update(session, clearableRegistrations, transaction: transaction);
@@ -81,6 +125,8 @@ class PaymentEndpoint extends Endpoint {
     }
     // To reload the 'events' tab
     session.messages.postMessage('update_events', payment);
+    // Notify of update payments
+    session.messages.postMessage('update_payments', payment);
   }
 
   Future<void> insertCashPayment(
@@ -101,5 +147,15 @@ class PaymentEndpoint extends Endpoint {
 
     // To reload the 'events' tab
     session.messages.postMessage('update_events', payment);
+    // Notify of update payments
+    session.messages.postMessage('update_payments', payment);
+  }
+
+  Stream paymentStream(Session session) async* {
+    // This stream will yield new payments as they are inserted
+    await for (final message
+        in session.messages.createStream('update_payments')) {
+      yield message;
+    }
   }
 }

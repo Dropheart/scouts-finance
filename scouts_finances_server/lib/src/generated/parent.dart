@@ -12,7 +12,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'child.dart' as _i2;
+import 'bank_account.dart' as _i2;
+import 'child.dart' as _i3;
 
 abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Parent._({
@@ -22,6 +23,7 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.email,
     required this.phone,
     required this.balance,
+    this.bankAccount,
     this.children,
   });
 
@@ -32,7 +34,8 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String email,
     required String phone,
     required int balance,
-    List<_i2.Child>? children,
+    List<_i2.BankAccount>? bankAccount,
+    List<_i3.Child>? children,
   }) = _ParentImpl;
 
   factory Parent.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -43,8 +46,11 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       email: jsonSerialization['email'] as String,
       phone: jsonSerialization['phone'] as String,
       balance: jsonSerialization['balance'] as int,
+      bankAccount: (jsonSerialization['bankAccount'] as List?)
+          ?.map((e) => _i2.BankAccount.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       children: (jsonSerialization['children'] as List?)
-          ?.map((e) => _i2.Child.fromJson((e as Map<String, dynamic>)))
+          ?.map((e) => _i3.Child.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -66,7 +72,9 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   int balance;
 
-  List<_i2.Child>? children;
+  List<_i2.BankAccount>? bankAccount;
+
+  List<_i3.Child>? children;
 
   @override
   _i1.Table<int?> get table => t;
@@ -81,7 +89,8 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? email,
     String? phone,
     int? balance,
-    List<_i2.Child>? children,
+    List<_i2.BankAccount>? bankAccount,
+    List<_i3.Child>? children,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -92,6 +101,8 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'email': email,
       'phone': phone,
       'balance': balance,
+      if (bankAccount != null)
+        'bankAccount': bankAccount?.toJson(valueToJson: (v) => v.toJson()),
       if (children != null)
         'children': children?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -106,13 +117,22 @@ abstract class Parent implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'email': email,
       'phone': phone,
       'balance': balance,
+      if (bankAccount != null)
+        'bankAccount':
+            bankAccount?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (children != null)
         'children': children?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static ParentInclude include({_i2.ChildIncludeList? children}) {
-    return ParentInclude._(children: children);
+  static ParentInclude include({
+    _i2.BankAccountIncludeList? bankAccount,
+    _i3.ChildIncludeList? children,
+  }) {
+    return ParentInclude._(
+      bankAccount: bankAccount,
+      children: children,
+    );
   }
 
   static ParentIncludeList includeList({
@@ -151,7 +171,8 @@ class _ParentImpl extends Parent {
     required String email,
     required String phone,
     required int balance,
-    List<_i2.Child>? children,
+    List<_i2.BankAccount>? bankAccount,
+    List<_i3.Child>? children,
   }) : super._(
           id: id,
           firstName: firstName,
@@ -159,6 +180,7 @@ class _ParentImpl extends Parent {
           email: email,
           phone: phone,
           balance: balance,
+          bankAccount: bankAccount,
           children: children,
         );
 
@@ -173,6 +195,7 @@ class _ParentImpl extends Parent {
     String? email,
     String? phone,
     int? balance,
+    Object? bankAccount = _Undefined,
     Object? children = _Undefined,
   }) {
     return Parent(
@@ -182,7 +205,10 @@ class _ParentImpl extends Parent {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       balance: balance ?? this.balance,
-      children: children is List<_i2.Child>?
+      bankAccount: bankAccount is List<_i2.BankAccount>?
+          ? bankAccount
+          : this.bankAccount?.map((e0) => e0.copyWith()).toList(),
+      children: children is List<_i3.Child>?
           ? children
           : this.children?.map((e0) => e0.copyWith()).toList(),
     );
@@ -223,36 +249,71 @@ class ParentTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt balance;
 
-  _i2.ChildTable? ___children;
+  _i2.BankAccountTable? ___bankAccount;
 
-  _i1.ManyRelation<_i2.ChildTable>? _children;
+  _i1.ManyRelation<_i2.BankAccountTable>? _bankAccount;
 
-  _i2.ChildTable get __children {
+  _i3.ChildTable? ___children;
+
+  _i1.ManyRelation<_i3.ChildTable>? _children;
+
+  _i2.BankAccountTable get __bankAccount {
+    if (___bankAccount != null) return ___bankAccount!;
+    ___bankAccount = _i1.createRelationTable(
+      relationFieldName: '__bankAccount',
+      field: Parent.t.id,
+      foreignField: _i2.BankAccount.t.parentId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.BankAccountTable(tableRelation: foreignTableRelation),
+    );
+    return ___bankAccount!;
+  }
+
+  _i3.ChildTable get __children {
     if (___children != null) return ___children!;
     ___children = _i1.createRelationTable(
       relationFieldName: '__children',
       field: Parent.t.id,
-      foreignField: _i2.Child.t.parentId,
+      foreignField: _i3.Child.t.parentId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ChildTable(tableRelation: foreignTableRelation),
+          _i3.ChildTable(tableRelation: foreignTableRelation),
     );
     return ___children!;
   }
 
-  _i1.ManyRelation<_i2.ChildTable> get children {
+  _i1.ManyRelation<_i2.BankAccountTable> get bankAccount {
+    if (_bankAccount != null) return _bankAccount!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'bankAccount',
+      field: Parent.t.id,
+      foreignField: _i2.BankAccount.t.parentId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.BankAccountTable(tableRelation: foreignTableRelation),
+    );
+    _bankAccount = _i1.ManyRelation<_i2.BankAccountTable>(
+      tableWithRelations: relationTable,
+      table: _i2.BankAccountTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _bankAccount!;
+  }
+
+  _i1.ManyRelation<_i3.ChildTable> get children {
     if (_children != null) return _children!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'children',
       field: Parent.t.id,
-      foreignField: _i2.Child.t.parentId,
+      foreignField: _i3.Child.t.parentId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ChildTable(tableRelation: foreignTableRelation),
+          _i3.ChildTable(tableRelation: foreignTableRelation),
     );
-    _children = _i1.ManyRelation<_i2.ChildTable>(
+    _children = _i1.ManyRelation<_i3.ChildTable>(
       tableWithRelations: relationTable,
-      table: _i2.ChildTable(
+      table: _i3.ChildTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _children!;
@@ -270,6 +331,9 @@ class ParentTable extends _i1.Table<int?> {
 
   @override
   _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'bankAccount') {
+      return __bankAccount;
+    }
     if (relationField == 'children') {
       return __children;
     }
@@ -278,14 +342,23 @@ class ParentTable extends _i1.Table<int?> {
 }
 
 class ParentInclude extends _i1.IncludeObject {
-  ParentInclude._({_i2.ChildIncludeList? children}) {
+  ParentInclude._({
+    _i2.BankAccountIncludeList? bankAccount,
+    _i3.ChildIncludeList? children,
+  }) {
+    _bankAccount = bankAccount;
     _children = children;
   }
 
-  _i2.ChildIncludeList? _children;
+  _i2.BankAccountIncludeList? _bankAccount;
+
+  _i3.ChildIncludeList? _children;
 
   @override
-  Map<String, _i1.Include?> get includes => {'children': _children};
+  Map<String, _i1.Include?> get includes => {
+        'bankAccount': _bankAccount,
+        'children': _children,
+      };
 
   @override
   _i1.Table<int?> get table => Parent.t;
@@ -317,6 +390,10 @@ class ParentRepository {
   final attach = const ParentAttachRepository._();
 
   final attachRow = const ParentAttachRowRepository._();
+
+  final detach = const ParentDetachRepository._();
+
+  final detachRow = const ParentDetachRowRepository._();
 
   /// Returns a list of [Parent]s matching the given query parameters.
   ///
@@ -537,12 +614,36 @@ class ParentRepository {
 class ParentAttachRepository {
   const ParentAttachRepository._();
 
+  /// Creates a relation between this [Parent] and the given [BankAccount]s
+  /// by setting each [BankAccount]'s foreign key `parentId` to refer to this [Parent].
+  Future<void> bankAccount(
+    _i1.Session session,
+    Parent parent,
+    List<_i2.BankAccount> bankAccount, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (bankAccount.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('bankAccount.id');
+    }
+    if (parent.id == null) {
+      throw ArgumentError.notNull('parent.id');
+    }
+
+    var $bankAccount =
+        bankAccount.map((e) => e.copyWith(parentId: parent.id)).toList();
+    await session.db.update<_i2.BankAccount>(
+      $bankAccount,
+      columns: [_i2.BankAccount.t.parentId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [Parent] and the given [Child]s
   /// by setting each [Child]'s foreign key `parentId` to refer to this [Parent].
   Future<void> children(
     _i1.Session session,
     Parent parent,
-    List<_i2.Child> child, {
+    List<_i3.Child> child, {
     _i1.Transaction? transaction,
   }) async {
     if (child.any((e) => e.id == null)) {
@@ -553,9 +654,9 @@ class ParentAttachRepository {
     }
 
     var $child = child.map((e) => e.copyWith(parentId: parent.id)).toList();
-    await session.db.update<_i2.Child>(
+    await session.db.update<_i3.Child>(
       $child,
-      columns: [_i2.Child.t.parentId],
+      columns: [_i3.Child.t.parentId],
       transaction: transaction,
     );
   }
@@ -564,12 +665,35 @@ class ParentAttachRepository {
 class ParentAttachRowRepository {
   const ParentAttachRowRepository._();
 
+  /// Creates a relation between this [Parent] and the given [BankAccount]
+  /// by setting the [BankAccount]'s foreign key `parentId` to refer to this [Parent].
+  Future<void> bankAccount(
+    _i1.Session session,
+    Parent parent,
+    _i2.BankAccount bankAccount, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (bankAccount.id == null) {
+      throw ArgumentError.notNull('bankAccount.id');
+    }
+    if (parent.id == null) {
+      throw ArgumentError.notNull('parent.id');
+    }
+
+    var $bankAccount = bankAccount.copyWith(parentId: parent.id);
+    await session.db.updateRow<_i2.BankAccount>(
+      $bankAccount,
+      columns: [_i2.BankAccount.t.parentId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [Parent] and the given [Child]
   /// by setting the [Child]'s foreign key `parentId` to refer to this [Parent].
   Future<void> children(
     _i1.Session session,
     Parent parent,
-    _i2.Child child, {
+    _i3.Child child, {
     _i1.Transaction? transaction,
   }) async {
     if (child.id == null) {
@@ -580,9 +704,62 @@ class ParentAttachRowRepository {
     }
 
     var $child = child.copyWith(parentId: parent.id);
-    await session.db.updateRow<_i2.Child>(
+    await session.db.updateRow<_i3.Child>(
       $child,
-      columns: [_i2.Child.t.parentId],
+      columns: [_i3.Child.t.parentId],
+      transaction: transaction,
+    );
+  }
+}
+
+class ParentDetachRepository {
+  const ParentDetachRepository._();
+
+  /// Detaches the relation between this [Parent] and the given [BankAccount]
+  /// by setting the [BankAccount]'s foreign key `parentId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> bankAccount(
+    _i1.Session session,
+    List<_i2.BankAccount> bankAccount, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (bankAccount.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('bankAccount.id');
+    }
+
+    var $bankAccount =
+        bankAccount.map((e) => e.copyWith(parentId: null)).toList();
+    await session.db.update<_i2.BankAccount>(
+      $bankAccount,
+      columns: [_i2.BankAccount.t.parentId],
+      transaction: transaction,
+    );
+  }
+}
+
+class ParentDetachRowRepository {
+  const ParentDetachRowRepository._();
+
+  /// Detaches the relation between this [Parent] and the given [BankAccount]
+  /// by setting the [BankAccount]'s foreign key `parentId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> bankAccount(
+    _i1.Session session,
+    _i2.BankAccount bankAccount, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (bankAccount.id == null) {
+      throw ArgumentError.notNull('bankAccount.id');
+    }
+
+    var $bankAccount = bankAccount.copyWith(parentId: null);
+    await session.db.updateRow<_i2.BankAccount>(
+      $bankAccount,
+      columns: [_i2.BankAccount.t.parentId],
       transaction: transaction,
     );
   }

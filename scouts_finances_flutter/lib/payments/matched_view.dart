@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
 import 'package:scouts_finances_flutter/main.dart';
@@ -19,10 +21,13 @@ class _MatchedViewState extends State<MatchedView> {
 
   final ScrollController _scrollController = ScrollController();
 
+  late StreamSubscription stream;
+
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
+    _scrollController.dispose();
+    stream.cancel();
   }
 
   void _getPayments() async {
@@ -45,10 +50,21 @@ class _MatchedViewState extends State<MatchedView> {
     }
   }
 
+  void refresh() {
+    setState(() {
+      loading = true;
+      err = null;
+    });
+    _getPayments();
+  }
+
   @override
   void initState() {
     super.initState();
     _getPayments();
+    stream = client.payment.paymentStream().listen((_) {
+      refresh();
+    });
   }
 
   @override
@@ -74,7 +90,7 @@ class _MatchedViewState extends State<MatchedView> {
         .toList();
 
     List<Card> matchedPaymentCards = filteredMatchedPayments.map((payment) {
-      return toCard(context, payment);
+      return toCard(context, payment, refresh);
     }).toList();
 
     return SingleChildScrollView(

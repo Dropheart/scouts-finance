@@ -4,7 +4,7 @@ import 'package:scouts_finances_flutter/extensions/name.dart';
 import 'package:scouts_finances_flutter/extensions/payment_method.dart';
 import 'package:scouts_finances_flutter/payments/single_payment.dart';
 
-Card toCard(BuildContext context, Payment payment) {
+Card toCard(BuildContext context, Payment payment, Function callback) {
   return Card(
     child: ListTile(
       title: Row(
@@ -35,7 +35,8 @@ Card toCard(BuildContext context, Payment payment) {
       onTap: () async {
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => SinglePaymentView(paymentId: payment.id!),
+            builder: (context) =>
+                SinglePaymentView(paymentId: payment.id!, callback: callback),
           ),
         );
       },

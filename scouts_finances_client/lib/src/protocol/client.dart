@@ -64,13 +64,13 @@ class EndpointEvent extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Future<List<_i3.Event>> insertEvent(
+  _i2.Future<_i3.Event> insertEvent(
     String name,
     int cost,
     DateTime? date,
     int groupId,
   ) =>
-      caller.callServerEndpoint<List<_i3.Event>>(
+      caller.callServerEndpoint<_i3.Event>(
         'event',
         'insertEvent',
         {
@@ -231,8 +231,8 @@ class EndpointPayment extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<List<_i7.Payment>> insertPayment(_i7.Payment payment) =>
-      caller.callServerEndpoint<List<_i7.Payment>>(
+  _i2.Future<_i7.Payment> insertPayment(_i7.Payment payment) =>
+      caller.callServerEndpoint<_i7.Payment>(
         'payment',
         'insertPayment',
         {'payment': payment},
@@ -278,6 +278,14 @@ class EndpointPayment extends _i1.EndpointRef {
           'payment': payment,
           'eventReg': eventReg,
         },
+      );
+
+  _i2.Stream<dynamic> paymentStream() =>
+      caller.callStreamingServerEndpoint<_i2.Stream<dynamic>, dynamic>(
+        'payment',
+        'paymentStream',
+        {},
+        {},
       );
 }
 

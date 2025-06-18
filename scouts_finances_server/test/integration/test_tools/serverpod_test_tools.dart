@@ -291,7 +291,7 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Future<List<_i4.Event>> insertEvent(
+  _i3.Future<_i4.Event> insertEvent(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
     int cost,
@@ -320,7 +320,7 @@ class _EventEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i4.Event>>);
+        ) as _i3.Future<_i4.Event>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -795,7 +795,7 @@ class _PaymentEndpoint {
     });
   }
 
-  _i3.Future<List<_i9.Payment>> insertPayment(
+  _i3.Future<_i9.Payment> insertPayment(
     _i1.TestSessionBuilder sessionBuilder,
     _i9.Payment payment,
   ) async {
@@ -816,7 +816,7 @@ class _PaymentEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i9.Payment>>);
+        ) as _i3.Future<_i9.Payment>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -948,6 +948,35 @@ class _PaymentEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+
+  _i3.Stream<dynamic> paymentStream(_i1.TestSessionBuilder sessionBuilder) {
+    var _localTestStreamManager = _i1.TestStreamManager<dynamic>();
+    _i1.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+          endpoint: 'payment',
+          method: 'paymentStream',
+        );
+        var _localCallContext =
+            await _endpointDispatch.getMethodStreamCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'payment',
+          methodName: 'paymentStream',
+          arguments: {},
+          requestedInputStreams: [],
+          serializationManager: _serializationManager,
+        );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
   }
 }
 

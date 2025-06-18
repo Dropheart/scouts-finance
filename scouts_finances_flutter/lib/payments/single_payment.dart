@@ -8,7 +8,8 @@ import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
 
 class SinglePaymentView extends StatefulWidget {
   final int paymentId;
-  const SinglePaymentView({super.key, required this.paymentId});
+  final Function? callback; // Optional callback for after payment is updated
+  const SinglePaymentView({super.key, required this.paymentId, this.callback});
 
   @override
   State<StatefulWidget> createState() => _SinglePaymentViewState();
@@ -97,10 +98,29 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
           child: Text(
               "No parents found. This suggests there is an internal error. Please contact the developers."));
     } else {
+      final attributed = payment!.parentId != null;
+      final attributedToSelected =
+          attributed && payment!.parentId == currParent.id;
+
       Widget parentSelection = Wrap(
           alignment: WrapAlignment.start,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
+            if (attributed)
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                  children: [
+                    const TextSpan(text: 'Currently attributed to '),
+                    TextSpan(
+                      text: currParent.fullName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const TextSpan(text: '.'),
+                  ],
+                ),
+              ),
+            if (attributed) const SizedBox(width: 16),
             Text("Attribute to parent: ", style: TextStyle(fontSize: 16)),
             ParentDropdown(
               parents: parents,
@@ -202,6 +222,8 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
         ));
       }
 
+      if (attributedToSelected) clearedEventsInfo.clear();
+
       body = ListView(
         children: [
           PaymentTable(payment: payment!),
@@ -225,33 +247,33 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
             },
           ),
           const SizedBox(height: 16),
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(fontSize: 16, color: Colors.black),
-              children: [
-                TextSpan(
-                    text:
-                        "This will change ${currParent.firstName}'s balance from "),
-                TextSpan(
-                  text: formatMoney(currParent.balance),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(text: " to "),
-                TextSpan(
-                  text: formatMoney(currParent.balance + payment!.amount),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const TextSpan(text: "."),
-              ],
+          if (!attributedToSelected)
+            RichText(
+              text: TextSpan(
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+                children: [
+                  TextSpan(
+                      text:
+                          "This will change ${currParent.firstName}'s balance from "),
+                  TextSpan(
+                    text: formatMoney(currParent.balance),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: " to "),
+                  TextSpan(
+                    text: formatMoney(currParent.balance + payment!.amount),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: "."),
+                ],
+              ),
             ),
-          ),
           ...clearedEventsInfo,
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () async {
               _submit();
               if (context.mounted) {
-                // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     showCloseIcon: true,
@@ -260,6 +282,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                     backgroundColor: Colors.green,
                   ),
                 );
+              }
+              if (widget.callback != null) {
+                widget.callback!();
               }
             },
             child: Row(
@@ -270,6 +295,12 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
               ],
             ),
           ),
+          SizedBox(height: 16),
+          if (!attributedToSelected)
+            Text(
+              "Note: This will also attribute the bank account to the parent, automatically classifying any other payments made by this parent in the future.",
+              style: const TextStyle(fontSize: 16, color: Colors.black),
+            ),
         ],
       );
     }
@@ -290,6 +321,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
 
     try {
       await client.payment.updatePayment(payment!.id!, currParent);
+      if (widget.callback != null) {
+        widget.callback!();
+      }
     } catch (e) {
       if (context.mounted) {
         // ignore: use_build_context_synchronously

@@ -87,9 +87,9 @@ class AdminEndpoint extends Endpoint {
           .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
       await Event.db
           .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
-      await Parent.db
-          .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
       await BankAccount.db
+          .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
+      await Parent.db
           .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
       await ScoutGroup.db
           .deleteWhere(session, where: (t) => t.id > -1, transaction: t);
@@ -115,6 +115,31 @@ class AdminEndpoint extends Endpoint {
       }
       final insertedParents =
           await Parent.db.insert(session, parents, transaction: t);
+
+      // Create various bank accounts to use parent
+      final bankAccs = <BankAccount>[];
+      for (final _ in insertedParents) {
+        // Randomly generate a sort code and account number
+        final sortCode = '${Random().nextInt(10)}${Random().nextInt(10)}-'
+            '${Random().nextInt(10)}${Random().nextInt(10)}-'
+            '${Random().nextInt(10)}${Random().nextInt(10)}';
+        final accountNumber = '${Random().nextInt(10)}${Random().nextInt(10)}'
+            '${Random().nextInt(10)}${Random().nextInt(10)}'
+            '${Random().nextInt(10)}${Random().nextInt(10)}'
+            '${Random().nextInt(10)}${Random().nextInt(10)}';
+
+        bankAccs.add(BankAccount(
+            name: 'Starling',
+            sortCode: sortCode,
+            accountNumber: accountNumber));
+      }
+      final insertedBankAccs =
+          await BankAccount.db.insert(session, bankAccs, transaction: t);
+
+      final parentBanks = {
+        for (int i = 0; i < insertedParents.length; i++)
+          insertedParents[i].id: insertedBankAccs[i]
+      };
 
       // For each scout group, create & add children
       final children = <Child>[];
@@ -241,6 +266,9 @@ class AdminEndpoint extends Endpoint {
         // mainly to test our payment logic but also to simulate real-world
         final payInTwoInstallments = Random().nextBool();
 
+        // Get the bank account for the parent
+        final bankAccount = parentBanks[registration.child!.parentId]!;
+
         // Create the payments
         final parent = registration.child!.parent!;
         final payee = '${parent.firstName} ${parent.lastName}';
@@ -258,6 +286,8 @@ class AdminEndpoint extends Endpoint {
                   reference: ref(),
                   payee: payee,
                   method: PaymentMethod.bank_transfer,
+                  bankAccount: bankAccount,
+                  bankAccountId: bankAccount.id,
                   amount: amount ~/ 2,
                   date: DateTime.now().subtract(Duration(days: 15)),
                 ),
@@ -265,6 +295,8 @@ class AdminEndpoint extends Endpoint {
                   reference: ref(),
                   payee: payee,
                   method: PaymentMethod.bank_transfer,
+                  bankAccount: bankAccount,
+                  bankAccountId: bankAccount.id,
                   amount: amount ~/ 2,
                   date: DateTime.now(),
                 ),
@@ -274,6 +306,8 @@ class AdminEndpoint extends Endpoint {
                   reference: ref(),
                   payee: payee,
                   method: PaymentMethod.bank_transfer,
+                  bankAccount: bankAccount,
+                  bankAccountId: bankAccount.id,
                   amount: amount,
                   date: DateTime.now(),
                 ),
