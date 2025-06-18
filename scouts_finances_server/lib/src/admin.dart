@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 
@@ -6,6 +7,7 @@ import 'package:scouts_finances_server/src/events.dart';
 import 'package:scouts_finances_server/src/generated/protocol.dart';
 import 'package:scouts_finances_server/src/payments.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:yaml/yaml.dart';
 
 class UserInfo {
   final String firstName;
@@ -341,5 +343,161 @@ class AdminEndpoint extends Endpoint {
             transaction: t);
       }
     });
+  }
+
+  Future<String> dummyData(Session session) async {
+    try {
+      // --- 1. DROP ALL EXISTING TABLES (in reverse order of dependency) ---
+      print('--- Dropping all tables... ---');
+      await Payment.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await EventRegistration.db
+          .deleteWhere(session, where: (t) => Constant.bool(true));
+      await Event.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await Child.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await BankAccount.db
+          .deleteWhere(session, where: (t) => Constant.bool(true));
+      await Parent.db.deleteWhere(session, where: (t) => Constant.bool(true));
+      await ScoutGroup.db
+          .deleteWhere(session, where: (t) => Constant.bool(true));
+      print('--- All tables dropped successfully. ---');
+
+      // --- 2. RECREATE TABLES FROM SCHEMA ---
+      // Skipped: Serverpod does not support recreating tables at runtime.
+      // Tables are managed via migrations and CLI tools, not programmatically.
+      print('--- Skipping table recreation (not supported at runtime). ---');
+
+      // --- 3. READ AND PARSE YAML DATA ---
+      print('--- Reading and parsing YAML file... ---');
+      final file = File('lib/src/data/dummy_data.yaml');
+      if (!await file.exists()) {
+        final errorMessage = 'Error: dummy_data.yaml not found at ${file.path}';
+        print(errorMessage);
+        return errorMessage;
+      }
+      final content = await file.readAsString();
+      final yaml = loadYaml(content);
+      print('--- YAML file parsed successfully. ---');
+
+      // Maps to store the mapping from old YAML IDs to new database IDs
+      final parentIdMap = <int, int>{};
+      final bankAccountIdMap = <int, int>{};
+      final childIdMap = <int, int>{};
+      final eventIdMap = <int, int>{};
+      final scoutGroupIdMap = <int, int>{};
+
+      // --- 4. IMPORT DATA IN ORDER OF DEPENDENCY ---
+
+      // Import Scout Groups (no dependencies)
+      print('Importing scout groups...');
+      for (var item in (yaml['scout_group'] as YamlList)) {
+        final oldId = item['id'] as int;
+        final group = ScoutGroup(
+          name: item['name'],
+          description: item['description'],
+          colour: GroupColour.values.byName(item['colour']),
+        );
+        final newGroup = await ScoutGroup.db.insertRow(session, group);
+        scoutGroupIdMap[oldId] = newGroup.id!;
+      }
+
+      // Import Parents (no dependencies)
+      print('Importing parents...');
+      for (var item in (yaml['parent'] as YamlList)) {
+        final oldId = item['id'] as int;
+        final parent = Parent(
+          firstName: item['firstName'],
+          lastName: item['lastName'],
+          email: item['email'],
+          phone: item['phone'],
+          balance: item['balance'],
+        );
+        final newParent = await Parent.db.insertRow(session, parent);
+        parentIdMap[oldId] = newParent.id!;
+      }
+
+      // Import Bank Accounts (depends on Parent)
+      print('Importing bank accounts...');
+      for (var item in (yaml['bank_account'] as YamlList)) {
+        final oldId = item['id'] as int;
+        final account = BankAccount(
+          accountNumber: item['accountNumber'],
+          sortCode: item['sortCode'],
+          name: item['name'],
+          parentId: parentIdMap[item['parentId']]!,
+        );
+        final newAccount = await BankAccount.db.insertRow(session, account);
+        bankAccountIdMap[oldId] = newAccount.id!;
+      }
+
+      // Import Children (depends on Parent and ScoutGroup)
+      print('Importing children...');
+      for (var item in (yaml['child'] as YamlList)) {
+        final oldId = item['id'] as int;
+        final child = Child(
+          firstName: item['firstName'],
+          lastName: item['lastName'],
+          parentId: parentIdMap[item['parentId']]!,
+          scoutGroupId: scoutGroupIdMap[item['scoutGroupId']]!,
+        );
+        final newChild = await Child.db.insertRow(session, child);
+        childIdMap[oldId] = newChild.id!;
+      }
+
+      // Import Events (depends on ScoutGroup)
+      print('Importing events...');
+      for (var item in (yaml['event'] as YamlList)) {
+        final oldId = item['id'] as int;
+        final event = Event(
+          name: item['name'],
+          date: DateTime.parse(item['date']),
+          cost: item['cost'],
+          // Handle optional scout group for "All groups" events
+          scoutGroupId: item['scoutGroupId'] != null
+              ? scoutGroupIdMap[item['scoutGroupId']]!
+              : 0,
+        );
+        final newEvent = await Event.db.insertRow(session, event);
+        eventIdMap[oldId] = newEvent.id!;
+      }
+
+      // Import Event Registrations (depends on Event and Child)
+      print('Importing event registrations...');
+      for (var item in (yaml['event_registration'] as YamlList)) {
+        final registration = EventRegistration(
+          eventId: eventIdMap[item['eventId']]!,
+          childId: childIdMap[item['childId']]!,
+          paidDate: item['paidDate'] != null
+              ? DateTime.parse(item['paidDate'])
+              : null,
+        );
+        await EventRegistration.db.insertRow(session, registration);
+      }
+
+      // Import Payments (depends on BankAccount and Parent)
+      print('Importing payments...');
+      for (var item in (yaml['payment'] as YamlList)) {
+        final payment = Payment(
+          amount: item['amount'],
+          date: DateTime.parse(item['date']),
+          reference: item['reference'],
+          method: PaymentMethod.values.byName(item['method']),
+          payee: item['payee'],
+          bankAccountId: item['bankAccountId'] != null
+              ? bankAccountIdMap[item['bankAccountId']]
+              : null,
+          parentId:
+              item['parentId'] != null ? parentIdMap[item['parentId']] : null,
+        );
+        await Payment.db.insertRow(session, payment);
+      }
+
+      print('--- Data import complete! ---');
+      return 'Successfully dropped all tables and populated with dummy data.';
+    } catch (e, stackTrace) {
+      final errorMessage = 'An error occurred during data import: $e';
+      print(errorMessage);
+      print(stackTrace);
+      return errorMessage;
+    }
   }
 }
