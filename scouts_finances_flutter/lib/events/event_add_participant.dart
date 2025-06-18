@@ -31,7 +31,7 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
 
   late StreamSubscription stream;
 
-  void _getChildren() async {
+  Future<void> _getChildren() async {
     try {
       allChildren = await client.scouts.getChildren();
     } catch (e) {
@@ -56,20 +56,22 @@ class _EventAddParticipantState extends State<EventAddParticipant> {
     loading--;
   }
 
-  void refresh() {
+  void refresh() async {
     setState(() {
       loading = 2;
       err = null;
     });
-    _getChildren();
-    _getEventChildren();
+    _getChildren().then((_) {
+      _getEventChildren();
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getChildren();
-    _getEventChildren();
+    _getChildren().then((_) {
+      _getEventChildren();
+    });
     stream = client.event.eventStream().listen((_) {
       refresh();
     });

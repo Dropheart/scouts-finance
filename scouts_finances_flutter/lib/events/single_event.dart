@@ -345,7 +345,8 @@ class _SingleEventState extends State<SingleEvent> {
                     closeFn: () => _getEventDetails(),
                   ),
                 ])),
-            if (children.isNotEmpty) reminderButton
+            if (children.isNotEmpty) reminderButton,
+            const SizedBox(height: 128),
           ],
         ),
       ),

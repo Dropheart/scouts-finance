@@ -135,7 +135,7 @@ class PaymentEndpoint extends Endpoint {
     buffer.writeln('Dear ${parent.firstName},\n');
 
     buffer.writeln(
-        'Your payment of ${assignablePayments.fold(0, (sum, p) => sum + p.amount).formatMoney} have been recieved and processed successfully.');
+        'Your payment of ${assignablePayments.fold(0, (sum, p) => sum + p.amount).formatMoney} has been recieved and processed successfully.');
     buffer.writeln('Your new financial standing is as follows:');
     final financialStanding = await eventRemindersForParent(session, parent);
     buffer.writeln(financialStanding);
