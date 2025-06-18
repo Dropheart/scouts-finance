@@ -83,9 +83,7 @@ class UnmatchedViewState extends State<UnmatchedView> {
         .toList();
 
     List<Card> unmatchedPaymentCards = filteredUnmatchedPayments.map((payment) {
-      return toCard(context, payment, () {
-        refresh();
-      });
+      return toCard(context, payment, refresh);
     }).toList();
 
     return SingleChildScrollView(
