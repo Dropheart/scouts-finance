@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scouts_finances_client/scouts_finances_client.dart';
@@ -29,6 +31,7 @@ class _EventHomeState extends State<EventHome> {
   ];
   int sortIndex = 0;
   String query = '';
+  late StreamSubscription stream;
 
   void _getEvents() async {
     try {
@@ -60,11 +63,30 @@ class _EventHomeState extends State<EventHome> {
     loading--;
   }
 
+  void refresh() {
+    setState(() {
+      loading = 2;
+      errorMessage = null;
+    });
+    _getEvents();
+    _getPaidCounts();
+  }
+
   @override
   void initState() {
     super.initState();
     _getEvents();
     _getPaidCounts();
+
+    stream = client.event.eventStream().listen((_) {
+      refresh();
+    });
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
+    await stream.cancel();
   }
 
   @override
@@ -84,7 +106,9 @@ class _EventHomeState extends State<EventHome> {
 
     // Filter events based on the search query
     List<Event> filteredEvents = events.where((event) {
-      return event.name.toLowerCase().contains(query.toLowerCase());
+      final scoutGroupName = event.scoutGroup?.name ?? '';
+      return event.name.toLowerCase().contains(query.toLowerCase()) ||
+          scoutGroupName.toLowerCase().contains(query.toLowerCase());
     }).toList();
 
     filteredEvents.sort((a, b) {

@@ -32,6 +32,8 @@ void main() async {
 
   final accountTypeService = AccountTypeService();
 
+  await client.openStreamingConnection();
+
   runApp(MyApp(
     themeService: themeService,
     scoutGroupsService: scoutGroupsService,

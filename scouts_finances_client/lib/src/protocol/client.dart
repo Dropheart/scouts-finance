@@ -144,6 +144,14 @@ class EndpointEvent extends _i1.EndpointRef {
           'childIds': childIds,
         },
       );
+
+  _i2.Stream<_i3.Event> eventStream() =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.Event>, _i3.Event>(
+        'event',
+        'eventStream',
+        {},
+        {},
+      );
 }
 
 /// {@category Endpoint}
