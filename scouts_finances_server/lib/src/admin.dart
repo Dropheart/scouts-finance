@@ -246,6 +246,9 @@ class AdminEndpoint extends Endpoint {
         // Get the event for the event cost
         final event = registration.event!;
 
+        // Always pay in full, so we can have nice demo data.
+        /*
+
         // Randomly decide whether to pay
         // All events are in the next year so decide
         // based on how far in the future the event is
@@ -264,7 +267,9 @@ class AdminEndpoint extends Endpoint {
             : (event.cost * Random().nextDouble()).toInt();
         // Randomly decide to pay in two installments or not - this bit is
         // mainly to test our payment logic but also to simulate real-world
-        final payInTwoInstallments = Random().nextBool();
+        final payInTwoInstallments = Random().nextBool(); */
+
+        final amount = event.cost;
 
         // Get the bank account for the parent
         final bankAccount = parentBanks[registration.child!.parentId]!;
@@ -280,7 +285,7 @@ class AdminEndpoint extends Endpoint {
               List.generate(18, (index) => Random().nextInt(26) + 97),
             );
 
-        final newPayments = payInTwoInstallments
+        final newPayments = /* payInTwoInstallments
             ? [
                 Payment(
                   reference: ref(),
@@ -301,17 +306,18 @@ class AdminEndpoint extends Endpoint {
                   date: DateTime.now(),
                 ),
               ]
-            : [
-                Payment(
-                  reference: ref(),
-                  payee: payee,
-                  method: PaymentMethod.bank_transfer,
-                  bankAccount: bankAccount,
-                  bankAccountId: bankAccount.id,
-                  amount: amount,
-                  date: DateTime.now(),
-                ),
-              ];
+            : */
+            [
+          Payment(
+            reference: ref(),
+            payee: payee,
+            method: PaymentMethod.bank_transfer,
+            bankAccount: bankAccount,
+            bankAccountId: bankAccount.id,
+            amount: amount,
+            date: DateTime.now(),
+          ),
+        ];
 
         payments.addAll(newPayments);
       }
@@ -320,10 +326,10 @@ class AdminEndpoint extends Endpoint {
       final insertedPayments =
           await Payment.db.insert(session, payments, transaction: t);
 
-      // Assign ~80% of payments to parents
+      // Assign ~100% of payments to parents
       final assignedPayments = <(Payment payment, Parent parent)>[];
       for (final payment in insertedPayments) {
-        if (Random().nextDouble() < 0.8) {
+        if (true) {
           // Randomly assign a parent to the payment
           final parent = insertedParents.firstWhere(
             (p) => payment.payee == '${p.firstName} ${p.lastName}',
@@ -336,7 +342,7 @@ class AdminEndpoint extends Endpoint {
       final paymentEndpoint = PaymentEndpoint();
       for (final (payment, parent) in assignedPayments) {
         await paymentEndpoint.updatePayment(session, payment.id!, parent,
-            transaction: t);
+            transaction: t, sendMsg: false);
       }
     });
   }

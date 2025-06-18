@@ -13,10 +13,26 @@ class PaymentEndpoint extends Endpoint {
   }
 
   Future<Payment> insertPayment(Session session, Payment payment) async {
+    if (payment.bankAccount != null && payment.bankAccount!.id == null) {
+      // This is a new bank account, so create it in db
+      final bankAccRes = await BankAccount.db.insertRow(
+        session,
+        payment.bankAccount!,
+      );
+
+      print(
+          'Inserted new bank account: ${bankAccRes.id} (${bankAccRes.name}) to parent: ${payment.parentId} (${payment.parent?.firstName} ${payment.parent?.lastName})');
+
+      payment.bankAccount = bankAccRes;
+      payment.bankAccountId = bankAccRes.id;
+    }
+
     final res = await Payment.db.insertRow(
       session,
       payment,
     );
+
+    print(payment.bankAccount);
 
     // Notify of update payments
     session.messages.postMessage('update_payments', res);
@@ -36,7 +52,7 @@ class PaymentEndpoint extends Endpoint {
   }
 
   Future<void> updatePayment(Session session, int paymentId, Parent parent,
-      {Transaction? transaction}) async {
+      {Transaction? transaction, bool? sendMsg = true}) async {
     // Find the payment by ID
     final payment = await Payment.db.findById(session, paymentId,
         transaction: transaction,
@@ -141,7 +157,9 @@ class PaymentEndpoint extends Endpoint {
     buffer.writeln(financialStanding);
 
     final msg = buffer.toString();
-    await TwilioClient().sendMessage(body: msg);
+    if (sendMsg == true) {
+      await TwilioClient().sendMessage(body: msg);
+    }
   }
 
   Future<void> insertCashPayment(
