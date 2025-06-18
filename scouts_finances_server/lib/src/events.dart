@@ -130,12 +130,14 @@ class EventEndpoint extends Endpoint {
     await EventRegistration.db.insert(session, registrations);
   }
 
-  Future<List<EventRegistration>> unpaidEvents(Session session) =>
-      EventRegistration.db.find(session,
-          include: EventRegistration.include(
-              child: Child.include(parent: Parent.include()),
-              event: Event.include()),
-          where: (r) => r.paidDate.equals(null));
+  Future<List<EventRegistration>> unpaidEvents(Session session) async {
+    final res = await EventRegistration.db.find(session,
+        include: EventRegistration.include(
+            child: Child.include(parent: Parent.include()),
+            event: Event.include()),
+        where: (r) => r.paidDate.equals(null));
+    return res;
+  }
 
   Future<List<EventRegistration>> getRegistrationsByChildId(
       Session session, int childId) async {
