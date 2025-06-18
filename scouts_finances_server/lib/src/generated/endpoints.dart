@@ -78,7 +78,16 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['admin'] as _i2.AdminEndpoint).resetDb(session),
-        )
+        ),
+        'dummyData': _i1.MethodConnector(
+          name: 'dummyData',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).dummyData(session),
+        ),
       },
     );
     connectors['event'] = _i1.EndpointConnector(

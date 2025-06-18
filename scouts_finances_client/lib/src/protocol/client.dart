@@ -34,6 +34,12 @@ class EndpointAdmin extends _i1.EndpointRef {
         'resetDb',
         {},
       );
+
+  _i2.Future<String> dummyData() => caller.callServerEndpoint<String>(
+        'admin',
+        'dummyData',
+        {},
+      );
 }
 
 /// {@category Endpoint}
