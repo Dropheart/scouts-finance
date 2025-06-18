@@ -245,15 +245,17 @@ class _EventHomeState extends State<EventHome> {
       Widget? child,
       List<Event> filteredPastEvents,
       {required String title}) {
-    final accountType = accountTypeService.accountType;    final relevantEvents = filteredPastEvents
+    final accountType = accountTypeService.accountType;
+    final relevantEvents = filteredPastEvents
         .where((e) =>
-            (scoutGroupService.scoutGroups.isNotEmpty && 
-             e.scoutGroupId == scoutGroupService.currentScoutGroup.id) ||
+            (scoutGroupService.scoutGroups.isNotEmpty &&
+                e.scoutGroupId == scoutGroupService.currentScoutGroup.id) ||
             accountType == AccountType.treasurer)
         .toList();
 
     List<Card> eventCards = relevantEvents.map((event) {
-      final (paid, total) = paidCounts[event.id!] ?? (0, 0);      String trailing = accountType == AccountType.treasurer
+      final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+      String trailing = accountType == AccountType.treasurer
           ? '- ${event.scoutGroup?.name ?? 'Unknown Group'}'
           : '';
 

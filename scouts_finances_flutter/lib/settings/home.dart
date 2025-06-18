@@ -273,8 +273,8 @@ class _SettingsHomeState extends State<SettingsHome> {
                 children: [
                   ListTile(
                     title: const Text('Reset Database'),
-                    subtitle:
-                        const Text('Reseed the database with dynamically generated data'),
+                    subtitle: const Text(
+                        'Reseed the database with dynamically generated data'),
                     trailing: const Icon(Icons.refresh),
                     onTap: () async {
                       await client.admin.resetDb();
@@ -292,8 +292,8 @@ class _SettingsHomeState extends State<SettingsHome> {
                 children: [
                   ListTile(
                     title: const Text('Dummy Data'),
-                    subtitle:
-                        const Text('Replace the database with static dummy data for demo purposes'),
+                    subtitle: const Text(
+                        'Replace the database with static dummy data for demo purposes'),
                     trailing: const Icon(Icons.refresh),
                     onTap: () async {
                       await client.admin.dummyData();
