@@ -151,6 +151,9 @@ class EventEndpoint extends Endpoint {
     final existingRegistrations = await EventRegistration.db.find(
       session,
       where: (r) => r.eventId.equals(eventId),
+      include: EventRegistration.include(
+          child: Child.include(parent: Parent.include()),
+          event: Event.include()),
     );
 
     final existingChildIds =
@@ -162,6 +165,12 @@ class EventEndpoint extends Endpoint {
         .where((r) => newChildIds.contains(r.childId))
         .toList();
     if (toRemove.isNotEmpty) {
+      for (var reg in toRemove.where((r) => r.paidDate != null)) {
+        // Gotta update parent balance.
+        final child = reg.child!;
+        child.parent!.balance += reg.event!.cost;
+        await Parent.db.updateRow(session, child.parent!);
+      }
       await EventRegistration.db.delete(session, toRemove);
     }
 
