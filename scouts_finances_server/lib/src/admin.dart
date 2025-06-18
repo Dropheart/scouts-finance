@@ -194,8 +194,10 @@ class AdminEndpoint extends Endpoint {
           final cost =
               500 + Random().nextInt(2000); // Cost between 5 and 25 pounds
           // Some time in the next year
-          final date =
-              DateTime.now().add(Duration(days: Random().nextInt(365)));
+            // Randomly pick a date within +/- 180 days from now (past or future)
+            final date = DateTime.now().add(
+            Duration(days: Random().nextInt(361) - 180),
+            );
           events.add(Event(
             name: eventName,
             cost: cost,

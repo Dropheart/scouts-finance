@@ -19,7 +19,8 @@ class EventHome extends StatefulWidget {
 }
 
 class _EventHomeState extends State<EventHome> {
-  late List<Event> events;
+  late List<Event> futureEvents;
+  late List<Event> pastEvents;
   late EventPaidCounts paidCounts; // eventId -> (paidCount, totalCount)
   String? errorMessage;
   int loading = 2;
@@ -37,7 +38,10 @@ class _EventHomeState extends State<EventHome> {
     try {
       final result = await client.event.getEvents();
       setState(() {
-        events = result;
+        futureEvents =
+            result.where((e) => e.date.isAfter(DateTime.now())).toList();
+        pastEvents =
+            result.where((e) => e.date.isBefore(DateTime.now())).toList();
       });
     } catch (e) {
       setState(() {
@@ -105,75 +109,27 @@ class _EventHomeState extends State<EventHome> {
     }
 
     // Filter events based on the search query
-    List<Event> filteredEvents = events.where((event) {
-      final scoutGroupName = event.scoutGroup?.name ?? '';
-      return event.name.toLowerCase().contains(query.toLowerCase()) ||
-          scoutGroupName.toLowerCase().contains(query.toLowerCase());
-    }).toList();
+    List<Event> filteredFutureEvents =
+        futureEvents.where((e) => _eventQueryFilter(e)).toList();
+    List<Event> filteredPastEvents =
+        pastEvents.where((e) => _eventQueryFilter(e)).toList();
 
-    filteredEvents.sort((a, b) {
-      switch (sortIndex) {
-        case 0: // Upcoming First
-          return a.date.compareTo(b.date);
-        case 1: // Upcoming Last
-          return b.date.compareTo(a.date);
-        case 2: // Most Paid
-          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
-          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
-          return paidB.compareTo(paidA); // Sort by most paid
-        case 3: // Least Paid
-          final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
-          final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
-          return paidA.compareTo(paidB); // Sort by least paid
-        default:
-          return 0; // No sorting
-      }
-    });
+    filteredFutureEvents.sort((a, b) => _sortEvents(a, b));
+    filteredPastEvents.sort((a, b) => _sortEvents(a, b));
 
-    Widget eventExpansionTile =
+    Widget futureEventsExpansionTile =
         Consumer2<ScoutGroupsService, AccountTypeService>(
-            builder: (context, scoutGroupService, accountTypeService, child) {
-      final accountType = accountTypeService.accountType;
+            builder: (context, scoutGroupService, accountTypeService, child) =>
+                _eventsBuilder(context, scoutGroupService, accountTypeService,
+                    child, filteredFutureEvents,
+                    title: 'Upcoming Events'));
 
-      final relevantEvents = filteredEvents
-          .where((e) =>
-              (e.scoutGroupId == scoutGroupService.currentScoutGroup.id) ||
-              accountType == AccountType.treasurer)
-          .toList();
-
-      List<Card> eventCards = relevantEvents.map((event) {
-        final (paid, total) = paidCounts[event.id!] ?? (0, 0);
-        String trailing = accountType == AccountType.treasurer
-            ? '- ${event.scoutGroup!.name}'
-            : '';
-
-        return Card(
-          child: ListTile(
-            title: Text('${event.name} $trailing'),
-            subtitle: Row(
-              children: [
-                Text('$paid/$total Paid'),
-                const Spacer(),
-                Icon(Icons.calendar_today, size: 14),
-                const SizedBox(width: 4.0),
-                Text(event.date.toLocal().toString().split(' ')[0]),
-              ],
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => SingleEvent(eventId: event.id!)));
-            },
-            trailing: const Icon(Icons.arrow_forward),
-          ),
-        );
-      }).toList();
-
-      return ExpansionTile(
-          title: const Text('Future Events'),
-          initiallyExpanded: true,
-          controlAffinity: ListTileControlAffinity.leading,
-          children: eventCards);
-    });
+    Widget pastEventsExpansionTile =
+        Consumer2<ScoutGroupsService, AccountTypeService>(
+            builder: (ctx, scoutGroupService, accountTypeService, child) =>
+                _eventsBuilder(context, scoutGroupService, accountTypeService,
+                    child, filteredPastEvents,
+                    title: 'Past Events'));
 
     SearchBar searchBar = SearchBar(
       hintText: 'Search by name...',
@@ -215,31 +171,8 @@ class _EventHomeState extends State<EventHome> {
     ListView body = ListView(children: [
       searchBar,
       sortSelection,
-      eventExpansionTile,
-      //   child: ListView(children: [
-      // ...eventCards,
-      ExpansionTile(
-          title: const Text('Past Events'),
-          controlAffinity: ListTileControlAffinity.leading,
-          initiallyExpanded: false,
-          children: [
-            Card(
-              child: ListTile(
-                title: const Text('Winter Camp'),
-                subtitle: Row(
-                  children: [
-                    const Text('15/20 paid'),
-                    const Spacer(),
-                    const Text('01/01/2025'),
-                  ],
-                ),
-                onTap: () {
-                  // Navigate to event details
-                },
-                trailing: const Icon(Icons.arrow_forward),
-              ),
-            ),
-          ]),
+      futureEventsExpansionTile,
+      pastEventsExpansionTile,
       const SizedBox(height: 128.0),
     ]);
 
@@ -278,5 +211,79 @@ class _EventHomeState extends State<EventHome> {
       floatingActionButton: addEventButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+  }
+
+  bool _eventQueryFilter(Event event) {
+    final scoutGroupName = event.scoutGroup?.name ?? '';
+    return (event.name.toLowerCase().contains(query.toLowerCase()) ||
+        scoutGroupName.toLowerCase().contains(query.toLowerCase()));
+  }
+
+  int _sortEvents(Event a, Event b) {
+    switch (sortIndex) {
+      case 0: // Upcoming First
+        return a.date.compareTo(b.date);
+      case 1: // Upcoming Last
+        return b.date.compareTo(a.date);
+      case 2: // Most Paid
+        final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+        final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+        return paidB.compareTo(paidA); // Sort by most paid
+      case 3: // Least Paid
+        final (paidA, totalA) = paidCounts[a.id!] ?? (0, 0);
+        final (paidB, totalB) = paidCounts[b.id!] ?? (0, 0);
+        return paidA.compareTo(paidB); // Sort by least paid
+      default:
+        return 0; // No sorting
+    }
+  }
+
+  Widget _eventsBuilder(
+      BuildContext context,
+      ScoutGroupsService scoutGroupService,
+      AccountTypeService accountTypeService,
+      Widget? child,
+      List<Event> filteredPastEvents,
+      {required String title}) {
+    final accountType = accountTypeService.accountType;
+
+    final relevantEvents = filteredPastEvents
+        .where((e) =>
+            (e.scoutGroupId == scoutGroupService.currentScoutGroup.id) ||
+            accountType == AccountType.treasurer)
+        .toList();
+
+    List<Card> eventCards = relevantEvents.map((event) {
+      final (paid, total) = paidCounts[event.id!] ?? (0, 0);
+      String trailing = accountType == AccountType.treasurer
+          ? '- ${event.scoutGroup!.name}'
+          : '';
+
+      return Card(
+        child: ListTile(
+          title: Text('${event.name} $trailing'),
+          subtitle: Row(
+            children: [
+              Text('$paid/$total Paid'),
+              const Spacer(),
+              Icon(Icons.calendar_today, size: 14),
+              const SizedBox(width: 4.0),
+              Text(event.date.toLocal().toString().split(' ')[0]),
+            ],
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SingleEvent(eventId: event.id!)));
+          },
+          trailing: const Icon(Icons.arrow_forward),
+        ),
+      );
+    }).toList();
+
+    return ExpansionTile(
+        title: Text(title),
+        initiallyExpanded: true,
+        controlAffinity: ListTileControlAffinity.leading,
+        children: eventCards);
   }
 }
