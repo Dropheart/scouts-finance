@@ -348,6 +348,12 @@ class AdminEndpoint extends Endpoint {
         await paymentEndpoint.updatePayment(session, payment.id!, parent,
             transaction: t, sendMsg: false);
       }
+
+      // Zero all parent balances because that's what it's meant to be
+      for (var p in insertedParents) {
+        p.balance = 0;
+      }
+      await Parent.db.update(session, insertedParents, transaction: t);
     });
   }
 
