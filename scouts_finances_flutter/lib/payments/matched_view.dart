@@ -45,6 +45,14 @@ class _MatchedViewState extends State<MatchedView> {
     }
   }
 
+  void refresh() {
+    setState(() {
+      loading = true;
+      err = null;
+    });
+    _getPayments();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +82,10 @@ class _MatchedViewState extends State<MatchedView> {
         .toList();
 
     List<Card> matchedPaymentCards = filteredMatchedPayments.map((payment) {
-      return toCard(context, payment);
+      return toCard(context, payment, () {
+        // Callback function to refresh the view after editing a payment
+        refresh();
+      });
     }).toList();
 
     return SingleChildScrollView(

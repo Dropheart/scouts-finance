@@ -8,7 +8,8 @@ import 'package:scouts_finances_flutter/shared/parent_dropdown.dart';
 
 class SinglePaymentView extends StatefulWidget {
   final int paymentId;
-  const SinglePaymentView({super.key, required this.paymentId});
+  final Function? callback; // Optional callback for after payment is updated
+  const SinglePaymentView({super.key, required this.paymentId, this.callback});
 
   @override
   State<StatefulWidget> createState() => _SinglePaymentViewState();
@@ -251,7 +252,6 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
             onPressed: () async {
               _submit();
               if (context.mounted) {
-                // ignore: use_build_context_synchronously
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     showCloseIcon: true,
@@ -260,6 +260,9 @@ class _SinglePaymentViewState extends State<SinglePaymentView> {
                     backgroundColor: Colors.green,
                   ),
                 );
+              }
+              if (widget.callback != null) {
+                widget.callback!();
               }
             },
             child: Row(

@@ -83,7 +83,9 @@ class UnmatchedViewState extends State<UnmatchedView> {
         .toList();
 
     List<Card> unmatchedPaymentCards = filteredUnmatchedPayments.map((payment) {
-      return toCard(context, payment);
+      return toCard(context, payment, () {
+        refresh();
+      });
     }).toList();
 
     return SingleChildScrollView(
@@ -99,7 +101,7 @@ class UnmatchedViewState extends State<UnmatchedView> {
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                   child: Text(
-                    'No attributed payments found.',
+                    'No unattributed payments found.',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
