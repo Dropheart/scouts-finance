@@ -64,13 +64,13 @@ class EndpointEvent extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Future<List<_i3.Event>> insertEvent(
+  _i2.Future<_i3.Event> insertEvent(
     String name,
     int cost,
     DateTime? date,
     int groupId,
   ) =>
-      caller.callServerEndpoint<List<_i3.Event>>(
+      caller.callServerEndpoint<_i3.Event>(
         'event',
         'insertEvent',
         {

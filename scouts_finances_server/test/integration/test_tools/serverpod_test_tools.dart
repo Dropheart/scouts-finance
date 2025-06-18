@@ -291,7 +291,7 @@ class _EventEndpoint {
     });
   }
 
-  _i3.Future<List<_i4.Event>> insertEvent(
+  _i3.Future<_i4.Event> insertEvent(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
     int cost,
@@ -320,7 +320,7 @@ class _EventEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i4.Event>>);
+        ) as _i3.Future<_i4.Event>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

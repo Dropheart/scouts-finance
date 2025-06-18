@@ -45,7 +45,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
 
   void _submit(int groupId) async {
     if (formKey.currentState?.validate() ?? false) {
-      await client.event.insertEvent(
+      final event = await client.event.insertEvent(
           _nameController.text,
           (double.parse(_priceController.text.replaceFirst('£', '')) * 100)
               .truncate(), // Convert to pence
@@ -62,11 +62,7 @@ class _AddEventDialogState extends State<AddEventDialog> {
           ),
         );
       });
-      Navigator.of(context).pop({
-        'name': _nameController.text,
-        'price': _priceController.text.replaceFirst('£', ''),
-        'data': _selectedDate,
-      });
+      Navigator.of(context).pop(event);
     }
   }
 

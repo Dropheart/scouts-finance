@@ -257,9 +257,12 @@ class _EventHomeState extends State<EventHome> {
               builder: (BuildContext context) {
                 return const AddEventDialog();
               },
-            ).then((_) {
-              // Refresh the event list after adding a new event
-              _getEvents();
+            ).then((event) {
+              // Navigate to the new event page
+              if (event == null) return;
+              if (!context.mounted) return;
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => SingleEvent(eventId: event.id!)));
             });
           },
         );

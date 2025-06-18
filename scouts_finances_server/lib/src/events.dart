@@ -44,7 +44,7 @@ class EventEndpoint extends Endpoint {
     return (eventDetails, eventRegistration);
   }
 
-  Future<List<Event>> insertEvent(Session session, String name, int cost,
+  Future<Event> insertEvent(Session session, String name, int cost,
       DateTime? date, int groupId) async {
     final event = Event(
         name: name,
@@ -52,12 +52,12 @@ class EventEndpoint extends Endpoint {
         cost: cost,
         scoutGroupId: groupId);
 
-    await Event.db.insert(session, [event]);
+    final retEvent = await Event.db.insertRow(session, event);
 
     // Notify all clients about the new event
     await session.messages.postMessage('update_events', event);
 
-    return Event.db.find(session);
+    return retEvent;
   }
 
   Future<EventRegistration> registerChildForEvent(
