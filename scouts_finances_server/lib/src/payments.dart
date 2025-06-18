@@ -1,4 +1,7 @@
+import 'package:scouts_finances_server/src/extensions.dart';
 import 'package:scouts_finances_server/src/generated/protocol.dart';
+import 'package:scouts_finances_server/src/reminder.dart';
+import 'package:scouts_finances_server/src/twlilio.dart';
 import 'package:serverpod/serverpod.dart';
 
 class PaymentEndpoint extends Endpoint {
@@ -127,6 +130,18 @@ class PaymentEndpoint extends Endpoint {
     session.messages.postMessage('update_events', payment);
     // Notify of update payments
     session.messages.postMessage('update_payments', payment);
+
+    final buffer = StringBuffer();
+    buffer.writeln('Dear ${parent.firstName},\n');
+
+    buffer.writeln(
+        'Your payment of ${assignablePayments.fold(0, (sum, p) => sum + p.amount).formatMoney} have been recieved and processed successfully.');
+    buffer.writeln('Your new financial standing is as follows:');
+    final financialStanding = await eventRemindersForParent(session, parent);
+    buffer.writeln(financialStanding);
+
+    final msg = buffer.toString();
+    await TwilioClient().sendMessage(body: msg);
   }
 
   Future<void> insertCashPayment(
